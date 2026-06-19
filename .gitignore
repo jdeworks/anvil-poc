@@ -1,0 +1,5 @@
+node_modules/
+notes/
+*.local
+.DS_Store
+.vite/

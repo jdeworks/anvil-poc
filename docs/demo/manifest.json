@@ -1,0 +1,46 @@
+{
+  "id": "anvil-poc",
+  "title": "anvil — research & source trust analysis",
+  "description": "Public static demo. Real analysis output, baked. No backend.",
+  "generatedAt": "2026-06-19T13:32:00.716764+00:00",
+  "generatedWith": "scripts/extract_fixtures.py",
+  "stats": {
+    "papers": 316,
+    "evaluations": 124,
+    "contexts": 3,
+    "experiments": 0,
+    "candidates": 109
+  },
+  "heroes": [
+    {
+      "kind": "paper",
+      "id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+      "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+      "facet": "pdf"
+    },
+    {
+      "kind": "url",
+      "id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
+      "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+      "facet": "html"
+    },
+    {
+      "kind": "book",
+      "id": "8b410838-2682-409f-bd6c-9f233d38bee2",
+      "title": "Agentic Architectural Patterns for Building Multi-Agent Systems",
+      "facet": "epub"
+    }
+  ],
+  "contexts": [
+    {
+      "id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+      "name": "ctx_anvil_v3",
+      "display_name": "anvil"
+    },
+    {
+      "id": null,
+      "name": "ctx_audiobook_v3",
+      "display_name": "auto-audiobook"
+    }
+  ]
+}

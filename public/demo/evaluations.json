@@ -1,0 +1,438 @@
+[
+  {
+    "research_object_id": "695ef971-0c58-4c6a-af69-7f49627fcf83",
+    "title": "The Price Reversal Phenomenon: When Cheaper Reasoning Models Cost More",
+    "authors": [
+      "Lingjiao Chen",
+      "Chi Zhang",
+      "Yeye He",
+      "Ion Stoica",
+      "Matei Zaharia",
+      "James Zou"
+    ],
+    "year": 2026,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.82,
+    "adoption_cost": 0.4037735849056604,
+    "evaluated_at": "2026-06-19T12:33:49.657307Z",
+    "tags": [
+      "reasoning",
+      "evaluation",
+      "inference-optimization",
+      "agents"
+    ]
+  },
+  {
+    "research_object_id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+    "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+    "authors": [
+      "Francesco Dente",
+      "Dario Satriani",
+      "Paolo Papotti"
+    ],
+    "year": null,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.78,
+    "adoption_cost": 0.7533333333333333,
+    "evaluated_at": "2026-06-03T12:30:23.820099Z",
+    "tags": [
+      "agents",
+      "code-generation",
+      "evaluation",
+      "benchmarks",
+      "robustness",
+      "structured-output"
+    ]
+  },
+  {
+    "research_object_id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+    "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+    "authors": [
+      "Francesco Dente",
+      "Dario Satriani",
+      "Paolo Papotti"
+    ],
+    "year": null,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.72,
+    "adoption_cost": 0.49666666666666665,
+    "evaluated_at": "2026-06-03T12:30:23.820099Z",
+    "tags": [
+      "agents",
+      "code-generation",
+      "evaluation",
+      "benchmarks",
+      "robustness",
+      "structured-output"
+    ]
+  },
+  {
+    "research_object_id": "695ef971-0c58-4c6a-af69-7f49627fcf83",
+    "title": "The Price Reversal Phenomenon: When Cheaper Reasoning Models Cost More",
+    "authors": [
+      "Lingjiao Chen",
+      "Chi Zhang",
+      "Yeye He",
+      "Ion Stoica",
+      "Matei Zaharia",
+      "James Zou"
+    ],
+    "year": 2026,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.55,
+    "adoption_cost": 0.6141509433962264,
+    "evaluated_at": "2026-06-19T12:33:49.657307Z",
+    "tags": [
+      "reasoning",
+      "evaluation",
+      "inference-optimization",
+      "agents"
+    ]
+  },
+  {
+    "research_object_id": "654b4f10-f667-4ce0-b6a2-0cef7a97c8d1",
+    "title": "Don't Retrieve, Navigate: Distilling Enterprise Knowledge into Navigable Agent Skills for QA and RAG",
+    "authors": [
+      "Yiqun Sun",
+      "Pengfei Wei",
+      "Lawrence B. Hsieh"
+    ],
+    "year": 2026,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.45,
+    "adoption_cost": 0.6524390243902439,
+    "evaluated_at": "2026-06-02T18:18:57.542057Z",
+    "tags": [
+      "rag",
+      "agents",
+      "tool-use",
+      "distillation",
+      "planning",
+      "serving"
+    ]
+  },
+  {
+    "research_object_id": "c52ba339-9fad-440d-98ac-150099349b09",
+    "title": "If You Want Coherence, Orchestrate a Team of Rivals: Multi-Agent Models of Organizational Intelligence",
+    "authors": [
+      "Gopal Vijayaraghavan",
+      "Prasanth Jayachandran",
+      "Arun Murthy",
+      "Sunil Govindan",
+      "Vivek Subramanian"
+    ],
+    "year": 2026,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.45,
+    "adoption_cost": 0.7064102564102565,
+    "evaluated_at": "2026-06-03T07:32:57.525443Z",
+    "tags": [
+      "agents",
+      "safety",
+      "tool-use",
+      "robustness",
+      "planning",
+      "code-generation",
+      "reasoning"
+    ]
+  },
+  {
+    "research_object_id": "654b4f10-f667-4ce0-b6a2-0cef7a97c8d1",
+    "title": "Don't Retrieve, Navigate: Distilling Enterprise Knowledge into Navigable Agent Skills for QA and RAG",
+    "authors": [
+      "Yiqun Sun",
+      "Pengfei Wei",
+      "Lawrence B. Hsieh"
+    ],
+    "year": 2026,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.4,
+    "adoption_cost": 0.5463414634146343,
+    "evaluated_at": "2026-06-02T18:18:57.542057Z",
+    "tags": [
+      "rag",
+      "agents",
+      "tool-use",
+      "distillation",
+      "planning",
+      "serving"
+    ]
+  },
+  {
+    "research_object_id": "7afc13bb-6777-4fe0-b054-26cda727dcb2",
+    "title": "Attention Is All You Need",
+    "authors": [],
+    "year": 2024,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.4,
+    "adoption_cost": 0.5770833333333334,
+    "evaluated_at": "2026-06-02T18:21:03.057806Z",
+    "tags": [
+      "self-attention",
+      "transformer",
+      "sequence-to-sequence",
+      "machine-translation"
+    ]
+  },
+  {
+    "research_object_id": "c52ba339-9fad-440d-98ac-150099349b09",
+    "title": "If You Want Coherence, Orchestrate a Team of Rivals: Multi-Agent Models of Organizational Intelligence",
+    "authors": [
+      "Gopal Vijayaraghavan",
+      "Prasanth Jayachandran",
+      "Arun Murthy",
+      "Sunil Govindan",
+      "Vivek Subramanian"
+    ],
+    "year": 2026,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.4,
+    "adoption_cost": 0.39743589743589747,
+    "evaluated_at": "2026-06-03T07:32:57.525443Z",
+    "tags": [
+      "agents",
+      "safety",
+      "tool-use",
+      "robustness",
+      "planning",
+      "code-generation",
+      "reasoning"
+    ]
+  },
+  {
+    "research_object_id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
+    "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+    "authors": [
+      "Dylan Bristot"
+    ],
+    "year": null,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.25,
+    "adoption_cost": 0.8285714285714286,
+    "evaluated_at": "2026-06-03T12:32:04.081727Z",
+    "tags": [
+      "inference-optimization",
+      "serving",
+      "pretraining"
+    ]
+  },
+  {
+    "research_object_id": "ba9b10ee-5031-441e-b4a3-806bab636de6",
+    "title": "Large Reasoning Models (LRMs) trained with Reinforcement Learning",
+    "authors": [],
+    "year": null,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.22,
+    "adoption_cost": 0.20476190476190473,
+    "evaluated_at": "2026-06-19T12:53:52.945462Z",
+    "tags": [
+      "reasoning",
+      "rlhf",
+      "chain-of-thought",
+      "preference-learning"
+    ]
+  },
+  {
+    "research_object_id": "0669ce66-29fa-455f-ab6a-ba2f6f3d70e7",
+    "title": "Domain-Specific Engineering versus General-Purpose Scaling",
+    "authors": [],
+    "year": null,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.18,
+    "adoption_cost": 0.3543478260869566,
+    "evaluated_at": "2026-06-19T13:00:09.894015Z",
+    "tags": [
+      "fine-tuning",
+      "inference-optimization",
+      "pretraining",
+      "distillation"
+    ]
+  },
+  {
+    "research_object_id": "e5113313-b6b4-47eb-ae55-c75a0f019d85",
+    "title": "CORAL: Towards Autonomous Multi-Agent Evolution for Open-Ended Discovery",
+    "authors": [
+      "Ao Qu",
+      "Han Zheng",
+      "Zijian Zhou",
+      "Yihao Yan",
+      "Yihong Tang",
+      "Shao Yong Ong",
+      "Fenglu Hong",
+      "Kaichen Zhou",
+      "Chonghe Jiang",
+      "Minwei Kong",
+      "Jiacheng Zhu",
+      "Xuan Jiang",
+      "Sirui Li",
+      "Cathy Wu",
+      "Bryan Kian Hsiang Low",
+      "Jinhua Zhao",
+      "Paul Pu Liang"
+    ],
+    "year": 2026,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.18,
+    "adoption_cost": 0.5846938775510203,
+    "evaluated_at": "2026-06-02T18:15:55.211612Z",
+    "tags": [
+      "agents",
+      "planning",
+      "memory-systems",
+      "reasoning",
+      "tool-use"
+    ]
+  },
+  {
+    "research_object_id": "e5113313-b6b4-47eb-ae55-c75a0f019d85",
+    "title": "CORAL: Towards Autonomous Multi-Agent Evolution for Open-Ended Discovery",
+    "authors": [
+      "Ao Qu",
+      "Han Zheng",
+      "Zijian Zhou",
+      "Yihao Yan",
+      "Yihong Tang",
+      "Shao Yong Ong",
+      "Fenglu Hong",
+      "Kaichen Zhou",
+      "Chonghe Jiang",
+      "Minwei Kong",
+      "Jiacheng Zhu",
+      "Xuan Jiang",
+      "Sirui Li",
+      "Cathy Wu",
+      "Bryan Kian Hsiang Low",
+      "Jinhua Zhao",
+      "Paul Pu Liang"
+    ],
+    "year": 2026,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.18,
+    "adoption_cost": 0.7448979591836734,
+    "evaluated_at": "2026-06-02T18:15:55.211612Z",
+    "tags": [
+      "agents",
+      "planning",
+      "memory-systems",
+      "reasoning",
+      "tool-use"
+    ]
+  },
+  {
+    "research_object_id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
+    "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+    "authors": [
+      "Dylan Bristot"
+    ],
+    "year": null,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.15,
+    "adoption_cost": 0.6678571428571428,
+    "evaluated_at": "2026-06-03T12:32:04.081727Z",
+    "tags": [
+      "inference-optimization",
+      "serving",
+      "pretraining"
+    ]
+  },
+  {
+    "research_object_id": "a7e77a97-d240-4bc8-8ff1-3156785a266f",
+    "title": "Competitive Programming as a Benchmark for AI Evaluation",
+    "authors": [],
+    "year": null,
+    "context_name": "default",
+    "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+    "score_overall": 0.15,
+    "adoption_cost": 0.7,
+    "evaluated_at": "2026-06-19T12:55:27.729573Z",
+    "tags": [
+      "benchmarks",
+      "evaluation",
+      "code-generation",
+      "reasoning"
+    ]
+  },
+  {
+    "research_object_id": "7afc13bb-6777-4fe0-b054-26cda727dcb2",
+    "title": "Attention Is All You Need",
+    "authors": [],
+    "year": 2024,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.12,
+    "adoption_cost": 0.2791666666666667,
+    "evaluated_at": "2026-06-02T18:21:03.057806Z",
+    "tags": [
+      "self-attention",
+      "transformer",
+      "sequence-to-sequence",
+      "machine-translation"
+    ]
+  },
+  {
+    "research_object_id": "ba9b10ee-5031-441e-b4a3-806bab636de6",
+    "title": "Large Reasoning Models (LRMs) trained with Reinforcement Learning",
+    "authors": [],
+    "year": null,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.12,
+    "adoption_cost": 0.1333333333333333,
+    "evaluated_at": "2026-06-19T12:53:52.945462Z",
+    "tags": [
+      "reasoning",
+      "rlhf",
+      "chain-of-thought",
+      "preference-learning"
+    ]
+  },
+  {
+    "research_object_id": "0669ce66-29fa-455f-ab6a-ba2f6f3d70e7",
+    "title": "Domain-Specific Engineering versus General-Purpose Scaling",
+    "authors": [],
+    "year": null,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.1,
+    "adoption_cost": 0.2510869565217392,
+    "evaluated_at": "2026-06-19T13:00:09.894015Z",
+    "tags": [
+      "fine-tuning",
+      "inference-optimization",
+      "pretraining",
+      "distillation"
+    ]
+  },
+  {
+    "research_object_id": "a7e77a97-d240-4bc8-8ff1-3156785a266f",
+    "title": "Competitive Programming as a Benchmark for AI Evaluation",
+    "authors": [],
+    "year": null,
+    "context_name": "anvil",
+    "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+    "score_overall": 0.1,
+    "adoption_cost": 0.45,
+    "evaluated_at": "2026-06-19T12:55:27.729573Z",
+    "tags": [
+      "benchmarks",
+      "evaluation",
+      "code-generation",
+      "reasoning"
+    ]
+  }
+]

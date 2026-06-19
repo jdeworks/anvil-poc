@@ -1,0 +1,617 @@
+{
+  "kind": "book",
+  "id": "8b410838-2682-409f-bd6c-9f233d38bee2",
+  "detail": {
+    "title": "Agentic Architectural Patterns for Building Multi-Agent Systems",
+    "authors": [
+      "Dr. Ali Arsanjani, Juan Pablo Bustos, Thomas Kurian"
+    ],
+    "year": 2026,
+    "source_type": "epub",
+    "page_count": 26,
+    "cluster_count": 41,
+    "clusters": [
+      {
+        "title": "Book introduction, metadata, foreword, and contributors",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.1,
+        "reproducibility": 0.05,
+        "relevancy": null
+      },
+      {
+        "title": "GenAI fundamentals: capabilities, LLMs, and context management",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.05,
+        "reproducibility": 0.05,
+        "relevancy": null
+      },
+      {
+        "title": "GenAI business applications: horizontal and vertical use cases",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.1,
+        "reproducibility": 0.05,
+        "relevancy": null
+      },
+      {
+        "title": "Introduction to agentic AI: definition, types, and agent vs. LLM distinctions",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.05,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Agent anatomy: sense, reason, plan, act, memory, and coordinate components",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.18,
+        "reproducibility": 0.25,
+        "relevancy": null
+      },
+      {
+        "title": "GenAI and Agentic AI Maturity Model",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.22,
+        "reproducibility": 0.22,
+        "relevancy": null
+      },
+      {
+        "title": "Agentic technology stack: function calling, MCP, and A2A protocols",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.25,
+        "reproducibility": 0.2,
+        "relevancy": null
+      },
+      {
+        "title": "Challenges for production-grade GenAI deployment",
+        "summary_verdict": "plausible",
+        "novelty": 0.15,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "LLM selection criteria for agentic systems",
+        "summary_verdict": "plausible",
+        "novelty": 0.15,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "LLM serving architectures and performance optimization for agents",
+        "summary_verdict": "plausible",
+        "novelty": 0.1,
+        "reproducibility": 0.15,
+        "relevancy": null
+      },
+      {
+        "title": "AgentOps: managing LLMs in agentic production systems",
+        "summary_verdict": "plausible",
+        "novelty": 0.3,
+        "reproducibility": 0.28,
+        "relevancy": null
+      },
+      {
+        "title": "LLM adaptation overview: from generic models to specialized agents",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.12,
+        "reproducibility": 0.12,
+        "relevancy": null
+      },
+      {
+        "title": "RAG for agents: patterns, use cases, and maturity levels",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.15,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Fine-tuning for agentic capabilities: PEFT and full fine-tuning",
+        "summary_verdict": "plausible",
+        "novelty": 0.2,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "In-context learning and grounding for agent outputs",
+        "summary_verdict": null,
+        "novelty": 0.32,
+        "reproducibility": 0.3,
+        "relevancy": null
+      },
+      {
+        "title": "Hierarchical agentic architecture: orchestrators, sub-agents, and AgentTools",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.22,
+        "reproducibility": 0.2,
+        "relevancy": null
+      },
+      {
+        "title": "Agent data stores, environment context, and interaction models",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.18,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "Multi-agent coordination patterns: routing, delegation frameworks, composition topologies, planning, knowledge sharing, tool routing, consensus, negotiation, resource allocation, conflict resolution, and formation control",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.22,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "Explainability and compliance patterns for agentic systems: instruction fidelity auditing, Fractal CoT embedding, persistent instruction anchoring, and shared epistemic memory",
+        "summary_verdict": null,
+        "novelty": 0.28,
+        "reproducibility": 0.47,
+        "relevancy": null
+      },
+      {
+        "title": "Robustness and fault tolerance patterns for agentic systems: reactive recovery, adaptive fault tolerance, observability, and security",
+        "summary_verdict": null,
+        "novelty": null,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "Human-agent interaction patterns: escalation, delegation, direct calls, inter-agent orchestration, and proxy patterns",
+        "summary_verdict": "plausible",
+        "novelty": 0.18,
+        "reproducibility": 0.22,
+        "relevancy": null
+      },
+      {
+        "title": "Agent-level patterns: strategic guide, maturity model for individual agents, and internal cognitive architecture layers",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.28,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "Single Agent Baseline pattern: definition, context, solution, examples, and tradeoffs",
+        "summary_verdict": "plausible",
+        "novelty": 0.08,
+        "reproducibility": 0.38,
+        "relevancy": null
+      },
+      {
+        "title": "Agent-specific context and memory: short-term and long-term memory, summarization, and stateful behavior",
+        "summary_verdict": "plausible",
+        "novelty": 0.12,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Structured reasoning and self-correction: CoT variants, FCoT, persistent instruction anchoring, and self-critique loops",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.35,
+        "reproducibility": 0.13,
+        "relevancy": null
+      },
+      {
+        "title": "Multimodal Sensory Input pattern: pipeline vs. native multimodal approaches, OCR, MCP, and A2A for sensing",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.12,
+        "reproducibility": 0.12,
+        "relevancy": null
+      },
+      {
+        "title": "System-level patterns for production readiness: integration architecture, pattern chaining, and maturity mapping",
+        "summary_verdict": "plausible",
+        "novelty": 0.15,
+        "reproducibility": 0.42,
+        "relevancy": null
+      },
+      {
+        "title": "Tool and Agent Registry pattern: dynamic discovery, registration, invocation, and service decoupling",
+        "summary_verdict": "plausible",
+        "novelty": 0.2,
+        "reproducibility": 0.2,
+        "relevancy": null
+      },
+      {
+        "title": "Agent authentication and authorization: IAM, service accounts, JWT, RBAC, OAuth 2.0, and mTLS",
+        "summary_verdict": "plausible",
+        "novelty": 0.2,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Event-Driven Reactivity pattern: message bus, producers, consumers, backpressure, dead-letter queues, and idempotency",
+        "summary_verdict": "plausible",
+        "novelty": 0.1,
+        "reproducibility": 0.22,
+        "relevancy": null
+      },
+      {
+        "title": "Self-Improvement Flywheel: generate-evaluate-learn-deploy cycle and R-to-the-5 operational model",
+        "summary_verdict": "plausible",
+        "novelty": 0.25,
+        "reproducibility": 0.15,
+        "relevancy": null
+      },
+      {
+        "title": "Hybrid Planner plus Scorer architecture: separation of generation and evaluation, objectivity, and specialization",
+        "summary_verdict": "plausible",
+        "novelty": 0.1,
+        "reproducibility": 0.12,
+        "relevancy": null
+      },
+      {
+        "title": "Preference-controlled synthetic data generation: preference pairs, DPO bootstrapping, and bias caveats",
+        "summary_verdict": null,
+        "novelty": 0.2,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Coevolved Agent Training: virtuous cycle of co-improving planner and scorer, runaway divergence risks, and collusion failure modes",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.42,
+        "reproducibility": 0.1,
+        "relevancy": null
+      },
+      {
+        "title": "Adversarial testing and red teaming for agentic systems: automated probing, jailbreak ensembles, and continuous hardening",
+        "summary_verdict": "plausible",
+        "novelty": 0.18,
+        "reproducibility": 0.18,
+        "relevancy": null
+      },
+      {
+        "title": "Cost management, tokenomics, and ROI measurement for agentic systems: budget controllers, circuit breakers, and business value dashboards",
+        "summary_verdict": "questionable",
+        "novelty": 0.15,
+        "reproducibility": 0.12,
+        "relevancy": null
+      },
+      {
+        "title": "Practical roadmap for implementing agentic patterns by maturity level: Levels 1 to 3, phased adoption, and strategic reflection guide",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.15,
+        "reproducibility": 0.2,
+        "relevancy": null
+      },
+      {
+        "title": "Use case: single agent for loan processing using Google ADK and FCoT",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.1,
+        "reproducibility": 0.05,
+        "relevancy": null
+      },
+      {
+        "title": "Use case: multi-agent system for loan processing with supervisor architecture",
+        "summary_verdict": "plausible",
+        "novelty": 0.15,
+        "reproducibility": 0.08,
+        "relevancy": null
+      },
+      {
+        "title": "Agent frameworks comparison: Google ADK, CrewAI, and LangGraph implementation patterns, tradeoffs, and maturity mapping",
+        "summary_verdict": "inconclusive",
+        "novelty": 0.1,
+        "reproducibility": 0.42,
+        "relevancy": null
+      }
+    ]
+  },
+  "content": {
+    "chapters": [
+      {
+        "title": "Book introduction, metadata, foreword, and contributors",
+        "text": "(../Images/Cover.\n\n, agents, RAG, LLMOps, and enterprise-scale AI systems\n\nDr. Ali Arsanjani\n\nJuan Pablo Bustos\n\n![Image PacktLogo](../Images/PacktLogo_FM_1.png)\n\n# Agentic Architectural Patterns for Building Multi-Agent Systems\n\nCopyright Â© 2026 Packt Publishing\n\n*All rights reserved*. No part of this book may be reproduced, stored in a retrieval system, or transmitted in any form or by any means, without the prior written permission of the publisher, except in the case of brief quotations embedded in critical articles or reviews.\n\nThis book was written by the authors. Generative AI tools were used only to assist with phrasing and diagram drafts, and all technical content and code were created, verified, and tested by the authors and Packtâs editorial team. Packt does not accept AI-generated content that replaces expert authorship.\n\nEvery effort has been made in the preparation of this book to ensure the accuracy of the information presented. However, the information contained in this book is sold without warranty, either express or implied. Neither the authors, nor Packt Publishing or its dealers and distributors, will be held liable for any damages caused or alleged to have been caused directly or indirectly by this book.\n\nPackt Publishing has endeavored to provide trademark information about all of the companies and products mentioned in this book by the appropriate use of capitals. However, Packt Publishing cannot guarantee the accuracy of this information.\n\n**Portfol…"
+      },
+      {
+        "title": "GenAI fundamentals: capabilities, LLMs, and context management",
+        "text": "# Table of Contents"
+      },
+      {
+        "title": "GenAI business applications: horizontal and vertical use cases",
+        "text": "\n\nGenerative AI, and specifically agentic AI, is a paradigm that is rapidly becoming a pillar of modern enterprise technology. Agentic AI entails designing systems where large language models (LLMs) act not just as monolithic text generators, but as distributed reasoning engines, each capable of perceiving their environment, making decisions, and taking actions to collectively achieve specific goals. Among other advantages, agentic AI allows the automation of complex, cognitive workflows. This reduces the need for human intervention in multi-step processes and thus enables the creation of adaptive, autonomous systems that can scale expertise across an organization while integrating human approval in the processes that are most critical.\n\nAmong all the emerging technologies in this space, there are many frameworks and their abstractions as patterns that allow for the creation of these agents. This book focuses on the universal architectural patterns that underpin robust agentic systems, while utilizing powerful tools like Googleâs Gemini models and the Agent Development Kit (ADK), along with popular frameworks like LangGraph and CrewAI. These tools are pivotal today because, in addition to being at the cutting edge of the industry, they offer the following advantages:\n\n* They allow for the creation of agents that can reason, plan, and use tools to interact with the real world.\n* They support complex coordination between multiple agents, considering dependencies and shared co…"
+      }
+    ],
+    "license_note": "This is a copyrighted book, so the full text and PDF can't be shown on this public demo. These are short excerpts from the opening chapters."
+  },
+  "summary": {
+    "extractor_method": "docling",
+    "summary_text": "This submission is the front matter of a 2026 Packt Publishing book, not a research paper, so no empirical claim or experimental evidence is present. The book is authored by Dr. Ali Arsanjani (Director of Applied AI Engineering, Google Cloud) and Juan Pablo Bustos, with a foreword by Google Cloud CEO Thomas Kurian. It targets enterprise practitioners building production-grade multi-agent AI systems. The stated scope covers agents, RAG, LLMOps, and enterprise-scale AI architectures. The central promise is a catalog of repeatable design patterns addressing robustness, fault tolerance, instruction fidelity, and compliance monitoring. No methodology, dataset, baseline comparison, or quantitative result appears in this excerpt. The text is introductory and promotional in character. Author credentials are notable (former AWS Head of ML, IBM CTO for Analytics, 4800-plus citations), but credentialing alone does not constitute evidence for the book's claims. A meaningful plausibility judgment of any technical claim requires reading the book's actual content chapters.",
+    "verdict": "inconclusive",
+    "confidence": 0.95,
+    "general_claim": "Structured architectural patterns can enable reliable, secure, and governance-compliant multi-agent AI systems suitable for enterprise deployment.",
+    "key_findings": [
+      "This is a book's front matter, not a research paper - no empirical data or results are present",
+      "Published January 2026 by Packt Publishing (ISBN 978-1-80602-957-0)",
+      "Authors have senior industry backgrounds at Google Cloud, AWS, and IBM",
+      "Foreword written by Thomas Kurian, CEO of Google Cloud",
+      "Scope covers agents, RAG, LLMOps, and enterprise-scale agentic AI systems",
+      "Book claims to offer repeatable patterns for robustness, fault tolerance, and compliance monitoring",
+      "No methodology, experimental baseline, or quantitative finding appears in this excerpt"
+    ],
+    "stats": {
+      "pages": 3,
+      "found_tags": 3,
+      "claim_count": 2,
+      "token_count": 1262,
+      "found_issues": 0,
+      "method_count": 2,
+      "citation_count": 0
+    }
+  },
+  "analysis": {
+    "status": "complete",
+    "confidence": null,
+    "claims": [
+      {
+        "text": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
+        "section_ref": "contributors",
+        "confidence": 0.35,
+        "provenance": "verbatim",
+        "validity_confidence": 0.3,
+        "validity_basis": "specific quantitative claim asserted with no supporting data, methodology, or context provided",
+        "evidence_strength": 0.05,
+        "evidence_basis": "asserted number with no experiment, benchmark, or citation to back it",
+        "evidence_type": "asserted",
+        "scope": 0.25,
+        "corroboration_verdict": "not_found",
+        "corroboration_sources": [
+          "https://www.aidigital.com/blog/ai-driven-personalization",
+          "https://www.bloomreach.com/en/blog/how-ai-technology-will-transform-customer-engagement",
+          "https://www.autobound.ai/blog/top-12-personalization-engines-for-marketing-2026"
+        ]
+      },
+      {
+        "text": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
+        "section_ref": "contributors",
+        "confidence": 0.35,
+        "provenance": "verbatim",
+        "validity_confidence": 0.25,
+        "validity_basis": "extraordinary precision figure asserted with no methodology, dataset, or reproducibility information",
+        "evidence_strength": 0.05,
+        "evidence_basis": "asserted, no experiment or citation provided",
+        "evidence_type": "asserted",
+        "scope": 0.25,
+        "corroboration_verdict": "not_found",
+        "corroboration_sources": [
+          "https://ryanrosario.phd/",
+          "https://reaganai.com/message-feature/"
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "name": "Agentic Architectural Patterns",
+        "description": "The overarching framework introduced by this book, providing repeatable design and architectural patterns for building durable, production-grade multi-agent systems in enterprise environments."
+      },
+      {
+        "name": "A2A Protocol",
+        "description": "An agent-to-agent protocol introduced by Dr. Ali Arsanjani at Google Cloud to ensure autonomous AI systems remain transparent, auditable, and grounded in ethical governance."
+      }
+    ],
+    "novelty": {
+      "score": 0.1,
+      "reasoning": "This submission is not a research paper but rather the front matter of a practitioner book (Packt, 2026) on agentic architectural patterns. No explicit gap-naming against named prior work appears anywhere in the provided text: the foreword uses generic marketing framing ('bridges the gap between theoretical capability and practical implementation') without citing specific prior methods or literature. The extracted claims are biographical metrics from a contributor profile (63% engagement increase, 99.97% accuracy), not research contributions with verifiable experimental comparisons. No prior-art references are named, no baselines are identified, and no methodological advance is articulated relative to any existing approach."
+    },
+    "reproducibility": {
+      "score": 0.05,
+      "reasoning": "This document is a book introduction and contributor foreword, not a research paper with reproducible experiments. The two extracted claims (63% engagement increase, 99.97% workflow accuracy) appear in contributor bio copy at confidence 0.35 and reference undisclosed commercial systems with no experimental setup, dataset, or evaluation harness described. The 'methods' listed are high-level architectural framework names from a book, not implementable procedures. There is no code, no math, no hyperparameters, and no public data reference anywhere in the document.",
+      "missing": [
+        "Source datasets or benchmarks used to derive the 63% engagement and 99.97% accuracy figures",
+        "Experimental setup and evaluation protocol for the stated accuracy/engagement claims",
+        "Hyperparameters or configuration details for the workflow engine and personalization system",
+        "Public code repository or reference implementation for the A2A Protocol or Agentic Architectural Patterns",
+        "Hardware and software environment details",
+        "Baseline comparisons or ablation results that would allow partial reproduction"
+      ]
+    },
+    "trustworthiness": {
+      "score": 0.3,
+      "base": 0.5,
+      "reasons": [
+        {
+          "label": "thin bibliography (0 extracted citations)",
+          "delta": -0.05,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "most claims are asserted or speculative (2/2)",
+          "delta": -0.1,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "essentially unreproducible (0.05)",
+          "delta": -0.05,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        }
+      ],
+      "claim_corroborations": [
+        {
+          "claim_text": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
+          "verdict": "not_found",
+          "sources": [
+            "https://www.aidigital.com/blog/ai-driven-personalization",
+            "https://www.bloomreach.com/en/blog/how-ai-technology-will-transform-customer-engagement",
+            "https://www.autobound.ai/blog/top-12-personalization-engines-for-marketing-2026"
+          ],
+          "note": "Three targeted web searches found zero independent sources attributing a 63% engagement increase to any AI system by Reagan Rosario. General industry sources discuss AI personalization benefits but cite entirely different figures and different authors."
+        },
+        {
+          "claim_text": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
+          "verdict": "not_found",
+          "sources": [
+            "https://ryanrosario.phd/",
+            "https://reaganai.com/message-feature/"
+          ],
+          "note": "No independent source found referencing Reagan Rosario, a workflow engine, or a 99.97% accuracy figure tied to self-learning decision models. The name Reagan Rosario returns no verifiable professional or academic profile in any search."
+        }
+      ],
+      "web_status": "ok",
+      "summary": "This epub has unknown authorship, no publisher, no year, no source URL, and zero citations. Three web searches found no verifiable professional presence for 'Reagan Rosario' in AI or adjacent fields, and no independent source corroborates either specific quantitative claim (63% engagement uplift or 99.97% workflow accuracy). Both claims read as self-promotional assertions with no traceable evidentiary basis, making the artifact highly untrustworthy as a factual source."
+    },
+    "tool_stack": {
+      "requirements": [],
+      "context_adjusted": null,
+      "not_applicable": {
+        "lens": "not_applicable",
+        "reason": "Source classified as non-computational (landscape/survey/pure-theory): no coherent required stack to build, so the tool-stack is suppressed rather than inferring tools the paper does not actually use.",
+        "suppressed": true,
+        "content_shape": "landscape",
+        "implementable": false,
+        "detector_version": "1.0.0",
+        "min_required_names": 2,
+        "distinct_required_names": 0
+      }
+    },
+    "claim_total": 2,
+    "method_total": 2
+  },
+  "citations": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "claim:ac98dc3a",
+        "type": "claim",
+        "label": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
+        "summary": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization."
+      },
+      {
+        "id": "claim:d20dbac7",
+        "type": "claim",
+        "label": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
+        "summary": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models."
+      },
+      {
+        "id": "method:agentic-architectural-patterns",
+        "type": "method",
+        "label": "Agentic Architectural Patterns",
+        "summary": "The overarching framework introduced by this book, providing repeatable design and architectural patterns for building durable, production-grade multi-agent systems in enterprise environments."
+      },
+      {
+        "id": "method:a2a-protocol",
+        "type": "method",
+        "label": "A2A Protocol",
+        "summary": "An agent-to-agent protocol introduced by Dr. Ali Arsanjani at Google Cloud to ensure autonomous AI systems remain transparent, auditable, and grounded in ethical governance."
+      },
+      {
+        "id": "concept:multi-agent-systems",
+        "type": "concept",
+        "label": "Multi-Agent Systems",
+        "summary": "Systems composed of multiple autonomous agents working together to solve complex problems and manage coordination"
+      },
+      {
+        "id": "concept:agentic-ai",
+        "type": "concept",
+        "label": "Agentic AI",
+        "summary": "AI systems capable of autonomous action, decision-making, and executing complex workflows without constant human direction"
+      },
+      {
+        "id": "concept:retrieval-augmented-generation-rag",
+        "type": "concept",
+        "label": "Retrieval-Augmented Generation (RAG)",
+        "summary": "AI technique combining information retrieval from external sources with generative text production"
+      },
+      {
+        "id": "concept:llmops",
+        "type": "concept",
+        "label": "LLMOps",
+        "summary": "Operational practices and infrastructure for managing large language models at scale in production environments"
+      },
+      {
+        "id": "concept:enterprise-scale-ai-systems",
+        "type": "concept",
+        "label": "Enterprise-scale AI systems",
+        "summary": "AI systems designed for organizational deployment with requirements for reliability, security, governance, and compliance"
+      },
+      {
+        "id": "concept:genai-blackbelts",
+        "type": "concept",
+        "label": "GenAI Blackbelts",
+        "summary": "Google Cloud center of excellence bridging research, forward-deployed engineering, and enterprise AI implementation"
+      },
+      {
+        "id": "concept:robustness",
+        "type": "concept",
+        "label": "Robustness",
+        "summary": "Architectural design pattern ensuring reliable and stable operation of systems under various conditions"
+      },
+      {
+        "id": "concept:fault-tolerance",
+        "type": "concept",
+        "label": "Fault Tolerance",
+        "summary": "Architectural design pattern enabling systems to continue functioning when components fail"
+      },
+      {
+        "id": "concept:instruction-fidelity",
+        "type": "concept",
+        "label": "Instruction Fidelity",
+        "summary": "Architectural design pattern ensuring systems accurately and consistently follow given instructions"
+      },
+      {
+        "id": "concept:compliance-monitoring",
+        "type": "concept",
+        "label": "Compliance Monitoring",
+        "summary": "Architectural practice for continuous tracking and enforcement of regulatory and organizational policy compliance"
+      },
+      {
+        "id": "concept:ethical-governance",
+        "type": "concept",
+        "label": "Ethical Governance",
+        "summary": "Framework for governing autonomous systems to ensure transparent, auditable, and ethically responsible operation"
+      },
+      {
+        "id": "concept:autonomous-systems",
+        "type": "concept",
+        "label": "Autonomous systems",
+        "summary": "Systems capable of operating and making decisions independently without constant human direction or intervention"
+      }
+    ],
+    "edges": [
+      {
+        "source": "method:agentic-architectural-patterns",
+        "target": "concept:multi-agent-systems",
+        "relationship": "related",
+        "weight": null
+      },
+      {
+        "source": "method:agentic-architectural-patterns",
+        "target": "concept:robustness",
+        "relationship": "introduces",
+        "weight": null
+      },
+      {
+        "source": "method:agentic-architectural-patterns",
+        "target": "concept:fault-tolerance",
+        "relationship": "introduces",
+        "weight": null
+      },
+      {
+        "source": "method:agentic-architectural-patterns",
+        "target": "concept:instruction-fidelity",
+        "relationship": "introduces",
+        "weight": null
+      },
+      {
+        "source": "method:agentic-architectural-patterns",
+        "target": "concept:compliance-monitoring",
+        "relationship": "introduces",
+        "weight": null
+      },
+      {
+        "source": "concept:autonomous-systems",
+        "target": "method:a2a-protocol",
+        "relationship": "supported-by",
+        "weight": null
+      },
+      {
+        "source": "concept:ethical-governance",
+        "target": "method:a2a-protocol",
+        "relationship": "supported-by",
+        "weight": null
+      }
+    ]
+  },
+  "evaluations": []
+}

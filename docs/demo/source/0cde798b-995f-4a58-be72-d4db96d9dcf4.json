@@ -1,0 +1,2156 @@
+{
+  "kind": "paper",
+  "id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+  "detail": {
+    "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+    "authors": [
+      "Francesco Dente",
+      "Dario Satriani",
+      "Paolo Papotti"
+    ],
+    "year": null,
+    "abstract": "Large Language Model (LLM) agents demonstrate strong performance in autonomous code generation under loose specifications. However, production-grade software requires strict adherence to structural constraints, such as architectural patterns, databases, and object-relational mappings. Existing benchmarks often overlook these non-functional requirements, rewarding functionally correct but structurally arbitrary solutions. We present a systematic study evaluating how well agents handle structural constraints in multi-file backend generation. By fixing a unified API contract across 80 greenfield generation tasks and 20 featureimplementation tasks spanning eight web frameworks, we isolate the ef…",
+    "page_count": 23,
+    "source_type": "pdf",
+    "source_url": null,
+    "detected_language": "en",
+    "tags": [
+      "agents",
+      "code-generation",
+      "evaluation",
+      "benchmarks",
+      "robustness",
+      "structured-output"
+    ]
+  },
+  "content": {
+    "sections": [
+      {
+        "heading": "Constraint decay: The Fragility of LLM Agents in Backend Code Generation",
+        "level": 1,
+        "content": "Francesco Dente ∗ EURECOM, France\n\nfrancesco.dente@eurecom.fr Dario Satriani* University of Basilicata, Italy dario.satriani@unibas.it"
+      },
+      {
+        "heading": "Abstract",
+        "level": 1,
+        "content": "Large Language Model (LLM) agents demonstrate strong performance in autonomous code generation under loose specifications. However, production-grade software requires strict adherence to structural constraints, such as architectural patterns, databases, and object-relational mappings. Existing benchmarks often overlook these non-functional requirements, rewarding functionally correct but structurally arbitrary solutions. We present a systematic study evaluating how well agents handle structural constraints in multi-file backend generation. By fixing a unified API contract across 80 greenfield generation tasks and 20 featureimplementation tasks spanning eight web frameworks, we isolate the effect of structural complexity using a dual evaluation with end-to-end behavioral tests and static verifiers. Our findings reveal a phenomenon of constraint decay: as structural requirements accumulate, agent performance exhibits a substantial decline. Capable configurations lose 30 points on average in assertion pass rates from baseline to fully specified tasks, while some weaker configurations approach zero. Framework sensitivity analysis exposes significant performance disparities: agents succeed in minimal, explicit frameworks (e.g., Flask) but perform substantially worse on average in convention-heavy environments (e.g., FastAPI, Django). Finally, error analysis identifies data-layer def…"
+      },
+      {
+        "heading": "1 Introduction",
+        "level": 1,
+        "content": "The landscape of software engineering is undergoing a fundamental shift, driven by the increasing use of Large Language Model (LLM) agents capable of autonomously generating code (Wang et al., 2025; SWE-agent Team, 2025; Yang et al., 2024). These agents have demonstrated remarkable proficiency in 'shallow' generation tasks, where objectives are broad and requirements are loosely defined (Qwen Team, 2026; OpenAI, 2026; Hong et al., 2024; Kimi, 2026). This flexibility is well suited to a range of development scenarios, such as rapid prototyping, demo applications, frontend interfaces, and proof-of-concept implementations, where structural decisions can be left to the agent. However, this permissiveness becomes a liability when the target is a production-grade backend. Such systems must satisfy functional and non-functional requirements by exposing endpoints that adhere to API contracts, conform to architectural patterns, integrate with databases, and operate through designated ORM layers. The impact of these constraints on agent performance remains largely unexplored.\n\nRecent benchmarks evaluate LLM agents on greenfield code generation (build an application from scratch) or GitHub Issue resolution, yet none adequately captures the challenges of constrained multi-file backend development. Existing efforts either focus on resolving specific issues given a description and existing c…"
+      },
+      {
+        "heading": "2 Related Work",
+        "level": 1,
+        "content": "Greenfield app generation. Recent benchmarks have begun to evaluate LLM agents on generating entire apps from scratch, yet none adequately captures the challenges of constrained multi-file, repository-level backend development. Luo et al. (2026) measure output against existing test suites from well-known libraries but reward unconstrained generation from under-specified prompts. Seo et al. (2026) target repository generation for reproducing research papers, while Zhao et al. (2025) provide skeleton libraries for agents to complete. Ding et al. (2025) evaluate coding agents on repository generation from reverse-engineered natural-language specifications of Python codebases. Neither targets backend systems nor systematically varies the degree of structural constraint. Vero et al. (2024) is closer to our setting, tasking LLMs with generating backend services from OpenAPI specifications across multiple frameworks and languages, with evaluation through end-to-end functional and security tests. However, it targets single-file solutions via direct prompting rather than multi-file, repositories generated through agentic interaction, and does not study how layering architectural constraints affects generation quality.\n\nOur work fixes a single API contract and systematically layers structural constraints across eight frameworks, evaluating implementations against a shared suite of end-to…"
+      },
+      {
+        "heading": "3 Methodology",
+        "level": 1,
+        "content": "To isolate and evaluate the impact of structural constraints on code generation, we propose an evaluation methodology inspired by Behavior-Driven Development (North et al., 2006). The principle of our approach is to hold the functional specification constant while systematically varying the non-functional requirements (i.e., structural constraints). This experimental design isolates the effect of the constraints from the logical complexity of the task, thus enabling controlled, equitable comparisons across agents and models."
+      },
+      {
+        "heading": "3.1 Generation Task Design",
+        "level": 1,
+        "content": "We define a greenfield generation task : given a comprehensive NL description of a target service, an LLM agent must synthesize a complete, specification-compliant REST API from scratch, i.e., from an empty repository. To execute this task, the agent is provided with an input prompt with four components: (i) the API specification, (ii) the structural constraints to be enforced, (iii) the mandatory files required to execute the generated code, and (iv) a description of the pipeline used to assess the submission (full example in Appendix E).\n\nAPI specification. We adopt the OpenAPI 3.0 specification 1 as the standardized functional requirement format for all tasks. OpenAPI is a machine-readable, language-agnostic interface description standard widely used in industry for API-first development. This structured format yields two methodological advantages over NL descriptions. First, it removes specification ambiguity: every functional behavior, endpoint signature, request body, response schema, and status code is formally defined. Second, it facilitates the preemptive definition of a behavioral test suite for evaluating any compliant implementation, irrespective of the underlying language, framework, or internal architecture. This approach guarantees a level of evaluation flexibility and behavioral coverage that traditional unit-test-based pipelines cannot achieve, as unit tests ar…"
+      },
+      {
+        "heading": "3.2 Constraint Dimensions",
+        "level": 1,
+        "content": "To systematically evaluate the effect of constraints, we define three orthogonal nonfunctional axes, which can be either included in or omitted from the code specification.\n\nArchitectural pattern . The code architecture is fixed: it must be organized following the Clean Architecture pattern (Martin, 2017). Rather than spontaneously define a monolithic or arbitrary file structure, the agent must split the codebase into four domain layers with strict top-down dependency direction: routes/handlers, services/use cases, models/entities, and repository/data access. Each layer must reside in its own directory.\n\nDatabase backend . The database layer is fixed: PostgreSQL or SQLite. The agent must persist data using a specific database engine. For PostgreSQL tasks, a pre-configured instance is provided in the execution environment; for SQLite, no external service is needed. In both cases, the schema must be created automatically at server startup.\n\nORMintegration . The Object-Relational Mapper (ORM) framework is fixed: SQLAlchemy for Python, Sequelize for Node. The agent must adhere to the idiomatic query logic of the prescribed framework, instead of falling back to raw SQL or alternative mapping.\n\nUnlike the three axes above, the web framework is always specified: an agent must target some framework to produce executable code. We therefore treat framework as a fixed baseline constraint…"
+      },
+      {
+        "heading": "3.3 Evaluation Pipeline",
+        "level": 1,
+        "content": "To guarantee reproducibility and preclude state contamination, each task is executed in an isolated Docker environment following a build and evaluate pipeline. In the build phase, the agent operates within a first container, where it can code, build, and start the server. Next, in the evaluation phase, the agent code patch is applied in a pristine container and the behavioral test suite is executed. In both phases, a container-dedicated, ephemeral PostgreSQL 16 instance is available (full infrastructure details in Appendix I).\n\nBehavioral testing. Since all task instances target a unified OpenAPI specification, all implementations are evaluated against a unified HTTP behavioral test suite covering the whole specification. The suite comprises 32 requests covering all 19 API endpoints and 291 assertions that verify response structure, types, status codes, and state transitions across a stateful sequence of interdependent CRUD operations (breakdown in Appendix G). This is a methodological choice: by testing the API behavior rather than its implementation, we decouple functional evaluation from internal code structure.\n\nVerifier functions. To separate functional correctness from structural compliance, we introduce orthogonal verifier functions that detect whether the required architecture, database, and ORM constraints are actually satisfied (details in Appendix C). (i) Architectur…"
+      },
+      {
+        "heading": "4 Experimental Setup",
+        "level": 1,
+        "content": "Metrics. We define our primary evaluation axes as follows. Assert% (A%): the mean fraction of behavioral test assertions passed across all runs of a given configuration. It captures partial progress, distinguishing configurations that slightly miss full compliance from largely non-functional implementations. We report A% as the primary metric, since the all-or-nothing nature of pass@1 over the entire test suite amplifies noise. Pass@k (using the unbiased estimator of Chen et al., 2021): the probability that at least one of k independent samples satisfies the complete set of behavioral and structural constraints.\n\nEach task is executed for n = 3 independent trials per agent-model configuration.\n\nAgents and Models. We evaluate two popular and open-source agent architectures of different tooling complexity. (i) Mini-SWE-Agent : a minimal scaffold ( ∼ 100 lines of Python) that interacts with the environment exclusively through bash commands (SWE-agent Team, 2025). Despite its simplicity, it achieves strong performance on SWE-Bench with frontier LLMs ( > 70%). (ii) OpenHands : a full-featured agent framework providing dedicated tools for file editing, terminal execution, code search, and task tracking (Wang et al., 2025).\n\nTo ensure experimental validity and calibrate the agents for code generation, we apply systematic adjustments to the scaffold configuration through prompt refinem…"
+      },
+      {
+        "heading": "5 Results",
+        "level": 1,
+        "content": "We organize the analysis around three research questions. RQ1. How does the accumulation of structural constraints affect LLM agent performance (§5.1)? RQ2. Does the choice of web framework significantly influence agent success under the same API contract (§5.2)? RQ3. What are the primary root causes of agent failure in constrained backend generation (§5.3)?"
+      },
+      {
+        "heading": "5.1 RQ1: Effect of Constraint Accumulation",
+        "level": 1,
+        "content": "Table 2 summarizes the main results. Each cell reports assertion pass rate A% and pass@1 (%), computed per-task and averaged across tasks. Three models (MiniMax-M2.5, Kimi-K2.5, GPT-5.2) were evaluated on the 16-task subset due to cost constraints. To validate this choice, we re-evaluated the six full-set configurations (3 models × 2 agents, excluding Devstral-Small) on the same 16 tasks: A% scores correlate at Pearson r = 0.98 and Spearman ρ = 0.95 ( p < 10 -12 , N = 24). Specifically, we compared each full-set model's A% on all 80 tasks against its A% on the same 16-task subset, obtaining 24 paired observations (6 model-agent configurations × 4 constraint levels) that show near-perfect agreement in both absolute scores and ranking order (details in Appendix A).\n\nWithout structural constraints (L0), agents perform well: Qwen3-Coder-Next, MiniMaxM2.5, and Kimi-K2.5 exceed 85% A%, confirming that compact code-specialists such as Qwen3-Coder-Next handle end-to-end backend generation when given full architectural freedom. Smaller agentic models and non-specialized ones struggle even at L0. Given its near-zero Assert % (see Table 8), we exclude Devstral-Small from the remainder of the discussion.\n\nOverall decay. Structural constraints cause steep, universal performance degradation. Restricting to the eight capable configurations (L0 A% > 50%) in Table 2, A% drops by an average of 3…"
+      },
+      {
+        "heading": "5.2 RQ2: Framework Sensitivity",
+        "level": 1,
+        "content": "Since framework is the one constraint present at every level, a natural question is how much the choice of framework matters. All eight frameworks implement the same API contract and share the same test suite, enabling a controlled comparison. Table 4 reports A% by framework for three models, each with both scaffolds, aggregated across constraint levels.\n\nFramework influence. Express, Koa and Flask form a clear top tier (avg. 51.4%, 50.7%, 49.3% A%), sharing a minimal, explicit API surface with no implicit conventions. Their ranking shifts by configuration: Koa and Express dominate with OpenHands + GPT-5-mini, while Flask leads with Qwen3-Coder-Next. Django and FastAPI are penalized by implicit configuration: Django's convention-driven structure and auto-discovery, FastAPI's typehint-driven validation. Hono trails despite a comparable API surface to Express, likely because Hono targets edge runtimes and requires a compatibility adapter on Node.js (the runtime used in our study), a setup step that may be underrepresented in training data.\n\nTakeaways for RQ2. Framework choice is a major sensitivity axis: lightweight frameworks form a top tier at ∼ 50% avg. A%, while convention-heavy ones trail by 25-32 points."
+      },
+      {
+        "heading": "5.3 RQ3: Root Causes of Failure",
+        "level": 1,
+        "content": "We perform a failure analysis on unsuccessful runs for Qwen3-Coder-Next (194/240 failed, full 80-task set) and MiniMax-M2.5 (28/48 failed, 16-task subset), both with Mini-SWEAgent. Following established approaches (Deng et al., 2025), we use GPT-5.2 (temperature\n\nTable 5: Failure taxonomy for Qwen3-Coder-Next and MiniMax-M2.5 with Mini-SWEAgent. Coarse categories (left) show % of failed runs; subcategories for logic errors only.\n\n0) to classify each failure based on the last 20 trajectory turns, behavioral test results, server logs, and static verifier outputs. We define a two-level taxonomy (Table 5): six coarse categories (left), with logic errors only further sub-classified into six root causes (right). We validate the judge on a stratified sample of 50 Qwen3-Coder-Next logic errors against manual labels, obtaining Cohen's κ = 0.975, aided by the largely unambiguous signal from server logs and test output (details in Appendix B).\n\nCoarse profile. Both models share a near-identical distribution: logic errors account for ∼ 71% of failures, where the server starts and registers correct routes but behaves incorrectly, consistent with the persistent gap between Assert% and pass@1 in §5.1. Server startup failures rank second (12-21%); remaining categories together account for less than 17%.\n\nLogic-error root causes. We classify the 157 logic errors into six root-cause categories:…"
+      },
+      {
+        "heading": "6 Conclusion",
+        "level": 1,
+        "content": "Our systematic study exposes a phenomenon of constraint decay in LLM-based coding agents. While current models excel at unconstrained generation, their performance drops when forced to navigate explicit architectural rules. For end-users, this dichotomy implies that agents are reliable for rapid prototyping but remain unreliable for production-grade backend development. Overcoming this bottleneck requires a shift for agent developers:\n\nmoving beyond purely functional benchmarks to actively integrate structural awareness, potentially through retrieval-augmented framework documentation, constraint-oriented planning, or targeted pre-training on convention-heavy codebases."
+      },
+      {
+        "heading": "References",
+        "level": 1,
+        "content": "Ruisheng Cao, Mouxiang Chen, Jiawei Chen, Zeyu Cui, Yunlong Feng, Binyuan Hui, Yuheng Jing, Kaixin Li, Mingze Li, Junyang Lin, Zeyao Ma, Kashun Shum, Xuwu Wang, Jinxi Wei, Jiaxi Yang, Jiajun Zhang, Lei Zhang, Zongmeng Zhang, Wenting Zhao, and Fan Zhou. Qwen3-coder-next technical report, 2026. URL https://arxiv.org/abs/2603.00729 .\n\nHaorui Chen, Chengze Li, and Jia Li. Featbench: Evaluating coding agents on feature implementation for vibe coding. arXiv preprint arXiv:2509.22237 , 2025.\n\nMark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde De Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, et al. Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374 , 2021.\n\nXiang Deng, Jeff Da, Edwin Pan, Yannis Yiming He, Charles Ide, Kanak Garg, Niklas Lauffer, Andrew Park, Nitin Pasari, Chetan Rane, et al. Swe-bench pro: Can ai agents solve long-horizon software engineering tasks? arXiv preprint arXiv:2509.16941 , 2025.\n\nJingzhe Ding, Shengda Long, Changxin Pu, Huan Zhou, Hongwan Gao, Xiang Gao, Chao He, Yue Hou, Fei Hu, Zhaojian Li, et al. Nl2repo-bench: Towards long-horizon repository generation evaluation of coding agents. arXiv preprint arXiv:2512.12730 , 2025.\n\nYangruibo Ding, Zijian Wang, Wasi Ahmad, Hantian Ding, Ming Tan, Nihal Jain, Murali Krishna Ramanathan, Ramesh Nallapati, Parminder Bhatia, Dan Roth,…"
+      },
+      {
+        "heading": "APPENDIX",
+        "level": 1,
+        "content": null
+      },
+      {
+        "heading": "A Subset Representativeness",
+        "level": 1,
+        "content": "Due to cost constraints, three models (MiniMax-M2.5, Kimi-K2.5, GPT-5.2) were evaluated only on a 16-task subset comprising 4 frameworks (aiohttp, Express, FastAPI, Fastify) × 4\n\nconstraint levels (L0-L3), where each framework follows the pipeline: unconstrained → +clean architecture → +postgres → +postgres+ORM.\n\nTo verify that results on this subset are representative of the full 80-task benchmark, we re-evaluated the six full-set configurations (GPT-5-mini, Qwen3-Coder-Next, Qwen3-235BA22B, each with both Mini-SWE-Agent and OpenHands; Devstral-Small excluded due to near-zero scores) on the same 16 tasks and compared against their full-set scores. This yields N = 24 paired observations (6 configurations × 4 constraint levels), where each pair consists of (full-set A%, subset A%) for the same configuration and level.\n\nAssert% scores on the full set and subset correlate at Pearson r = 0.976 ( p < 10 -15 ) and Spearman ρ = 0.948 ( p < 10 -12 ). Critically, cross-model rankings are preserved almost perfectly at every constraint level. The L0 → L3 decay direction is also consistent across all configurations: every configuration that shows performance degradation on the full set also degrades on the subset.\n\nThese results confirm that the 16-task subset reliably preserves both absolute performance rankings and constraint-decay trends, supporting the validity of subset-only evaluatio…"
+      },
+      {
+        "heading": "B LLM-as-Judge Validation",
+        "level": 1,
+        "content": "To assess the reliability of the GPT-5.2 judge used for logic-error sub-categorization (§5.3), we drew a stratified random sample of 50 logic errors from the Qwen3-Coder-Next failure set ( n = 137), preserving population proportions across the six subcategories. A human (one of the authors) independently labeled each entry using the same taxonomy and evidence (last 20 trajectory turns, test-failure summary, server logs), without viewing the judge's label.\n\nTable 7 reports the results. Overall accuracy is 98 % (49/50) with Cohen's κ = 0.975. Four of the six categories achieve perfect precision, recall, and F1. The near-perfect agreement is largely attributable to the rich signal in server logs and test outputs, which make the root cause of most logic errors unambiguous."
+      },
+      {
+        "heading": "C Verifier Functions",
+        "level": 1,
+        "content": "The three verifier functions introduced in §3.3 operate on the unified diff (patch) produced by each agent run. They parse only the added lines of the patch (i.e., the source code the agent actually wrote) and apply static pattern matching to determine structural compliance. No execution or dynamic analysis is performed.\n\nTable 7: Per-category precision, recall, and F1 (%) of the GPT-5.2 judge against human annotations on the 50-sample validation set. Cohen's κ = 0.975; overall accuracy = 98%."
+      },
+      {
+        "heading": "C.1 Architecture Verifier",
+        "level": 1,
+        "content": "This verifier enforces the Clean Architecture constraint through two checks:\n\nLayer presence. The prompt prescribes four layers, each in its own directory: routes/handlers (rank 3), services/use cases (rank 2), repositories/data access (rank 1), and models/entities (rank 0). Agents use diverse naming conventions, so the verifier maps each directory component against a set of aliases (e.g., routes , handlers , routers , views all map to the routes layer). A solution is considered layered if at least 3 of the 4 canonical layers are present as distinct directories.\n\nDependency direction. For every source file classified into a layer, the verifier extracts all import statements (Python import / from . . . import and JavaScript require() / import . . . from ) and resolves each import path to a target layer using the same alias mapping. A dependency violation is recorded when a file in a lower-rank layer imports from a higher-rank layer (e.g., a repository importing from a route handler).\n\nA solution is compliant if and only if both checks pass: sufficient layer presence and no upward dependency violations."
+      },
+      {
+        "heading": "C.2 Database Verifier",
+        "level": 1,
+        "content": "This verifier checks that the agent used the prescribed database engine (SQLite or PostgreSQL) and did not use any alternative. It scans all added source lines (excluding lock files, which list optional peer dependencies for all supported dialects) for two sets of regex evidence patterns:\n\nSQLite evidence. sqlite3 / aiosqlite imports, sqlite:/// connection strings, Django's sqlite3 backend, Node packages ( sqlite3 , better-sqlite3 ), and Sequelize dialect: 'sqlite' .\n\nPostgreSQL evidence. psycopg2 / asyncpg imports, postgresql:// connection strings, SQLAlchemy's PostgreSQL dialect imports, Django's postgresql backend, Node packages ( pg , pg-promise ), Sequelize dialect: 'postgres' , and host references to the Docker service name postgres .\n\nA solution is compliant when at least one evidence pattern for the expected database is found and no evidence of the alternative database is present. A special case handles Django projects that retain the default SQLite backend in settings.py even when PostgreSQL is the active configuration (the second DATABASES assignment overrides the first)."
+      },
+      {
+        "heading": "C.3 ORMVerifier",
+        "level": 1,
+        "content": "This verifier checks for evidence of the prescribed ORM (SQLAlchemy for Python tasks, Sequelize for Node tasks). It scans added lines for:\n\nSQLAlchemy. import sqlalchemy / from sqlalchemy import , or any sqlalchemy mention in dependency files.\n\nSequelize. require('sequelize') / import . . . from 'sequelize' , new Sequelize() constructor calls, or \"sequelize\": entries in package.json .\n\nA solution is compliant if at least one evidence pattern for the expected ORM is found. Unlike the database verifier, the presence of an alternative ORM is not penalized: some agents import utility libraries that happen to reference other ORMs without actually using them for data access."
+      },
+      {
+        "heading": "C.4 Limitations",
+        "level": 1,
+        "content": "All three verifiers are deliberately conservative in their design:\n\nStatic-only. The verifiers analyze source text, not runtime behavior. An agent could satisfy the verifier's patterns while violating constraints at runtime (e.g., importing SQLAlchemy but executing raw SQL). This means false positives are possible, but as discussed in Appendix D, they can only weaken the observed decay signal.\n\nPattern-based. Regex matching cannot capture all possible naming conventions or import patterns. We mitigate this with broad alias sets and case-insensitive matching, and validate empirically that the false-reject rate is ≤ 0.7% (§5.1)."
+      },
+      {
+        "heading": "D Verifier Impact on Reported Metrics",
+        "level": 1,
+        "content": "A potential concern with our evaluation is that the static verifier functions (architecture, database, ORM) could introduce measurement artifacts: false negatives (incorrectly rejecting compliant runs, zeroing their A% contribution) would artificially inflate the constraint-decay signal, while false positives (incorrectly accepting non-compliant runs) would weaken it by allowing structurally incorrect implementations to retain their A% scores.\n\nTo quantify the actual impact, we compute two variants of A%: (i) with verifier enforcement (Table 2), where a run that violates any applicable verifier has its assertion score set to zero before averaging; and (ii) without verifier enforcement, using raw behavioral-test scores regardless of structural compliance. Table 8 reports both variants side-by-side.\n\nFalse negatives. The maximum difference between the two A% variants across all configurations and constraint levels is 2.7 pp (OpenHands + Qwen3-Coder-Next at L3). The average L0 → L3 decay changes from 28 pp (without enforcement) to 29 pp (with enforcement). This near-identity confirms that verifier false negatives have negligible impact: the overwhelming majority of test-passing runs also satisfy all structural constraints, and the few that do not ( ≤ 0.7% of constrained test-passing runs) barely move the aggregate statistics.\n\nFalse positives. If verifiers were to miss genuine con…"
+      },
+      {
+        "heading": "E Generation Task Design",
+        "level": 1,
+        "content": "Each generation task instructs an LLM agent to produce, from scratch, a fully functional REST API server that conforms to the RealWorld (Conduit) OpenAPI specification. Tasks are assembled from a modular prompt template whose blocks are conditionally included depending on the target constraint level."
+      }
+    ]
+  },
+  "summary": {
+    "extractor_method": "docling",
+    "summary_text": "This paper presents a systematic empirical study of LLM agent performance on backend code generation under varying degrees of structural constraints. The researchers evaluated agents on 80 greenfield and 20 feature-implementation tasks across 8 web frameworks using an OpenAPI-based evaluation framework with end-to-end behavioral tests and static verifiers. Key findings identify a \"constraint decay\" phenomenon where agent performance declines substantially as structural requirements accumulate, with capable configurations losing 30 points on average in assertion pass rates. Framework analysis reveals significant disparities: agents perform better on lightweight, explicit frameworks like Flask than on convention-heavy environments like FastAPI and Django. Error analysis identifies data-layer defects, including incorrect query composition and ORM runtime violations, as the primary failure mode. The work highlights that joint satisfaction of functional and structural requirements remains a significant open challenge for coding agents.",
+    "verdict": "plausible",
+    "confidence": 0.82,
+    "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes.",
+    "key_findings": [
+      "Constraint decay phenomenon: capable agents lose approximately 30 points in assertion pass rates when structural requirements accumulate",
+      "Framework sensitivity: agents perform better on explicit frameworks (Flask) than convention-heavy ones (FastAPI, Django)",
+      "Data-layer defects are the leading cause of failures: incorrect query composition and ORM runtime violations",
+      "Systematic evaluation across 80 greenfield plus 20 feature-implementation tasks spanning 8 web frameworks",
+      "OpenAPI-based methodology decouples functional correctness from structural compliance assessment"
+    ],
+    "stats": {
+      "pages": 23,
+      "found_tags": 6,
+      "claim_count": 60,
+      "token_count": 10073,
+      "found_issues": 0,
+      "method_count": 23,
+      "citation_count": 17
+    }
+  },
+  "analysis": {
+    "status": "complete",
+    "confidence": null,
+    "claims": [
+      {
+        "text": "Capable agent configurations lose an average of 30 percentage points in assertion pass rates (A%) from baseline (L0) to fully specified (L3) tasks, representing a relative loss of 40% of baseline performance.",
+        "section_ref": "Abstract",
+        "confidence": 1.0,
+        "provenance": "verbatim",
+        "validity_confidence": 0.85,
+        "validity_basis": "averaged across 8 capable configurations over multiple runs, no CIs reported",
+        "evidence_strength": 0.7,
+        "evidence_basis": "computed average across 8 model-agent configurations with 3 runs per task",
+        "evidence_type": "empirical_result",
+        "scope": 0.6,
+        "corroboration_verdict": "not_found",
+        "corroboration_sources": [
+          "https://news.ycombinator.com/item?id=48256912",
+          "https://arxiv.org/abs/2605.06445"
+        ]
+      },
+      {
+        "text": "Some weaker agent configurations approach zero assertion pass rates under fully specified structural constraints.",
+        "section_ref": "Abstract",
+        "confidence": 0.75,
+        "provenance": "paraphrased",
+        "validity_confidence": 0.85,
+        "validity_basis": "corroborated by Devstral-Small near-zero results in Table 8",
+        "evidence_strength": 0.65,
+        "evidence_basis": "observed across multiple runs, specific model (Devstral-Small) confirmed in results",
+        "evidence_type": "empirical_result",
+        "scope": 0.4,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "LLM agents demonstrate strong performance in autonomous code generation under loose specifications (no structural constraints).",
+        "section_ref": "Abstract",
+        "confidence": 0.6,
+        "provenance": "verbatim",
+        "validity_confidence": 0.9,
+        "validity_basis": "confirmed by L0 results showing above 85% A% for top models",
+        "evidence_strength": 0.65,
+        "evidence_basis": "L0 benchmark results reported for multiple model configurations",
+        "evidence_type": "empirical_result",
+        "scope": 0.55,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Data-layer defects, specifically incorrect query composition and ORM runtime violations, are the leading root causes of agent logic failures, driving approximately 45% of them.",
+        "section_ref": "Abstract",
+        "confidence": 0.85,
+        "provenance": "verbatim",
+        "validity_confidence": 0.85,
+        "validity_basis": "taxonomy validated by LLM judge at Cohen's kappa = 0.975 on 50-sample set",
+        "evidence_strength": 0.7,
+        "evidence_basis": "trajectory analysis with GPT-5.2 judge validated against human labels",
+        "evidence_type": "empirical_result",
+        "scope": 0.45,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Existing benchmarks often overlook non-functional requirements, rewarding functionally correct but structurally arbitrary solutions.",
+        "section_ref": "1 Introduction",
+        "confidence": 0.55,
+        "provenance": "verbatim",
+        "validity_confidence": 0.7,
+        "validity_basis": "supported by related work survey but no direct comparative experiment",
+        "evidence_strength": 0.2,
+        "evidence_basis": "asserted as motivation, related work discussed but no systematic benchmark comparison performed",
+        "evidence_type": "asserted",
+        "scope": 0.65,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The OpenAPI specification format removes specification ambiguity and enables a behavioral test suite applicable to any compliant implementation regardless of language, framework, or internal architecture.",
+        "section_ref": "3 Methodology",
+        "confidence": 0.35,
+        "provenance": "verbatim",
+        "validity_confidence": 0.8,
+        "validity_basis": "standard argument for API-first design, well established in software engineering",
+        "evidence_strength": 0.2,
+        "evidence_basis": "asserted as methodological rationale, no comparative experiment against NL descriptions",
+        "evidence_type": "asserted",
+        "scope": 0.7,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The study fixes a single API contract based on the RealWorld Conduit API, encompassing 19 CRUD operations across five resource groups (articles, comments, users, profiles, and tags).",
+        "section_ref": "3 Methodology",
+        "confidence": 0.2,
+        "provenance": "verbatim",
+        "validity_confidence": 0.95,
+        "validity_basis": "stated as design fact, verifiable from the specification",
+        "evidence_strength": 0.9,
+        "evidence_basis": "directly constructed as part of study design",
+        "evidence_type": "empirical_result",
+        "scope": 0.2,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The study opens-sources 80 greenfield generation tasks and 20 feature-implementation tasks spanning eight web frameworks.",
+        "section_ref": "3 Methodology",
+        "confidence": 0.3,
+        "provenance": "verbatim",
+        "validity_confidence": 0.95,
+        "validity_basis": "stated as a contribution and confirmed by task design description",
+        "evidence_strength": 0.9,
+        "evidence_basis": "directly constructed artifact with repository link provided",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Task success is defined as the intersection of behavioral validity (passing the full test suite) and constraint compliance (satisfying each applicable static verifier).",
+        "section_ref": "3 Methodology",
+        "confidence": 0.2,
+        "provenance": "verbatim",
+        "validity_confidence": 0.95,
+        "validity_basis": "definitional claim set by the authors",
+        "evidence_strength": 0.9,
+        "evidence_basis": "follows directly from study design definition",
+        "evidence_type": "asserted",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "A% scores on the 16-task representative subset correlate with full 80-task results at Pearson r = 0.98 and Spearman rho = 0.95 (p < 10^-12, N = 24), validating the subset evaluation strategy.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.45,
+        "provenance": "verbatim",
+        "validity_confidence": 0.88,
+        "validity_basis": "statistical correlation computed on 24 paired observations with high significance",
+        "evidence_strength": 0.85,
+        "evidence_basis": "correlation computed across 6 model-agent configs times 4 constraint levels with formal statistics",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The worst-case configuration, OpenHands plus Qwen3-Coder-Next, loses 45 percentage points from L0 to L3, equivalent to 62% of its baseline score.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.7,
+        "provenance": "verbatim",
+        "validity_confidence": 0.85,
+        "validity_basis": "directly reported benchmark numbers",
+        "evidence_strength": 0.65,
+        "evidence_basis": "3 independent runs per task for this configuration",
+        "evidence_type": "empirical_result",
+        "scope": 0.2,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The most resilient configuration, OpenHands plus MiniMax-M2.5, drops only 17 percentage points from L0 to L3.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.65,
+        "provenance": "verbatim",
+        "validity_confidence": 0.82,
+        "validity_basis": "directly reported result on 16-task subset",
+        "evidence_strength": 0.6,
+        "evidence_basis": "measured on 16-task subset with 3 runs per task",
+        "evidence_type": "empirical_result",
+        "scope": 0.2,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Even the strongest L3 configuration (OpenHands plus MiniMax-M2.5) reaches 78.6% A% but only 8.3% pass@1, illustrating a consistently large gap between the two metrics.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.72,
+        "provenance": "verbatim",
+        "validity_confidence": 0.85,
+        "validity_basis": "directly reported numeric results",
+        "evidence_strength": 0.65,
+        "evidence_basis": "single configuration benchmark number on 16-task subset",
+        "evidence_type": "empirical_result",
+        "scope": 0.25,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The large and consistent gap between A% and pass@1 underscores that LLM agents still lack the cross-file consistency and constraint adherence needed for deployment without manual intervention.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.78,
+        "provenance": "verbatim",
+        "validity_confidence": 0.8,
+        "validity_basis": "interpretive conclusion supported by consistent pattern across all configurations",
+        "evidence_strength": 0.65,
+        "evidence_basis": "observed across all model-agent configurations in Table 2",
+        "evidence_type": "empirical_result",
+        "scope": 0.6,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Specifying a database engine is by far the most impactful single constraint on A%, as determined by matched-pair analysis.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.85,
+        "provenance": "verbatim",
+        "validity_confidence": 0.8,
+        "validity_basis": "matched-pair design isolates this effect from other constraints",
+        "evidence_strength": 0.7,
+        "evidence_basis": "matched-pair analysis reported in Table 3a across all model-agent configurations",
+        "evidence_type": "empirical_result",
+        "scope": 0.45,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Clean architecture imposes a significant performance penalty consistent with the overhead of enforcing layered separation, as shown by matched-pair analysis.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.65,
+        "provenance": "verbatim",
+        "validity_confidence": 0.78,
+        "validity_basis": "matched-pair result, causal mechanism is interpretive",
+        "evidence_strength": 0.65,
+        "evidence_basis": "matched-pair design in Table 3a isolating the architecture constraint",
+        "evidence_type": "empirical_result",
+        "scope": 0.4,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The ORM constraint has a smaller marginal effect on A% compared to database or architecture constraints, and for GPT-5.2 the ORM constraint even reduces ambiguity by making the intended data-access pattern more explicit.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.55,
+        "provenance": "verbatim",
+        "validity_confidence": 0.72,
+        "validity_basis": "matched-pair result; GPT-5.2 positive effect may reflect a single-model artifact",
+        "evidence_strength": 0.6,
+        "evidence_basis": "matched-pair analysis in Table 3a, GPT-5.2 result from one model on subset",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The underlying difficulty of correctly interfacing with the data layer is high regardless of whether an ORM constraint is active, manifesting as ORM runtime errors with the ORM constraint and as raw SQL errors without it.",
+        "section_ref": "5.3 RQ3: Root Causes of Failure",
+        "confidence": 0.6,
+        "provenance": "verbatim",
+        "validity_confidence": 0.72,
+        "validity_basis": "qualitative interpretation reconciling matched-pair and taxonomy results",
+        "evidence_strength": 0.4,
+        "evidence_basis": "inferred from joint reading of Table 3a and Table 5, not directly measured",
+        "evidence_type": "asserted",
+        "scope": 0.45,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The constraint-decay signal is driven by genuine functional failures rather than verifier artifacts: the two A% variants (with and without verifier enforcement) differ by at most 2.7 percentage points on any single configuration.",
+        "section_ref": "D Verifier Impact on Reported Metrics",
+        "confidence": 0.4,
+        "provenance": "verbatim",
+        "validity_confidence": 0.9,
+        "validity_basis": "computed by systematic comparison of two evaluation variants",
+        "evidence_strength": 0.85,
+        "evidence_basis": "full side-by-side comparison of A% with and without enforcement reported in Table 8",
+        "evidence_type": "empirical_result",
+        "scope": 0.35,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "The average L0-to-L3 A% decay changes from 28 pp (without verifier enforcement) to 29 pp (with enforcement), confirming verifier false negatives have negligible impact on the reported signal.",
+        "section_ref": "D Verifier Impact on Reported Metrics",
+        "confidence": 0.38,
+        "provenance": "verbatim",
+        "validity_confidence": 0.9,
+        "validity_basis": "directly computed from two evaluation variants",
+        "evidence_strength": 0.85,
+        "evidence_basis": "systematic comparison across all configurations in Table 8",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Feature implementation tasks confirm low performance persisting when agents must infer and respect constraints from an existing codebase: only GPT-5.2 exceeds 50% pass@1.",
+        "section_ref": "5.1 RQ1: Effect of Constraint Accumulation",
+        "confidence": 0.72,
+        "provenance": "verbatim",
+        "validity_confidence": 0.8,
+        "validity_basis": "directly reported in Table 3b, though structural constraints cannot be fully isolated in this setting",
+        "evidence_strength": 0.6,
+        "evidence_basis": "20 feature tasks across community repositories, acknowledged confound that constraints are not the sole source of difficulty",
+        "evidence_type": "empirical_result",
+        "scope": 0.45,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Express, Koa, and Flask form a clear top-tier of frameworks with average A% of 51.4%, 50.7%, and 49.3% respectively, all sharing a minimal and explicit API surface.",
+        "section_ref": "5.2 RQ2: Framework Sensitivity",
+        "confidence": 0.75,
+        "provenance": "verbatim",
+        "validity_confidence": 0.82,
+        "validity_basis": "reported in Table 4 aggregated across constraint levels and models",
+        "evidence_strength": 0.65,
+        "evidence_basis": "aggregated across constraint levels for 3 models with 2 scaffolds, no CIs",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Framework choice is a major sensitivity axis: lightweight frameworks achieve approximately 50% average A%, while convention-heavy frameworks trail by 25 to 32 percentage points.",
+        "section_ref": "5.2 RQ2: Framework Sensitivity",
+        "confidence": 0.85,
+        "provenance": "verbatim",
+        "validity_confidence": 0.82,
+        "validity_basis": "computed from Table 4 comparisons across multiple models",
+        "evidence_strength": 0.65,
+        "evidence_basis": "framework comparison aggregated across constraint levels for multiple configurations, no CIs",
+        "evidence_type": "empirical_result",
+        "scope": 0.45,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Django and FastAPI are penalized by implicit configuration: Django's convention-driven structure and auto-discovery, and FastAPI's type-hint-driven validation, both reduce agent A% relative to minimal frameworks.",
+        "section_ref": "5.2 RQ2: Framework Sensitivity",
+        "confidence": 0.7,
+        "provenance": "verbatim",
+        "validity_confidence": 0.72,
+        "validity_basis": "observed performance gap is real; attribution to specific mechanisms is interpretive",
+        "evidence_strength": 0.55,
+        "evidence_basis": "observed lower performance, mechanism attributed qualitatively without controlled ablation",
+        "evidence_type": "empirical_result",
+        "scope": 0.35,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      }
+    ],
+    "methods": [
+      {
+        "name": "Constraint Decay Evaluation Pipeline",
+        "description": "This paper introduces an evaluation methodology that holds a fixed OpenAPI specification constant while systematically varying structural constraints (architecture, database, ORM) across backend generation tasks, using dual evaluation with end-to-end behavioral tests and static verifiers to isolate the effect of structural complexity."
+      },
+      {
+        "name": "Architecture Verifier",
+        "description": "This paper introduces a static verifier that enforces the Clean Architecture constraint by checking for the presence of at least three of four canonical layer directories and detecting upward dependency violations via import statement analysis across Python and JavaScript source files."
+      },
+      {
+        "name": "Database Verifier",
+        "description": "This paper introduces a static verifier that scans source lines using regex patterns to confirm the prescribed database engine (SQLite or PostgreSQL) is used and no alternative engine is present, excluding lock files from the scan."
+      },
+      {
+        "name": "ORM Verifier",
+        "description": "This paper introduces a static verifier that detects whether the designated ORM (SQLAlchemy for Python or Sequelize for Node.js) is used rather than raw SQL, by scanning source files for ORM-specific import patterns and constructor calls."
+      },
+      {
+        "name": "Behavioral Test Suite",
+        "description": "This paper introduces a unified stateful HTTP behavioral test suite comprising 32 requests covering 19 API endpoints and 291 assertions, implemented as a Postman collection executed via Newman to evaluate all implementations against the RealWorld Conduit OpenAPI specification regardless of internal code structure."
+      },
+      {
+        "name": "Assert% (A%) Metric",
+        "description": "This paper introduces the Assert% metric, defined as the mean fraction of behavioral test assertions passed across all runs of a given configuration, used as the primary evaluation axis because it captures partial progress more stably than the all-or-nothing pass@1."
+      },
+      {
+        "name": "Codebase Ablation",
+        "description": "This paper introduces a method for constructing feature implementation tasks by applying git diff patches to remove entire feature verticals (routes, controllers, services, data-access code, and model definitions) from open-source RealWorld repositories, producing tasks that require an agent to re-implement the missing functionality."
+      },
+      {
+        "name": "Mini-SWE-Agent",
+        "description": "This paper uses Mini-SWE-Agent from prior work (SWE-agent Team, 2025) as one of two agent scaffolds: a minimal approximately 100-line Python scaffold interacting with the environment exclusively through bash commands, with a re-aligned system prompt injected to steer it toward a generative pipeline."
+      },
+      {
+        "name": "OpenHands",
+        "description": "This paper uses OpenHands from prior work (Wang et al., 2025) as one of two agent scaffolds: a full-featured agent framework providing dedicated tools for file editing, terminal execution, code search, and task tracking, with a custom termination criterion introduced to enforce complete evaluation trajectories."
+      },
+      {
+        "name": "Clean Architecture",
+        "description": "This paper uses the Clean Architecture pattern (Martin, 2017) from prior work as one of three structural constraint dimensions, requiring code to be organized into four layers (routes/handlers, services/use cases, models/entities, repository/data access) with strict top-down dependency direction."
+      },
+      {
+        "name": "OpenAPI 3.0",
+        "description": "This paper uses the OpenAPI 3.0 specification format from prior work as the standardized machine-readable functional requirement for all tasks, enabling unambiguous endpoint definitions and framework-agnostic behavioral test generation."
+      },
+      {
+        "name": "Behavior-Driven Development (BDD)",
+        "description": "This paper uses Behavior-Driven Development (North et al., 2006) from prior work as the methodological inspiration for its evaluation approach, applying the principle of holding functional specifications constant while varying non-functional requirements and testing against behavioral contracts rather than implementation details."
+      }
+    ],
+    "novelty": {
+      "score": 0.63,
+      "reasoning": "The paper explicitly names a gap not addressed by prior work: no existing benchmark systematically layers non-functional structural constraints (framework, architecture, database, ORM) to measure their cumulative effect on LLM agent performance. The closest prior work, Vero et al. (2024), uses OpenAPI specs but targets single-file direct prompting rather than multi-file agentic generation with no constraint layering. SWEBench and its extensions address issue resolution in existing codebases, not greenfield constrained generation. The named phenomenon of 'constraint decay' (a 30-point average A% drop from L0 to L3) and the framework sensitivity axis (25-32 pp gap between lightweight and convention-heavy frameworks) are empirically grounded and non-obvious. However, the contribution is fundamentally an evaluation and benchmarking study built on existing agent scaffolds (Mini-SWE-Agent, OpenHands) and an existing API spec (RealWorld Conduit), and the core methodology of using OpenAPI specs plus behavioral tests is borrowed from Vero et al. - the novelty lies in the constraint-layering design and the resulting empirical findings rather than in a new technique or algorithm."
+    },
+    "reproducibility": {
+      "score": 0.52,
+      "reasoning": "The paper describes its methodology in substantial detail: verifier logic is specified in appendices C.1-C.3 (regex patterns, import analysis, directory checks), the behavioral test suite is a concrete Postman/Newman collection with 32 requests and 291 assertions against a public OpenAPI spec, prompt templates are in appendix E, and the execution pipeline has step-by-step walkthroughs in appendix I. The agent scaffolds (OpenHands, Mini-SWE-Agent) are both from prior public work, and the benchmark tasks are claimed to be open-sourced. However, HAS_CODE is False with no repository URL confirmed, several evaluated models are frontier API models (GPT-5.2, MiniMax-M2.5, Kimi-K2.5) that require proprietary access, and critical operational details such as random seeds for the k=3 sampling, hardware specifications, and dependency/container versions are absent. An engineer could reimplement the evaluation framework from the appendix descriptions with moderate effort, placing this squarely in the partial-reproduction band.",
+      "missing": [
+        "Public GitHub repository URL containing evaluation code, verifier implementations, and the Postman collection",
+        "Random seeds used for the k=3 independent sampling runs underlying pass@1 estimates",
+        "Hardware and infrastructure specifications (GPU type, count, memory) for the agent execution environment",
+        "Exact API version identifiers and endpoint configurations for closed models (GPT-5.2, MiniMax-M2.5, Kimi-K2.5)",
+        "Dependency versions or container image for the execution environment (Python version, Newman version, ORM library versions)",
+        "Confirmed public URL for the 80 greenfield and 20 feature-implementation task artifacts"
+      ]
+    },
+    "trustworthiness": {
+      "score": 0.94,
+      "base": 0.5,
+      "reasons": [
+        {
+          "label": "primary research artifact (paper/PDF source)",
+          "delta": 0.1,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "well-cited bibliography (27 extracted citations)",
+          "delta": 0.05,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "most claims rest on empirical results or proofs (36/43)",
+          "delta": 0.1,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "Paolo Papotti - verified EURECOM professor with top-venue LLM and data management publications",
+          "delta": 0.07,
+          "kind": "reputation",
+          "evidence": "EURECOM Data Science professor with SIGMOD 2025 and NAACL 2025 papers on LLM query execution and data analysis; established track record in an area closely adjacent to this paper's scope",
+          "url": "https://papotti.eurecom.io/"
+        },
+        {
+          "label": "independent sources supported the claim: 'The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend,'",
+          "delta": 0.05,
+          "kind": "corroboration",
+          "evidence": "The paper HTML confirms all four constraint dimensions exactly as claimed: web framework, architectural pattern, database backend (PostgreSQL or SQLite), and ORM integration (SQLAlchemy or Sequelize). This is a methodological design claim for which the paper text is the authoritative and only applicable source.",
+          "url": "https://arxiv.org/html/2605.06445v1"
+        },
+        {
+          "label": "independent sources supported the claim: 'The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct d'",
+          "delta": 0.05,
+          "kind": "corroboration",
+          "evidence": "The paper text contains the verbatim statement: 'A solution is considered layered if at least 3 of the 4 canonical layers are present as distinct directories,' confirming the claimed 3-of-4 threshold precisely. No external corroboration is applicable for an internal verifier design choice.",
+          "url": "https://arxiv.org/html/2605.06445v1"
+        },
+        {
+          "label": "Mixed-pragmatic: practitioners validate the phenomenon qualitatively, minority skeptical of generalizability",
+          "delta": 0.02,
+          "kind": "corroboration",
+          "evidence": "Roughly 40% of HN comments are supportive or pragmatically validating (practitioners report similar degradation from their own experience), 30% are skeptical about scope or cost constraints on frontier model testing, with no accusations of fabrication or fundamental methodological flaws",
+          "url": "https://news.ycombinator.com/item?id=48256912"
+        }
+      ],
+      "claim_corroborations": [
+        {
+          "claim_text": "Capable agent configurations lose an average of 30 percentage points in assertion pass rates (A%) from baseline (L0) to fully specified (L3) tasks, representing a relative loss of 40% of baseline performance.",
+          "verdict": "not_found",
+          "sources": [
+            "https://news.ycombinator.com/item?id=48256912",
+            "https://arxiv.org/abs/2605.06445"
+          ],
+          "note": "No independent replication study reports the specific 30pp or 40% relative drop. HN practitioners broadly corroborate that constraint accumulation degrades agent performance from personal experience, but none report the same numeric result. The figure is internally consistent across the paper abstract and HTML full text, but the paper is a new preprint (May 2026) with no external study yet reproducing it."
+        },
+        {
+          "claim_text": "The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend, and ORM integration.",
+          "verdict": "supported",
+          "sources": [
+            "https://arxiv.org/html/2605.06445v1"
+          ],
+          "note": "The paper HTML confirms all four constraint dimensions exactly as claimed: web framework, architectural pattern, database backend (PostgreSQL or SQLite), and ORM integration (SQLAlchemy or Sequelize). This is a methodological design claim for which the paper text is the authoritative and only applicable source."
+        },
+        {
+          "claim_text": "The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct directories, not all 4.",
+          "verdict": "supported",
+          "sources": [
+            "https://arxiv.org/html/2605.06445v1"
+          ],
+          "note": "The paper text contains the verbatim statement: 'A solution is considered layered if at least 3 of the 4 canonical layers are present as distinct directories,' confirming the claimed 3-of-4 threshold precisely. No external corroboration is applicable for an internal verifier design choice."
+        }
+      ],
+      "web_status": "ok",
+      "summary": "The paper comes from a credible research group led by Paolo Papotti, a verified EURECOM professor with recent peer-reviewed publications at SIGMOD and NAACL in directly adjacent LLM and data management research. The two methodological claims (four constraint dimensions and the 3-of-4 layer threshold for the architecture verifier) are confirmed verbatim in the paper text. The headline quantitative finding of a 30-percentage-point drop has no independent numeric corroboration yet, which is expected for a preprint from May 2026, but the qualitative constraint decay phenomenon is broadly validated by practitioner commentary on Hacker News."
+    },
+    "tool_stack": {
+      "requirements": [
+        {
+          "name": "docker",
+          "category": "infra",
+          "alternatives": [
+            "podman"
+          ],
+          "rationale": "Containerizes each agent-generated backend and the PostgreSQL service for isolated, reproducible test execution. OpenHands also runs its agent loop inside Docker.",
+          "confidence": 0.98,
+          "provenance": "stated",
+          "url": "https://www.docker.com/"
+        },
+        {
+          "name": "postgresql",
+          "category": "data-source",
+          "alternatives": [
+            "sqlite",
+            "mysql"
+          ],
+          "rationale": "The database constraint (L2/L3 tasks) specifies PostgreSQL 16 as the required engine. The database static verifier checks generated code for correct PostgreSQL driver and connection usage.",
+          "confidence": 0.97,
+          "provenance": "stated",
+          "url": "https://www.postgresql.org/"
+        },
+        {
+          "name": "newman",
+          "category": "other",
+          "alternatives": [],
+          "rationale": "CLI runner for the Postman collection implementing the RealWorld Conduit behavioral test suite. Produces the assertion pass-rate (A%) scores central to all reported results.",
+          "confidence": 0.96,
+          "provenance": "stated",
+          "url": "https://www.npmjs.com/package/newman"
+        },
+        {
+          "name": "nodejs",
+          "category": "infra",
+          "alternatives": [
+            "bun"
+          ],
+          "rationale": "Runtime required for Newman and for JS-based target frameworks such as Hono and Sequelize that generated backends may use. The paper specifies Node.js 20.",
+          "confidence": 0.94,
+          "provenance": "stated",
+          "url": "https://nodejs.org/"
+        },
+        {
+          "name": "openai",
+          "category": "library",
+          "alternatives": [
+            "litellm"
+          ],
+          "rationale": "Python client for calling GPT models used as coding agents and as the LLM-as-Judge evaluator. litellm can serve as a unified proxy to also reach the MiniMax and Qwen endpoints evaluated in the paper.",
+          "confidence": 0.93,
+          "provenance": "stated",
+          "url": "https://pypi.org/project/openai/"
+        },
+        {
+          "name": "openhands",
+          "category": "library",
+          "alternatives": [],
+          "rationale": "Primary coding-agent framework evaluated in the paper; drives multi-file backend generation across all constraint levels and all eight framework targets.",
+          "confidence": 0.92,
+          "provenance": "stated",
+          "url": "https://pypi.org/project/openhands-ai/"
+        },
+        {
+          "name": "swe-agent",
+          "category": "library",
+          "alternatives": [],
+          "rationale": "Basis for the Mini-SWE-Agent configuration, the second agent evaluated in the paper. Required to reproduce the weaker-configuration results and constraint-decay comparisons.",
+          "confidence": 0.85,
+          "provenance": "stated",
+          "url": "https://pypi.org/project/swe-agent/"
+        },
+        {
+          "name": "sqlalchemy",
+          "category": "library",
+          "alternatives": [
+            "tortoise-orm",
+            "peewee"
+          ],
+          "rationale": "The ORM constraint (L3 tasks) targets SQLAlchemy; the ORM static verifier checks generated Python backends for correct model definitions and query composition.",
+          "confidence": 0.87,
+          "provenance": "stated",
+          "url": "https://pypi.org/project/SQLAlchemy/"
+        },
+        {
+          "name": "flask",
+          "category": "library",
+          "alternatives": [
+            "fastapi",
+            "django"
+          ],
+          "rationale": "One of the eight target web frameworks; the paper singles out Flask as a minimal, explicit framework where agents succeed most. FastAPI and Django (convention-heavy) are also required for the full benchmark suite and the framework-sensitivity analysis.",
+          "confidence": 0.86,
+          "provenance": "stated",
+          "url": "https://pypi.org/project/Flask/"
+        },
+        {
+          "name": "scipy",
+          "category": "scientific-computing",
+          "alternatives": [
+            "pingouin"
+          ],
+          "rationale": "Provides Pearson r and Spearman rho correlation functions used to validate the 16-task subset against the full 80-task results, and the matched-pair statistical tests for per-constraint effect sizing.",
+          "confidence": 0.85,
+          "provenance": "inferred",
+          "url": "https://pypi.org/project/scipy/"
+        },
+        {
+          "name": "pandas",
+          "category": "dataframe",
+          "alternatives": [
+            "polars"
+          ],
+          "rationale": "Aggregates per-task evaluation results (A%, pass@1, verifier outcomes) across agent configurations, framework targets, and constraint levels for analysis and figure generation.",
+          "confidence": 0.8,
+          "provenance": "inferred",
+          "url": "https://pypi.org/project/pandas/"
+        },
+        {
+          "name": "git",
+          "category": "infra",
+          "alternatives": [],
+          "rationale": "Used in the codebase-ablation method to snapshot and diff generated multi-file repositories across constraint levels, enabling isolated comparison of individual constraint effects.",
+          "confidence": 0.78,
+          "provenance": "stated",
+          "url": "https://git-scm.com/"
+        }
+      ],
+      "context_adjusted": null,
+      "not_applicable": null
+    },
+    "claim_total": 43,
+    "method_total": 35
+  },
+  "citations": [
+    {
+      "kind": "book",
+      "raw_text": "Wei Li, Xin Zhang, Zhongxin Guo, Shaoguang Mao, Wen Luo, Guangyue Peng, Yangyu Huang, Houfeng Wang, and Scarlett Li. FEA-bench: A benchmark for evaluating repository-level code generation for feature implementation. In Wanxiang Che, Joyce Nabende, Ekaterina Shutova, and Mohammad Taher Pilehvar (eds.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "web",
+      "raw_text": "Qwen Team. Qwen3.5: Accelerating productivity with native multimodal agents, February 2026. URL https://qwen.ai/blog?id=qwen3.5 .",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Jane Luo, Xin Zhang, Steven Liu, Jie Wu, Yiming Huang, Yangyu Huang, Chengyu Yin, Ying Xin, Jianfeng Liu, Yuefeng Zhan, Hao Sun, Qi Chen, Scarlett Li, and Mao Yang. RPG: A repository planning graph for unified and scalable codebase generation. In The Fourteenth International Conference on Learning R",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Mark Vero, Niels M¨ undler, Victor Chibotaru, Veselin Raychev, Maximilian Baader, Nikola Jovanovi´ c, Jingxuan He, and Martin Vechev. Baxbench: Can llms generate correct and secure backends? In ICLR 2025 Third Workshop on Deep Learning for Code , 2024.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Abhinav Rastogi, Adam Yang, Albert Q. Jiang, Alexander H. Liu, Alexandre Sablayrolles, Am´ elie H´ eliou, Am´ elie Martin, Anmol Agarwal, Andy Ehrenberg, Andy Lo, Antoine Roux, Arthur Darcet, Arthur Mensch, Baptiste Bout, Baptiste Rozi` ere, Baudouin De Monicault, Chris Bamford, Christian Wallenwein",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Luo et al. (2026)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Seo et al. (2026)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Zhao et al. (2025)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Ding et al. (2025)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Vero et al. (2024)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "web",
+      "raw_text": "Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik R Narasimhan. SWE-bench: Can language models resolve real-world github issues? In The Twelfth International Conference on Learning Representations , 2024. URL https://openreview.net/forum?id=VTF8yNQM66 .",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Xiang Deng, Jeff Da, Edwin Pan, Yannis Yiming He, Charles Ide, Kanak Garg, Niklas Lauffer, Andrew Park, Nitin Pasari, Chetan Rane, et al. Swe-bench pro: Can ai agents solve long-horizon software engineering tasks? arXiv preprint arXiv:2509.16941 , 2025.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Haorui Chen, Chengze Li, and Jia Li. Featbench: Evaluating coding agents on feature implementation for vibe coding. arXiv preprint arXiv:2509.22237 , 2025.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Tianyang Liu, Canwen Xu, and Julian McAuley. Repobench: Benchmarking repositorylevel code auto-completion systems. In The Twelfth International Conference on Learning Representations , 2024.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Xie et al. (2025)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "web",
+      "raw_text": "Carlos E Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, and Karthik R Narasimhan. SWE-bench: Can language models resolve real-world github issues? In The Twelfth International Conference on Learning Representations , 2024. URL https://openreview.net/forum?id=VTF8yNQM66 .",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Xia et al. (2024)",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Dan North et al. Introducing bdd. Better Software , 12(7), 2006.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "book",
+      "raw_text": "Robert C. Martin. Clean Architecture: A Craftsman's Guide to Software Structure and Design . Prentice Hall Press, USA, 1st edition, 2017. ISBN 0134494164.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    },
+    {
+      "kind": "paper",
+      "raw_text": "Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde De Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brockman, et al. Evaluating large language models trained on code. arXiv preprint arXiv:2107.03374 , 2021.",
+      "resolved_title": null,
+      "resolved_year": null,
+      "doi": null,
+      "canonical_url": null
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "section:constraint-decay-the-fragility-of-llm-agents-in-backend-code-generation",
+        "type": "section",
+        "label": "Constraint decay: The Fragility of LLM Agents in Backend Code Generation",
+        "summary": "Francesco Dente ∗ EURECOM, France\n\nfrancesco.dente@eurecom.fr Dario Satriani* University of Basilicata, Italy dario.satriani@unibas.it"
+      },
+      {
+        "id": "section:abstract",
+        "type": "section",
+        "label": "Abstract",
+        "summary": "Large Language Model (LLM) agents demonstrate strong performance in autonomous code generation under loose specifications. However, production-grade software requires strict adherence to structural constraints, such as architectural patterns, databases, and object-relational mapp…"
+      },
+      {
+        "id": "section:1-introduction",
+        "type": "section",
+        "label": "1 Introduction",
+        "summary": "The landscape of software engineering is undergoing a fundamental shift, driven by the increasing use of Large Language Model (LLM) agents capable of autonomously generating code (Wang et al., 2025; SWE-agent Team, 2025; Yang et al., 2024). These agents have demonstrated remarkab…"
+      },
+      {
+        "id": "section:2-related-work",
+        "type": "section",
+        "label": "2 Related Work",
+        "summary": "Greenfield app generation. Recent benchmarks have begun to evaluate LLM agents on generating entire apps from scratch, yet none adequately captures the challenges of constrained multi-file, repository-level backend development. Luo et al. (2026) measure output against existing te…"
+      },
+      {
+        "id": "section:3-methodology",
+        "type": "section",
+        "label": "3 Methodology",
+        "summary": "To isolate and evaluate the impact of structural constraints on code generation, we propose an evaluation methodology inspired by Behavior-Driven Development (North et al., 2006). The principle of our approach is to hold the functional specification constant while systematically…"
+      },
+      {
+        "id": "section:3-1-generation-task-design",
+        "type": "section",
+        "label": "3.1 Generation Task Design",
+        "summary": "We define a greenfield generation task : given a comprehensive NL description of a target service, an LLM agent must synthesize a complete, specification-compliant REST API from scratch, i.e., from an empty repository. To execute this task, the agent is provided with an input pro…"
+      },
+      {
+        "id": "section:3-2-constraint-dimensions",
+        "type": "section",
+        "label": "3.2 Constraint Dimensions",
+        "summary": "To systematically evaluate the effect of constraints, we define three orthogonal nonfunctional axes, which can be either included in or omitted from the code specification.\n\nArchitectural pattern . The code architecture is fixed: it must be organized following the Clean Architect…"
+      },
+      {
+        "id": "section:3-3-evaluation-pipeline",
+        "type": "section",
+        "label": "3.3 Evaluation Pipeline",
+        "summary": "To guarantee reproducibility and preclude state contamination, each task is executed in an isolated Docker environment following a build and evaluate pipeline. In the build phase, the agent operates within a first container, where it can code, build, and start the server. Next, i…"
+      },
+      {
+        "id": "section:4-experimental-setup",
+        "type": "section",
+        "label": "4 Experimental Setup",
+        "summary": "Metrics. We define our primary evaluation axes as follows. Assert% (A%): the mean fraction of behavioral test assertions passed across all runs of a given configuration. It captures partial progress, distinguishing configurations that slightly miss full compliance from largely no…"
+      },
+      {
+        "id": "section:5-results",
+        "type": "section",
+        "label": "5 Results",
+        "summary": "We organize the analysis around three research questions. RQ1. How does the accumulation of structural constraints affect LLM agent performance (§5.1)? RQ2. Does the choice of web framework significantly influence agent success under the same API contract (§5.2)? RQ3. What are th…"
+      },
+      {
+        "id": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "type": "section",
+        "label": "5.1 RQ1: Effect of Constraint Accumulation",
+        "summary": "Table 2 summarizes the main results. Each cell reports assertion pass rate A% and pass@1 (%), computed per-task and averaged across tasks. Three models (MiniMax-M2.5, Kimi-K2.5, GPT-5.2) were evaluated on the 16-task subset due to cost constraints. To validate this choice, we re-…"
+      },
+      {
+        "id": "section:5-2-rq2-framework-sensitivity",
+        "type": "section",
+        "label": "5.2 RQ2: Framework Sensitivity",
+        "summary": "Since framework is the one constraint present at every level, a natural question is how much the choice of framework matters. All eight frameworks implement the same API contract and share the same test suite, enabling a controlled comparison. Table 4 reports A% by framework for…"
+      },
+      {
+        "id": "section:5-3-rq3-root-causes-of-failure",
+        "type": "section",
+        "label": "5.3 RQ3: Root Causes of Failure",
+        "summary": "We perform a failure analysis on unsuccessful runs for Qwen3-Coder-Next (194/240 failed, full 80-task set) and MiniMax-M2.5 (28/48 failed, 16-task subset), both with Mini-SWEAgent. Following established approaches (Deng et al., 2025), we use GPT-5.2 (temperature\n\nTable 5: Failure…"
+      },
+      {
+        "id": "section:6-conclusion",
+        "type": "section",
+        "label": "6 Conclusion",
+        "summary": "Our systematic study exposes a phenomenon of constraint decay in LLM-based coding agents. While current models excel at unconstrained generation, their performance drops when forced to navigate explicit architectural rules. For end-users, this dichotomy implies that agents are re…"
+      },
+      {
+        "id": "section:references",
+        "type": "section",
+        "label": "References",
+        "summary": "Ruisheng Cao, Mouxiang Chen, Jiawei Chen, Zeyu Cui, Yunlong Feng, Binyuan Hui, Yuheng Jing, Kaixin Li, Mingze Li, Junyang Lin, Zeyao Ma, Kashun Shum, Xuwu Wang, Jinxi Wei, Jiaxi Yang, Jiajun Zhang, Lei Zhang, Zongmeng Zhang, Wenting Zhao, and Fan Zhou. Qwen3-coder-next technical…"
+      },
+      {
+        "id": "section:appendix",
+        "type": "section",
+        "label": "APPENDIX",
+        "summary": null
+      },
+      {
+        "id": "section:a-subset-representativeness",
+        "type": "section",
+        "label": "A Subset Representativeness",
+        "summary": "Due to cost constraints, three models (MiniMax-M2.5, Kimi-K2.5, GPT-5.2) were evaluated only on a 16-task subset comprising 4 frameworks (aiohttp, Express, FastAPI, Fastify) × 4\n\nconstraint levels (L0-L3), where each framework follows the pipeline: unconstrained → +clean architec…"
+      },
+      {
+        "id": "section:b-llm-as-judge-validation",
+        "type": "section",
+        "label": "B LLM-as-Judge Validation",
+        "summary": "To assess the reliability of the GPT-5.2 judge used for logic-error sub-categorization (§5.3), we drew a stratified random sample of 50 logic errors from the Qwen3-Coder-Next failure set ( n = 137), preserving population proportions across the six subcategories. A human (one of t…"
+      },
+      {
+        "id": "section:c-verifier-functions",
+        "type": "section",
+        "label": "C Verifier Functions",
+        "summary": "The three verifier functions introduced in §3.3 operate on the unified diff (patch) produced by each agent run. They parse only the added lines of the patch (i.e., the source code the agent actually wrote) and apply static pattern matching to determine structural compliance. No e…"
+      },
+      {
+        "id": "section:c-1-architecture-verifier",
+        "type": "section",
+        "label": "C.1 Architecture Verifier",
+        "summary": "This verifier enforces the Clean Architecture constraint through two checks:\n\nLayer presence. The prompt prescribes four layers, each in its own directory: routes/handlers (rank 3), services/use cases (rank 2), repositories/data access (rank 1), and models/entities (rank 0). Agen…"
+      },
+      {
+        "id": "section:c-2-database-verifier",
+        "type": "section",
+        "label": "C.2 Database Verifier",
+        "summary": "This verifier checks that the agent used the prescribed database engine (SQLite or PostgreSQL) and did not use any alternative. It scans all added source lines (excluding lock files, which list optional peer dependencies for all supported dialects) for two sets of regex evidence…"
+      },
+      {
+        "id": "section:c-3-ormverifier",
+        "type": "section",
+        "label": "C.3 ORMVerifier",
+        "summary": "This verifier checks for evidence of the prescribed ORM (SQLAlchemy for Python tasks, Sequelize for Node tasks). It scans added lines for:\n\nSQLAlchemy. import sqlalchemy / from sqlalchemy import , or any sqlalchemy mention in dependency files.\n\nSequelize. require('sequelize') / i…"
+      },
+      {
+        "id": "section:c-4-limitations",
+        "type": "section",
+        "label": "C.4 Limitations",
+        "summary": "All three verifiers are deliberately conservative in their design:\n\nStatic-only. The verifiers analyze source text, not runtime behavior. An agent could satisfy the verifier's patterns while violating constraints at runtime (e.g., importing SQLAlchemy but executing raw SQL). This…"
+      },
+      {
+        "id": "section:d-verifier-impact-on-reported-metrics",
+        "type": "section",
+        "label": "D Verifier Impact on Reported Metrics",
+        "summary": "A potential concern with our evaluation is that the static verifier functions (architecture, database, ORM) could introduce measurement artifacts: false negatives (incorrectly rejecting compliant runs, zeroing their A% contribution) would artificially inflate the constraint-decay…"
+      },
+      {
+        "id": "section:e-generation-task-design",
+        "type": "section",
+        "label": "E Generation Task Design",
+        "summary": "Each generation task instructs an LLM agent to produce, from scratch, a fully functional REST API server that conforms to the RealWorld (Conduit) OpenAPI specification. Tasks are assembled from a modular prompt template whose blocks are conditionally included depending on the tar…"
+      },
+      {
+        "id": "section:e-1-prompt-template",
+        "type": "section",
+        "label": "E.1 Prompt Template",
+        "summary": "The master template has the following structure (optional blocks are marked with ⟨·⟩ ):\n\nTable 8: A% with and without verifier enforcement. 'A%' zeros out assertion scores for runs that violate structural constraints; 'Raw A%' uses behavioral-test scores only. ∆ = Raw A% -A%. Ful…"
+      },
+      {
+        "id": "section:e-2-constraint-blocks",
+        "type": "section",
+        "label": "E.2 Constraint Blocks",
+        "summary": "The optional blocks correspond to the three constraint dimensions introduced in §3.2:\n\nArchitecture. A paragraph prescribing the Clean Architecture pattern: four layers (routes/handlers, services/use cases, models/entities, repository/data access) with a strict top-down dependenc…"
+      },
+      {
+        "id": "section:orm-asingle-sentence-requiring-sqlalchemy-python-or-sequelize-node-js",
+        "type": "section",
+        "label": "ORM. Asingle sentence requiring SQLAlchemy (Python) or Sequelize (Node.js).",
+        "summary": "Constraint levels L0-L3 are formed by including an increasing number of these blocks: L0 includes none (baseline); L1 includes one (e.g., architecture only, or database only); L2 includes two (e.g., architecture + database); L3 includes all three. For each of the 8 frameworks we…"
+      },
+      {
+        "id": "section:e-3-prompt-example",
+        "type": "section",
+        "label": "E.3 Prompt Example",
+        "summary": "openapi: \"3.0.1\" info: title: \"Conduit API\" version: \"1.0.0\" paths: /api/users/login: post: . . . (19 endpoints, ∼ 500 lines total, omitted for brevity)\n\nFigure 2 shows an abridged prompt for a task with all constraints active.\n\nGenerate a complete Python 3.12 REST API server com…"
+      },
+      {
+        "id": "section:requirements",
+        "type": "section",
+        "label": "## Requirements",
+        "summary": "You MUST use the fl ask framework.\n\nYou MUST work in the current directory.\n\nYou MUST follow the architecture described below.\n\nYou MUST use the database as described below.\n\nYou MUST use the SQLAlchemy Python ORM for handling the database."
+      },
+      {
+        "id": "section:architecture",
+        "type": "section",
+        "label": "## Architecture",
+        "summary": "You MUST follow the Clean Architecture pattern. Organize your code into these layers:\n\n-Routes/Handlers layer : HTTP request handling, input parsing, response formatting. No business logic.\n\n-Services/Use Cases layer : Business logic and orchestration. Framework-agnostic.\n\n-Model…"
+      },
+      {
+        "id": "section:database",
+        "type": "section",
+        "label": "## Database",
+        "summary": "Use PostgreSQL as the database. The database schema MUST be created automatically on server startup.\n\nAn instance of Postgres 16 is already running on port 5432.\n\nConnection: username=user, password=password, db=conduit, host=postgres."
+      },
+      {
+        "id": "section:mandatory-files",
+        "type": "section",
+        "label": "## Mandatory Files",
+        "summary": "requirements.txt - all pip dependencies.\n\nrun.sh - a shell script that starts the server."
+      },
+      {
+        "id": "section:server-configuration",
+        "type": "section",
+        "label": "## Server Configuration",
+        "summary": "The server MUST listen on port 8080 .\n\nThe server MUST expose a health-check endpoint at GET /api/health-check returning HTTP 200.\n\nAll API routes MUST be prefixed with /api ."
+      },
+      {
+        "id": "section:evaluation-pipeline",
+        "type": "section",
+        "label": "## Evaluation Pipeline",
+        "summary": "uv pip install --system -r requirements.txt\n\nchmod +x run.sh\n\n./run.sh (starts your server in background)\n\nHealth-check polls GET http://localhost:8080/api/health-check until 200.\n\nA Postman test suite runs against http://localhost:8080/api .\n\nFigure 2: Generation prompt for an L…"
+      },
+      {
+        "id": "section:f-feature-implementation-task-design",
+        "type": "section",
+        "label": "F Feature Implementation Task Design",
+        "summary": "Feature implementation tasks evaluate an agent's ability to add missing functionality to an existing, partially stripped codebase. Unlike generation tasks, the agent starts with a working repository and must read, understand, and extend it: simulating the common developer scenari…"
+      },
+      {
+        "id": "section:f-1-construction-by-codebase-ablation",
+        "type": "section",
+        "label": "F.1 Construction by Codebase Ablation",
+        "summary": "Each task is derived from a real open-source RealWorld (Conduit) implementation. Since the Conduit API is organized around well-defined feature groups (articles, comments, tags, profiles, users), we can cleanly remove an entire feature vertical (routes, controllers/handlers, serv…"
+      },
+      {
+        "id": "section:f-2-task-inventory-and-statistics",
+        "type": "section",
+        "label": "F.2 Task Inventory and Statistics",
+        "summary": "We construct 20 tasks across five framework repositories (4 per framework), covering three ablation scopes summarized in Table 9.\n\nTable 9: Feature implementation tasks grouped by ablation scope. The wide range of lines and files reflects natural variation in how each repository…"
+      },
+      {
+        "id": "section:f-3-prompt-and-evaluation",
+        "type": "section",
+        "label": "F.3 Prompt and Evaluation",
+        "summary": "Each task is stored as a JSON file containing: (i) the agent prompt (the full OpenAPI specification followed by a single instruction sentence), (ii) a unified diff patch that strips the target feature before the agent starts, (iii) repository metadata (URL, pinned commit, setup a…"
+      },
+      {
+        "id": "section:g-behavioral-test-suite",
+        "type": "section",
+        "label": "G Behavioral Test Suite",
+        "summary": "All task variants share a single specification compliant HTTP behavioral test suite, defined as a Postman 3 API testing framework collection and executed via the Newman 4 engine. The collection encodes a stateful integration-test scenario: requests run in a fixed order and later…"
+      },
+      {
+        "id": "section:g-1-coverage",
+        "type": "section",
+        "label": "G.1 Coverage",
+        "summary": "The suite contains 32 requests targeting 19 unique API endpoints (the full spec. surface) and 291 assertions. Requests are organized into five sequential folders described in Table 11."
+      },
+      {
+        "id": "section:g-2-assertion-taxonomy",
+        "type": "section",
+        "label": "G.2 Assertion Taxonomy",
+        "summary": "Each assertion belongs to one of four categories:\n\nProperty presence . Verifies that the JSON response contains expected keys (e.g., user.email , article.slug ).\n\nType validation . Checks that the JSON response attribute values have the correct type (e.g., articles is an array, f…"
+      },
+      {
+        "id": "section:h-token-consumption",
+        "type": "section",
+        "label": "H Token Consumption",
+        "summary": "Table 12 reports input and output token consumption aggregated across all runs of the full evaluation, broken down by constraint level. Table 13 provides the same breakdown per agent-model pair.\n\nTable 12: Global token consumption by constraint level, aggregated across all agent-…"
+      },
+      {
+        "id": "section:i-execution-pipeline",
+        "type": "section",
+        "label": "I Execution Pipeline",
+        "summary": "This section details the end-to-end infrastructure that executes each task. The pipeline is fully containerized and comprises two sequential phases: (i) build (agent execution) and (ii) evaluate (behavioral testing), each running in a pristine Docker environment to prevent state…"
+      },
+      {
+        "id": "section:i-1-infrastructure-overview",
+        "type": "section",
+        "label": "I.1 Infrastructure Overview",
+        "summary": "Each framework (e.g., Flask, Express) has a dedicated Docker Compose project defining three services on a shared network:\n\nconduit . The application container. Built from a multi-stage Dockerfile that (i) installs two Python virtual environments for agent execution (one for Mini-…"
+      },
+      {
+        "id": "section:i-2-build-phase-agent-execution",
+        "type": "section",
+        "label": "I.2 Build Phase (Agent Execution)",
+        "summary": "The build phase proceeds as follows:\n\n(i) Image build. docker compose build conduit compiles the framework-specific image.\n\n(ii) Container launch. The conduit container is started in detached mode with two bindmounted volumes: /agents (agent scripts and model cost registry) and /…"
+      },
+      {
+        "id": "section:i-3-evaluate-phase-behavioral-testing",
+        "type": "section",
+        "label": "I.3 Evaluate Phase (Behavioral Testing)",
+        "summary": "The evaluation phase applies the agent's patch to a pristine container, ensuring that any side effects from the build phase (e.g., leftover processes, corrupted state) do not influence the result.\n\n(i) Pristine container. A new conduit container is started from the same image. Fo…"
+      },
+      {
+        "id": "section:i-4-walkthrough-generation-task",
+        "type": "section",
+        "label": "I.4 Walkthrough: Generation Task",
+        "summary": "Consider the L3 task flask-openapi-clean architecture-postgres-sqlalchemy .\n\n(i) The conduit container starts with an empty /repository directory (no pre-existing code).\n\n(ii) The agent receives the full prompt (Appendix E, Figure 2) and generates a Flask application from scratch…"
+      },
+      {
+        "id": "section:i-5-walkthrough-feature-implementation-task",
+        "type": "section",
+        "label": "I.5 Walkthrough: Feature Implementation Task",
+        "summary": "Consider the Express task that ablates the comments feature (245 lines across 10 files).\n\n(i) The conduit container starts with the full Express/Prisma repository at the pinned commit. The ablation patch is applied, removing all comment-related code (routes, controller, Prisma sc…"
+      },
+      {
+        "id": "section:j-revised-agent-scaffolds",
+        "type": "section",
+        "label": "J Revised Agent Scaffolds",
+        "summary": "Both agent scaffolds required targeted modifications to operate in our greenfield generation setting and to ensure fully automated evaluation.\n\nMini-SWE-Agent. Mini-SWE-Agent is designed for issue-solving on existing repositories. To repurpose it for greenfield generation, we rep…"
+      },
+      {
+        "id": "claim:3c626aeb",
+        "type": "claim",
+        "label": "Capable agent configurations lose an average of 30 percentage points in assertion pass rates (A%) from baseline (L0) to…",
+        "summary": "Capable agent configurations lose an average of 30 percentage points in assertion pass rates (A%) from baseline (L0) to fully specified (L3) tasks, representing a relative loss of 40% of baseline performance."
+      },
+      {
+        "id": "claim:202d2e7d",
+        "type": "claim",
+        "label": "Some weaker agent configurations approach zero assertion pass rates under fully specified structural constraints.",
+        "summary": "Some weaker agent configurations approach zero assertion pass rates under fully specified structural constraints."
+      },
+      {
+        "id": "claim:abb12bdf",
+        "type": "claim",
+        "label": "LLM agents demonstrate strong performance in autonomous code generation under loose specifications (no structural const…",
+        "summary": "LLM agents demonstrate strong performance in autonomous code generation under loose specifications (no structural constraints)."
+      },
+      {
+        "id": "claim:81039b11",
+        "type": "claim",
+        "label": "Data-layer defects, specifically incorrect query composition and ORM runtime violations, are the leading root causes of…",
+        "summary": "Data-layer defects, specifically incorrect query composition and ORM runtime violations, are the leading root causes of agent logic failures, driving approximately 45% of them."
+      },
+      {
+        "id": "claim:a5f0b643",
+        "type": "claim",
+        "label": "Existing benchmarks often overlook non-functional requirements, rewarding functionally correct but structurally arbitra…",
+        "summary": "Existing benchmarks often overlook non-functional requirements, rewarding functionally correct but structurally arbitrary solutions."
+      },
+      {
+        "id": "claim:f25d8bba",
+        "type": "claim",
+        "label": "The OpenAPI specification format removes specification ambiguity and enables a behavioral test suite applicable to any…",
+        "summary": "The OpenAPI specification format removes specification ambiguity and enables a behavioral test suite applicable to any compliant implementation regardless of language, framework, or internal architecture."
+      },
+      {
+        "id": "claim:c6e6be3b",
+        "type": "claim",
+        "label": "The study fixes a single API contract based on the RealWorld Conduit API, encompassing 19 CRUD operations across five r…",
+        "summary": "The study fixes a single API contract based on the RealWorld Conduit API, encompassing 19 CRUD operations across five resource groups (articles, comments, users, profiles, and tags)."
+      },
+      {
+        "id": "claim:5cad9cac",
+        "type": "claim",
+        "label": "The study opens-sources 80 greenfield generation tasks and 20 feature-implementation tasks spanning eight web framework…",
+        "summary": "The study opens-sources 80 greenfield generation tasks and 20 feature-implementation tasks spanning eight web frameworks."
+      },
+      {
+        "id": "claim:bdfd477b",
+        "type": "claim",
+        "label": "Task success is defined as the intersection of behavioral validity (passing the full test suite) and constraint complia…",
+        "summary": "Task success is defined as the intersection of behavioral validity (passing the full test suite) and constraint compliance (satisfying each applicable static verifier)."
+      },
+      {
+        "id": "claim:a3f62bed",
+        "type": "claim",
+        "label": "A% scores on the 16-task representative subset correlate with full 80-task results at Pearson r = 0.98 and Spearman rho…",
+        "summary": "A% scores on the 16-task representative subset correlate with full 80-task results at Pearson r = 0.98 and Spearman rho = 0.95 (p < 10^-12, N = 24), validating the subset evaluation strategy."
+      },
+      {
+        "id": "claim:5dba7e61",
+        "type": "claim",
+        "label": "The worst-case configuration, OpenHands plus Qwen3-Coder-Next, loses 45 percentage points from L0 to L3, equivalent to…",
+        "summary": "The worst-case configuration, OpenHands plus Qwen3-Coder-Next, loses 45 percentage points from L0 to L3, equivalent to 62% of its baseline score."
+      },
+      {
+        "id": "claim:50611de6",
+        "type": "claim",
+        "label": "The most resilient configuration, OpenHands plus MiniMax-M2.5, drops only 17 percentage points from L0 to L3.",
+        "summary": "The most resilient configuration, OpenHands plus MiniMax-M2.5, drops only 17 percentage points from L0 to L3."
+      },
+      {
+        "id": "claim:2610d08b",
+        "type": "claim",
+        "label": "Even the strongest L3 configuration (OpenHands plus MiniMax-M2.5) reaches 78.6% A% but only 8.3% pass@1, illustrating a…",
+        "summary": "Even the strongest L3 configuration (OpenHands plus MiniMax-M2.5) reaches 78.6% A% but only 8.3% pass@1, illustrating a consistently large gap between the two metrics."
+      },
+      {
+        "id": "claim:24317581",
+        "type": "claim",
+        "label": "The large and consistent gap between A% and pass@1 underscores that LLM agents still lack the cross-file consistency an…",
+        "summary": "The large and consistent gap between A% and pass@1 underscores that LLM agents still lack the cross-file consistency and constraint adherence needed for deployment without manual intervention."
+      },
+      {
+        "id": "claim:7e09bcf5",
+        "type": "claim",
+        "label": "Specifying a database engine is by far the most impactful single constraint on A%, as determined by matched-pair analys…",
+        "summary": "Specifying a database engine is by far the most impactful single constraint on A%, as determined by matched-pair analysis."
+      },
+      {
+        "id": "claim:7967da98",
+        "type": "claim",
+        "label": "Clean architecture imposes a significant performance penalty consistent with the overhead of enforcing layered separati…",
+        "summary": "Clean architecture imposes a significant performance penalty consistent with the overhead of enforcing layered separation, as shown by matched-pair analysis."
+      },
+      {
+        "id": "claim:5d2c694b",
+        "type": "claim",
+        "label": "The ORM constraint has a smaller marginal effect on A% compared to database or architecture constraints, and for GPT-5.…",
+        "summary": "The ORM constraint has a smaller marginal effect on A% compared to database or architecture constraints, and for GPT-5.2 the ORM constraint even reduces ambiguity by making the intended data-access pattern more explicit."
+      },
+      {
+        "id": "claim:43a4123f",
+        "type": "claim",
+        "label": "The underlying difficulty of correctly interfacing with the data layer is high regardless of whether an ORM constraint…",
+        "summary": "The underlying difficulty of correctly interfacing with the data layer is high regardless of whether an ORM constraint is active, manifesting as ORM runtime errors with the ORM constraint and as raw SQL errors without it."
+      },
+      {
+        "id": "claim:f58f5ed4",
+        "type": "claim",
+        "label": "The constraint-decay signal is driven by genuine functional failures rather than verifier artifacts: the two A% variant…",
+        "summary": "The constraint-decay signal is driven by genuine functional failures rather than verifier artifacts: the two A% variants (with and without verifier enforcement) differ by at most 2.7 percentage points on any single configuration."
+      },
+      {
+        "id": "claim:fa01e4e6",
+        "type": "claim",
+        "label": "The average L0-to-L3 A% decay changes from 28 pp (without verifier enforcement) to 29 pp (with enforcement), confirming…",
+        "summary": "The average L0-to-L3 A% decay changes from 28 pp (without verifier enforcement) to 29 pp (with enforcement), confirming verifier false negatives have negligible impact on the reported signal."
+      },
+      {
+        "id": "claim:80e39332",
+        "type": "claim",
+        "label": "Feature implementation tasks confirm low performance persisting when agents must infer and respect constraints from an…",
+        "summary": "Feature implementation tasks confirm low performance persisting when agents must infer and respect constraints from an existing codebase: only GPT-5.2 exceeds 50% pass@1."
+      },
+      {
+        "id": "claim:4e3545b9",
+        "type": "claim",
+        "label": "Express, Koa, and Flask form a clear top-tier of frameworks with average A% of 51.4%, 50.7%, and 49.3% respectively, al…",
+        "summary": "Express, Koa, and Flask form a clear top-tier of frameworks with average A% of 51.4%, 50.7%, and 49.3% respectively, all sharing a minimal and explicit API surface."
+      },
+      {
+        "id": "claim:32cc39a2",
+        "type": "claim",
+        "label": "Framework choice is a major sensitivity axis: lightweight frameworks achieve approximately 50% average A%, while conven…",
+        "summary": "Framework choice is a major sensitivity axis: lightweight frameworks achieve approximately 50% average A%, while convention-heavy frameworks trail by 25 to 32 percentage points."
+      },
+      {
+        "id": "claim:e4b90657",
+        "type": "claim",
+        "label": "Django and FastAPI are penalized by implicit configuration: Django's convention-driven structure and auto-discovery, an…",
+        "summary": "Django and FastAPI are penalized by implicit configuration: Django's convention-driven structure and auto-discovery, and FastAPI's type-hint-driven validation, both reduce agent A% relative to minimal frameworks."
+      },
+      {
+        "id": "claim:1e605813",
+        "type": "claim",
+        "label": "Hono trails Express despite a comparable API surface, likely because it targets edge runtimes and requires a compatibil…",
+        "summary": "Hono trails Express despite a comparable API surface, likely because it targets edge runtimes and requires a compatibility adapter on Node.js that may be underrepresented in model training data."
+      },
+      {
+        "id": "claim:f2f1093a",
+        "type": "claim",
+        "label": "Logic errors account for approximately 71% of all failures for both Qwen3-Coder-Next and MiniMax-M2.5 with Mini-SWE-Age…",
+        "summary": "Logic errors account for approximately 71% of all failures for both Qwen3-Coder-Next and MiniMax-M2.5 with Mini-SWE-Agent."
+      },
+      {
+        "id": "claim:f29b668d",
+        "type": "claim",
+        "label": "Server startup failures rank second in the failure taxonomy at 12 to 21% of failures across the two analyzed models.",
+        "summary": "Server startup failures rank second in the failure taxonomy at 12 to 21% of failures across the two analyzed models."
+      },
+      {
+        "id": "claim:f2bd16dc",
+        "type": "claim",
+        "label": "Incorrect query logic accounts for 25.5% and DB/ORM runtime errors for 21.2% of Qwen3-Coder-Next's logic errors, making…",
+        "summary": "Incorrect query logic accounts for 25.5% and DB/ORM runtime errors for 21.2% of Qwen3-Coder-Next's logic errors, making data-layer defects the dominant root-cause category."
+      },
+      {
+        "id": "claim:f12caeaa",
+        "type": "claim",
+        "label": "MiniMax-M2.5 shows the same two leading data-layer categories (incorrect query logic and DB/ORM runtime errors) at 15.0…",
+        "summary": "MiniMax-M2.5 shows the same two leading data-layer categories (incorrect query logic and DB/ORM runtime errors) at 15.0% each."
+      },
+      {
+        "id": "claim:d017d7e5",
+        "type": "claim",
+        "label": "Auth misconfiguration is a notable model-specific weakness for Qwen3-Coder-Next, accounting for 22.6% of its logic erro…",
+        "summary": "Auth misconfiguration is a notable model-specific weakness for Qwen3-Coder-Next, accounting for 22.6% of its logic errors versus 5.0% for MiniMax-M2.5, primarily from incorrect token-prefix parsing."
+      },
+      {
+        "id": "claim:0dbedddd",
+        "type": "claim",
+        "label": "MiniMax-M2.5 logic errors are dominated by a single framework idiosyncrasy (50.0%): Fastify's rejection of empty-body P…",
+        "summary": "MiniMax-M2.5 logic errors are dominated by a single framework idiosyncrasy (50.0%): Fastify's rejection of empty-body POST requests, a pattern amplified by the smaller evaluation subset."
+      },
+      {
+        "id": "claim:b2af3d7c",
+        "type": "claim",
+        "label": "The agent scaffold choice has a substantial impact on performance: OpenHands outperforms Mini-SWE-Agent for GPT-5-mini…",
+        "summary": "The agent scaffold choice has a substantial impact on performance: OpenHands outperforms Mini-SWE-Agent for GPT-5-mini and MiniMax-M2.5 but underperforms for Qwen3-Coder-Next."
+      },
+      {
+        "id": "claim:fcc6702c",
+        "type": "claim",
+        "label": "The constraint-decay trend is consistent across both scaffolds (Mini-SWE-Agent and OpenHands), meaning the decay phenom…",
+        "summary": "The constraint-decay trend is consistent across both scaffolds (Mini-SWE-Agent and OpenHands), meaning the decay phenomenon is not scaffold-specific."
+      },
+      {
+        "id": "claim:cffe6007",
+        "type": "claim",
+        "label": "The GPT-5.2 LLM judge achieves 98% overall accuracy (49/50) with Cohen's kappa = 0.975 against human annotations on the…",
+        "summary": "The GPT-5.2 LLM judge achieves 98% overall accuracy (49/50) with Cohen's kappa = 0.975 against human annotations on the 50-sample stratified validation set."
+      },
+      {
+        "id": "claim:23e5cdf0",
+        "type": "claim",
+        "label": "Four of the six failure taxonomy categories achieve perfect precision, recall, and F1 in LLM-judge validation.",
+        "summary": "Four of the six failure taxonomy categories achieve perfect precision, recall, and F1 in LLM-judge validation."
+      },
+      {
+        "id": "claim:2c8c53cc",
+        "type": "claim",
+        "label": "Current LLM agents are reliable tools for rapid prototyping but remain unreliable for production-grade backend developm…",
+        "summary": "Current LLM agents are reliable tools for rapid prototyping but remain unreliable for production-grade backend development that requires strict structural compliance."
+      },
+      {
+        "id": "claim:d1f09542",
+        "type": "claim",
+        "label": "Jointly satisfying functional and structural requirements remains a key open challenge for coding agents.",
+        "summary": "Jointly satisfying functional and structural requirements remains a key open challenge for coding agents."
+      },
+      {
+        "id": "claim:8d85a710",
+        "type": "claim",
+        "label": "The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend…",
+        "summary": "The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend, and ORM integration."
+      },
+      {
+        "id": "claim:c7314e4e",
+        "type": "claim",
+        "label": "Within the top tier of lightweight frameworks, the relative ranking shifts by model-agent configuration: Koa and Expres…",
+        "summary": "Within the top tier of lightweight frameworks, the relative ranking shifts by model-agent configuration: Koa and Express dominate with OpenHands + GPT-5-mini, while Flask leads with Qwen3-Coder-Next."
+      },
+      {
+        "id": "claim:4b99a7e7",
+        "type": "claim",
+        "label": "The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct…",
+        "summary": "The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct directories, not all 4."
+      },
+      {
+        "id": "claim:ddebfc5e",
+        "type": "claim",
+        "label": "Unlike the database verifier, the ORM verifier does not penalize the presence of alternative ORM imports, because some…",
+        "summary": "Unlike the database verifier, the ORM verifier does not penalize the presence of alternative ORM imports, because some agents import utility libraries that reference other ORMs without actually using them for data access."
+      },
+      {
+        "id": "claim:75a2fa99",
+        "type": "claim",
+        "label": "The 20 feature implementation tasks are constructed from community-maintained RealWorld repositories that already embed…",
+        "summary": "The 20 feature implementation tasks are constructed from community-maintained RealWorld repositories that already embed a layered architecture, PostgreSQL, and an ORM, effectively simulating an L3 condition with implicit constraints that agents must infer from the existing codeba…"
+      },
+      {
+        "id": "claim:4fce7eff",
+        "type": "claim",
+        "label": "The logic-error taxonomy includes business logic defect (infrastructure operates correctly but domain behavior deviates…",
+        "summary": "The logic-error taxonomy includes business logic defect (infrastructure operates correctly but domain behavior deviates from the specification) and state propagation failure (mutations succeed but their effects are not reflected in subsequent reads) as two of the six root-cause c…"
+      },
+      {
+        "id": "method:constraint-decay-evaluation-pipeline",
+        "type": "method",
+        "label": "Constraint Decay Evaluation Pipeline",
+        "summary": "This paper introduces an evaluation methodology that holds a fixed OpenAPI specification constant while systematically varying structural constraints (architecture, database, ORM) across backend generation tasks, using dual evaluation with end-to-end behavioral tests and static v…"
+      },
+      {
+        "id": "method:architecture-verifier",
+        "type": "method",
+        "label": "Architecture Verifier",
+        "summary": "This paper introduces a static verifier that enforces the Clean Architecture constraint by checking for the presence of at least three of four canonical layer directories and detecting upward dependency violations via import statement analysis across Python and JavaScript source…"
+      },
+      {
+        "id": "method:database-verifier",
+        "type": "method",
+        "label": "Database Verifier",
+        "summary": "This paper introduces a static verifier that scans source lines using regex patterns to confirm the prescribed database engine (SQLite or PostgreSQL) is used and no alternative engine is present, excluding lock files from the scan."
+      },
+      {
+        "id": "method:orm-verifier",
+        "type": "method",
+        "label": "ORM Verifier",
+        "summary": "This paper introduces a static verifier that detects whether the designated ORM (SQLAlchemy for Python or Sequelize for Node.js) is used rather than raw SQL, by scanning source files for ORM-specific import patterns and constructor calls."
+      },
+      {
+        "id": "method:behavioral-test-suite",
+        "type": "method",
+        "label": "Behavioral Test Suite",
+        "summary": "This paper introduces a unified stateful HTTP behavioral test suite comprising 32 requests covering 19 API endpoints and 291 assertions, implemented as a Postman collection executed via Newman to evaluate all implementations against the RealWorld Conduit OpenAPI specification reg…"
+      },
+      {
+        "id": "method:assert-a-metric",
+        "type": "method",
+        "label": "Assert% (A%) Metric",
+        "summary": "This paper introduces the Assert% metric, defined as the mean fraction of behavioral test assertions passed across all runs of a given configuration, used as the primary evaluation axis because it captures partial progress more stably than the all-or-nothing pass@1."
+      },
+      {
+        "id": "method:codebase-ablation",
+        "type": "method",
+        "label": "Codebase Ablation",
+        "summary": "This paper introduces a method for constructing feature implementation tasks by applying git diff patches to remove entire feature verticals (routes, controllers, services, data-access code, and model definitions) from open-source RealWorld repositories, producing tasks that requ…"
+      },
+      {
+        "id": "method:mini-swe-agent",
+        "type": "method",
+        "label": "Mini-SWE-Agent",
+        "summary": "This paper uses Mini-SWE-Agent from prior work (SWE-agent Team, 2025) as one of two agent scaffolds: a minimal approximately 100-line Python scaffold interacting with the environment exclusively through bash commands, with a re-aligned system prompt injected to steer it toward a…"
+      },
+      {
+        "id": "method:openhands",
+        "type": "method",
+        "label": "OpenHands",
+        "summary": "This paper uses OpenHands from prior work (Wang et al., 2025) as one of two agent scaffolds: a full-featured agent framework providing dedicated tools for file editing, terminal execution, code search, and task tracking, with a custom termination criterion introduced to enforce c…"
+      },
+      {
+        "id": "method:clean-architecture",
+        "type": "method",
+        "label": "Clean Architecture",
+        "summary": "This paper uses the Clean Architecture pattern (Martin, 2017) from prior work as one of three structural constraint dimensions, requiring code to be organized into four layers (routes/handlers, services/use cases, models/entities, repository/data access) with strict top-down depe…"
+      },
+      {
+        "id": "method:openapi-3-0",
+        "type": "method",
+        "label": "OpenAPI 3.0",
+        "summary": "This paper uses the OpenAPI 3.0 specification format from prior work as the standardized machine-readable functional requirement for all tasks, enabling unambiguous endpoint definitions and framework-agnostic behavioral test generation."
+      },
+      {
+        "id": "method:behavior-driven-development-bdd",
+        "type": "method",
+        "label": "Behavior-Driven Development (BDD)",
+        "summary": "This paper uses Behavior-Driven Development (North et al., 2006) from prior work as the methodological inspiration for its evaluation approach, applying the principle of holding functional specifications constant while varying non-functional requirements and testing against behav…"
+      },
+      {
+        "id": "method:pass-k",
+        "type": "method",
+        "label": "Pass@k",
+        "summary": "This paper uses the pass@k metric with the unbiased estimator from Chen et al. (2021) as a secondary evaluation axis, reporting pass@1 as the probability that at least one of k=3 independent samples satisfies all behavioral and structural constraints per task."
+      },
+      {
+        "id": "method:llm-as-judge",
+        "type": "method",
+        "label": "LLM-as-Judge",
+        "summary": "This paper uses GPT-5.2 at temperature 0 as an LLM judge to classify agent failures into the Root Cause Taxonomy based on the last 20 trajectory turns, behavioral test results, server logs, and static verifier outputs, validated against human labels with Cohen's kappa of 0.975."
+      },
+      {
+        "id": "method:hono",
+        "type": "method",
+        "label": "Hono",
+        "summary": "This paper uses Hono from prior work as one of four Node.js web frameworks evaluated as experimental conditions; it underperforms relative to comparable frameworks because its edge-runtime focus requires a Node.js compatibility adapter that may be underrepresented in model traini…"
+      },
+      {
+        "id": "method:sqlalchemy",
+        "type": "method",
+        "label": "SQLAlchemy",
+        "summary": "This paper uses SQLAlchemy from prior work as the mandatory ORM for Python-based tasks under the ORM constraint dimension, requiring agents to use idiomatic SQLAlchemy query logic rather than raw SQL or alternative data-access patterns."
+      },
+      {
+        "id": "method:sequelize",
+        "type": "method",
+        "label": "Sequelize",
+        "summary": "This paper uses Sequelize from prior work as the mandatory ORM for Node.js-based tasks under the ORM constraint dimension, requiring agents to use idiomatic Sequelize query logic rather than raw SQL or alternative data-access patterns."
+      },
+      {
+        "id": "dataset:realworld-conduit-api",
+        "type": "dataset",
+        "label": "RealWorld Conduit API",
+        "summary": "This paper uses the RealWorld Conduit API specification from prior work as the fixed functional requirement for all generation and feature implementation tasks, covering 19 CRUD operations across five resource groups (articles, comments, users, profiles, tags) expressed as an Ope…"
+      },
+      {
+        "id": "method:qwen3-235b-instruct",
+        "type": "method",
+        "label": "Qwen3-235B-Instruct",
+        "summary": "This paper uses Qwen3-235B-Instruct (235B total, 22B active parameters) from prior work (Yang et al., 2025) as a large open general-purpose instruct model evaluated on the full 80-task benchmark with both agent scaffolds."
+      },
+      {
+        "id": "dataset:swe-bench",
+        "type": "dataset",
+        "label": "SWE-bench",
+        "summary": "A prominent issue-based benchmark offering realistic software engineering environments, cited in the paper as the standard against which current agents are approaching saturation and against which Mini-SWE-Agent achieves over 70% with frontier LLMs."
+      },
+      {
+        "id": "dataset:swe-bench-verified",
+        "type": "dataset",
+        "label": "SWE-Bench Verified",
+        "summary": "A curated variant of SWE-bench referenced in the paper as the leaderboard on which the larger evaluated models (MiniMax-M2.5, Kimi-K2.5, GPT-5.2) rank among the top 15."
+      },
+      {
+        "id": "method:baxbench",
+        "type": "method",
+        "label": "BaxBench",
+        "summary": "A benchmark from Vero et al. (2024) that tasks LLMs with generating backend services from OpenAPI specifications across multiple frameworks and languages, evaluated with end-to-end functional and security tests. The paper identifies it as the closest prior work to its own setting…"
+      },
+      {
+        "id": "dataset:baxbench",
+        "type": "dataset",
+        "label": "BaxBench",
+        "summary": null
+      },
+      {
+        "id": "method:swe-agent",
+        "type": "method",
+        "label": "SWE-agent",
+        "summary": "An agent framework from Yang et al. (2024) that emphasizes configurable agent-computer interfaces for interacting with isolated environments. Mini-SWE-Agent used in this paper is derived from SWE-agent, reducing its scaffold to approximately 100 lines of Python."
+      },
+      {
+        "id": "method:agentless",
+        "type": "method",
+        "label": "Agentless",
+        "summary": "A method from Xia et al. (2024) that forgoes autonomous planning and decomposes issue resolution into a fixed three-stage pipeline: localization, patch generation, and validation. Cited in the paper as a representative software engineering agent architecture."
+      },
+      {
+        "id": "method:postman",
+        "type": "method",
+        "label": "Postman",
+        "summary": "An API testing framework used in the paper to define the behavioral test suite as a Postman collection, which is then executed via the Newman CLI engine against generated server implementations."
+      },
+      {
+        "id": "method:gpt-5-4",
+        "type": "method",
+        "label": "GPT-5.4",
+        "summary": "A frontier OpenAI model (OpenAI, 2026) cited in the introduction as an example of LLM agents with remarkable proficiency on shallow generation tasks where objectives are broad and requirements are loosely defined."
+      },
+      {
+        "id": "method:rpg",
+        "type": "method",
+        "label": "RPG",
+        "summary": "A repository planning graph method from Luo et al. (2026) for unified and scalable codebase generation. The paper cites it as a related greenfield app generation approach that measures output against existing test suites but rewards unconstrained generation from under-specified p…"
+      },
+      {
+        "id": "method:nl2repo-bench",
+        "type": "method",
+        "label": "NL2Repo-Bench",
+        "summary": "A benchmark from Ding et al. (2025) for long-horizon repository generation evaluation of coding agents, targeting generation from reverse-engineered natural-language specifications of Python codebases. Cited as related work that does not systematically vary structural constraint…"
+      },
+      {
+        "id": "dataset:nl2repo-bench",
+        "type": "dataset",
+        "label": "NL2Repo-Bench",
+        "summary": null
+      },
+      {
+        "id": "method:commit0",
+        "type": "method",
+        "label": "Commit0",
+        "summary": "A benchmark from Zhao et al. (2025) for library generation from scratch that provides skeleton libraries for agents to complete. Referenced both as related greenfield generation work and as the source of the cost-driven subset evaluation strategy adopted in this paper."
+      },
+      {
+        "id": "dataset:commit0",
+        "type": "dataset",
+        "label": "Commit0",
+        "summary": null
+      },
+      {
+        "id": "method:crosscodeeval",
+        "type": "method",
+        "label": "CrossCodeEval",
+        "summary": "A diverse multilingual benchmark from Ding et al. (2023) for cross-file code completion at the repository level. Cited as an example of work focusing on repository-level function or line completion rather than full backend generation."
+      },
+      {
+        "id": "dataset:crosscodeeval",
+        "type": "dataset",
+        "label": "CrossCodeEval",
+        "summary": null
+      },
+      {
+        "id": "method:repocoder",
+        "type": "method",
+        "label": "RepoCoder",
+        "summary": "A repository-level code completion method from Zhang et al. (2023) that uses iterative retrieval and generation. Cited as representative work on repository-level function or line completion, in contrast to this paper's full backend generation setting."
+      },
+      {
+        "id": "method:repost",
+        "type": "method",
+        "label": "RepoST",
+        "summary": "A scalable repository-level coding environment construction framework from Xie et al. (2025) that uses sandbox testing. Cited as related work on sandbox-based evaluation of repository-level coding tasks."
+      },
+      {
+        "id": "dataset:repost",
+        "type": "dataset",
+        "label": "RepoST",
+        "summary": null
+      },
+      {
+        "id": "method:swe-bench-pro",
+        "type": "method",
+        "label": "SWE-bench Pro",
+        "summary": "An extension of SWE-bench from Deng et al. (2025) targeting long-horizon software engineering tasks. Cited as a benchmark extension that broadens scope through multi-language support, improved overfitting resistance, and scalable environment construction."
+      },
+      {
+        "id": "dataset:swe-bench-pro",
+        "type": "dataset",
+        "label": "SWE-bench Pro",
+        "summary": null
+      },
+      {
+        "id": "method:featbench",
+        "type": "method",
+        "label": "FeatBench",
+        "summary": "A benchmark from Chen et al. (2025) for evaluating coding agents on feature implementation tasks. Cited alongside SWE-Lancer as a complementary benchmark for measuring agents' ability to add new functionalities to existing codebases."
+      },
+      {
+        "id": "dataset:featbench",
+        "type": "dataset",
+        "label": "FeatBench",
+        "summary": null
+      },
+      {
+        "id": "method:swe-lancer",
+        "type": "method",
+        "label": "SWE-Lancer",
+        "summary": "A benchmark from Miserendino et al. (2025) evaluating whether frontier LLMs can earn money from real-world freelance software engineering tasks. Cited as a complementary benchmark measuring agents' ability to add new functionalities to existing codebases."
+      },
+      {
+        "id": "dataset:swe-lancer",
+        "type": "dataset",
+        "label": "SWE-Lancer",
+        "summary": null
+      },
+      {
+        "id": "citation:7ef6c2fa",
+        "type": "citation",
+        "label": "(Wang et al., 2025; SWE-agent Team, 2025; Yang et al., 2024)",
+        "summary": "agents capable of autonomously generating code"
+      },
+      {
+        "id": "citation:eb2b47e9",
+        "type": "citation",
+        "label": "(Qwen Team, 2026; OpenAI, 2026; Hong et al., 2024; Kimi, 2026)",
+        "summary": "objectives are broad and requirements are loosely defined"
+      },
+      {
+        "id": "citation:d88a47e2",
+        "type": "citation",
+        "label": "(Jimenez et al., 2024; Deng et al., 2025)",
+        "summary": "resolving specific issues given a description and existing codebases"
+      },
+      {
+        "id": "citation:95cb04e0",
+        "type": "citation",
+        "label": "(Luo et al., 2026)",
+        "summary": "reward unconstrained generation from under-specified NL prompts"
+      }
+    ],
+    "edges": [
+      {
+        "source": "section:abstract",
+        "target": "claim:3c626aeb",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:abstract",
+        "target": "claim:202d2e7d",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:abstract",
+        "target": "claim:abb12bdf",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:abstract",
+        "target": "claim:81039b11",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:1-introduction",
+        "target": "claim:a5f0b643",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:3-methodology",
+        "target": "claim:f25d8bba",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:3-methodology",
+        "target": "claim:c6e6be3b",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:3-methodology",
+        "target": "claim:5cad9cac",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:3-methodology",
+        "target": "claim:bdfd477b",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:a3f62bed",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:5dba7e61",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:50611de6",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:2610d08b",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:24317581",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:7e09bcf5",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:7967da98",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:5d2c694b",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:43a4123f",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:d-verifier-impact-on-reported-metrics",
+        "target": "claim:f58f5ed4",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:d-verifier-impact-on-reported-metrics",
+        "target": "claim:fa01e4e6",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:80e39332",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-2-rq2-framework-sensitivity",
+        "target": "claim:4e3545b9",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-2-rq2-framework-sensitivity",
+        "target": "claim:32cc39a2",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-2-rq2-framework-sensitivity",
+        "target": "claim:e4b90657",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-2-rq2-framework-sensitivity",
+        "target": "claim:1e605813",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:f2f1093a",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:f29b668d",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:f2bd16dc",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:f12caeaa",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:d017d7e5",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:0dbedddd",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:b2af3d7c",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-1-rq1-effect-of-constraint-accumulation",
+        "target": "claim:fcc6702c",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:b-llm-as-judge-validation",
+        "target": "claim:cffe6007",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:b-llm-as-judge-validation",
+        "target": "claim:23e5cdf0",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:6-conclusion",
+        "target": "claim:2c8c53cc",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:6-conclusion",
+        "target": "claim:d1f09542",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:3-2-constraint-dimensions",
+        "target": "claim:8d85a710",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-2-rq2-framework-sensitivity",
+        "target": "claim:c7314e4e",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:c-1-architecture-verifier",
+        "target": "claim:4b99a7e7",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:c-3-ormverifier",
+        "target": "claim:ddebfc5e",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:f-1-construction-by-codebase-ablation",
+        "target": "claim:75a2fa99",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:5-3-rq3-root-causes-of-failure",
+        "target": "claim:4fce7eff",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "method:baxbench",
+        "target": "dataset:baxbench",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:nl2repo-bench",
+        "target": "dataset:nl2repo-bench",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:commit0",
+        "target": "dataset:commit0",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:crosscodeeval",
+        "target": "dataset:crosscodeeval",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:repost",
+        "target": "dataset:repost",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:swe-bench-pro",
+        "target": "dataset:swe-bench-pro",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:featbench",
+        "target": "dataset:featbench",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:swe-lancer",
+        "target": "dataset:swe-lancer",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "section:1-introduction",
+        "target": "citation:7ef6c2fa",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:1-introduction",
+        "target": "citation:eb2b47e9",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:1-introduction",
+        "target": "citation:d88a47e2",
+        "relationship": "contains",
+        "weight": null
+      }
+    ]
+  },
+  "evaluations": [
+    {
+      "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+      "context_name": "anvil",
+      "score_overall": 0.72,
+      "markdown": "*Dente et al.*\n\n> **Overall relevancy: `0.72`** — Strong technical fit\n> *Context: `ctx_anvil_v3`*\n>\n> **Relevancy `0.72` / adoption cost `0.50` → effort-adjusted `0.48`** *(α = `1.00`)*\n>\n> **Implementation notes:** Treat this as situational awareness when delegating backend work to coding agents: expect notable degradation on your FastAPI + SQLAlchemy + Postgres stack and pre-supply scaffolding (alembic migrations, repository layer skeletons, SQLAlchemy model stubs) to mitigate the data-layer defects the paper identifies as ~45% of failures. Watch for the announced task/verifier repo; the three static verifiers (Architecture, Database, ORM) could be adapted into pytest/ruff-style guards in your CI to catch agent-generated drift. Do not attempt to reproduce the full 5B-token evaluation given the solo-developer, medium-budget constraint.\n\n*Paper-general analysis (claims, methods, citations, trustworthiness) lives on the [paper page](/papers/0cde798b-995f-4a58-be72-d4db96d9dcf4?eval=357ba861-a9cd-4626-ba28-f2ec80903bdd) — this report covers the per-context view only.*\n\n<details>\n<summary><strong>Context: ctx_anvil_v3</strong></summary>\n\n**Tech stack**\n\n- **databases:** postgres\n\n- **languages:** python\n\n- **frameworks:** alembic, fastapi, mypy, pydantic, pytest, ruff, sqlalchemy, typer, uvicorn\n\n- **infrastructure:** docker, make\n\n**Constraints**\n\n- **budget:** medium\n\n- **latency:** medium\n\n- **security:** medium\n\n- **team_size:** 1\n\n</details>\n\n## Table of contents\n\n1. [TL;DR](#tldr)\n2. [Relevancy detail](#relevancy-detail)\n3. [Adoption cost](#adoption-cost)\n4. [Provenance](#provenance)\n\n---\n\n## TL;DR <a id=\"tldr\"></a>\n\nVery high topical fit: the paper benchmarks exactly the user's fastapi + sqlalchemy + postgres stack and surfaces concrete failure modes (ORM runtime violations, query composition) that a solo Python backend developer using coding agents will encounter. The dominant axis is technical_compatibility, lifted further by low adoption risk; the ceiling is set by the paper being an evaluation rather than a shippable method, and by reproducibility gaps around model versions and seeds. Net: a strongly recommended read with modest, well-targeted actionability.\n\n| Axis | Score |\n|---|---|\n| Technical compatibility | 0.92 |\n| Strategic alignment | 0.60 |\n| Operational fit | 0.65 |\n| Risk | 0.20 |\n| **Overall** | 0.72 |\n\n## Relevancy detail <a id=\"relevancy-detail\"></a>\n\n### Technical compatibility — `0.92`\n\nThe paper's tested stack is essentially identical to the user's: FastAPI and Django on Python 3.12 with SQLAlchemy as the prescribed ORM and PostgreSQL 16 as the database, exactly mirroring the user's fastapi + sqlalchemy + postgres + python toolchain. Pytest, pydantic, and uvicorn are not directly studied but sit on the same FastAPI substrate that the paper's behavioral suite (Postman/Newman against OpenAPI) targets. The matched-pair constraint analysis and ORM verifier are directly applicable to a SQLAlchemy + alembic codebase.\n\n### Strategic alignment — `0.60`\n\nNo explicit goals are stated, but the user's stack (fastapi, sqlalchemy, alembic, pytest, mypy, ruff) implies producing maintainable typed Python backends, and the paper directly informs decisions about whether and how to delegate that work to LLM agents. Its finding that agents lose ~30 A% points on convention-heavy frameworks like FastAPI is operationally meaningful for anyone betting tooling on FastAPI. It is, however, a diagnostic study rather than a method that ships a tool advancing a specific goal.\n\n### Operational fit — `0.65`\n\nFor a team_size=1 developer with medium budget, the paper's reproduction cost (~5B tokens, multiple frontier and open-weight models, no cost cap, 300-iteration agents) is prohibitive, but the findings themselves are low-cost to consume. The static verifiers (Architecture, Database, ORM) are lightweight regex/import scanners that fit cleanly alongside ruff/mypy in a solo developer's CI. Latency and security constraints are not directly engaged by an offline evaluation study.\n\n### Risk — `0.20`\n\nRisk of acting on the paper's takeaways is low: the conclusions (FastAPI is harder for agents, data-layer defects dominate) are defensive guidance that reduces rather than increases adoption risk. Reproducibility is moderate (0.55) with no seeds, no decoding hyperparameters, future-dated model citations (GPT-5.2, MiniMax-M2.5, Kimi-K2.5), and code not yet confirmed public, so leaning on specific numerical claims is somewhat risky. There is no infrastructural dependency the user lacks.\n\n### Overall — `0.72`\n\nVery high topical fit: the paper benchmarks exactly the user's fastapi + sqlalchemy + postgres stack and surfaces concrete failure modes (ORM runtime violations, query composition) that a solo Python backend developer using coding agents will encounter. The dominant axis is technical_compatibility, lifted further by low adoption risk; the ceiling is set by the paper being an evaluation rather than a shippable method, and by reproducibility gaps around model versions and seeds. Net: a strongly recommended read with modest, well-targeted actionability.\n\n## Adoption cost <a id=\"adoption-cost\"></a>\n\n\n**Adoption cost: `0.50`** *(tier-1 baseline: `0.74`)* — effort-adjusted relevancy `0.48`.\n\n### Tier-1 breakdown\n\n| Slot | Required | Gaps | Weight | Slot contribution |\n|---|---|---|---|---|\n| services | 1 | 0 | 0.25 | 0.00 |\n| databases | 2 | 2 | 0.40 | 0.80 |\n| languages | 5 | 4 | 0.40 | 1.60 |\n| frameworks | 3 | 3 | 0.15 | 0.45 |\n| infrastructure | 2 | 1 | 0.50 | 0.50 |\n\n> *Slot contribution = `weight × gaps × (1 − coverage)` (unnormalized). The composite adoption cost is the weighted average of these contributions across all slots the paper required.*\n\n### Tier-2 refinements\n\n\n\n#### 1. `infrastructure` / `git` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.05` (was `1.00` from tier-1)\n- **Uncertainty:** `low`\n\nAlthough git is not explicitly listed in the user's infrastructure (only docker and make appear), git is effectively a baseline tool in any modern Python backend workflow and is trivial to install in the python:3.12-slim image via apt. The Conduit repos referenced by the paper just need to be cloned once; even the fallback (manual tarball) is acceptable. The grading flag user_meets=none looks overly strict here because git is almost certainly already on the developer machine driving the docker build.\n\n#### 2. `languages` / `bash` — trigger `ecosystem_dependency`\n\n- **Refined cost:** `0.05` (was `1.00` from tier-1)\n- **Uncertainty:** `low`\n\nThe python:3.12-slim base image ships with /bin/sh (dash) and the user already relies on make, which itself shells out to a POSIX shell, so the floor 'POSIX shell' is trivially satisfied in practice even though the deterministic check did not match the literal name 'bash'. Installing bash in the container is a one-line apt-get if any paper script truly requires bashisms. This is a labeling artifact more than a real capability gap.\n\n#### 3. `languages` / `javascript` — trigger `ecosystem_dependency`\n\n- **Refined cost:** `0.35` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nThe paper evaluates backend frameworks (Flask, FastAPI, Django, etc.) against a unified API contract with end-to-end behavioral tests, which in Conduit-style benchmarks are commonly driven by a JavaScript/Node test harness (Newman/Postman or a JS client). The user's stack has no Node runtime, so reproducing the e2e suite means adding Node plus a package manager to the docker image and wiring it into make targets, but no application code needs to be written in JS. Cost is moderate setup work, not a structural rewrite; uncertainty is medium because the exact test harness language is not stated in the abstract.\n\n\n\n---\n\n## Sensitivity: this paper vs your other contexts\n\n| Context | Score |\n|---|---|\n| ctx_default | 0.78 |\n\n\n<a id=\"provenance\"></a>\n<details>\n<summary><strong>Provenance</strong></summary>\n\n| Artifact | Agent | Version | Tokens |\n|---|---|---|---|\n| claims | claim_extractor | 2.0.0 | — |\n| figures | figure_analysis | 1.0.0 | — |\n| methods | method_extractor | 2.1.0 | — |\n| novelty | novelty_scorer | 1.0.0 | — |\n| citations | citation_extractor | 2.0.0 | — |\n| tool_stack | tool_stack_extractor | 1.0.0 | — |\n| reproducibility | reproducibility_scorer | 1.0.0 | — |\n\n\n- **Paper source:** `/data/papers/_uploads/6ca370d40d3cc3a58cc3d51ad6cab5d2c7aaaab3e3d48920dbc30ed701025530/6ca370d40d3cc3a58cc3d51ad6cab5d2c7aaaab3e3d48920dbc30ed701025530.pdf` (sha256 `6ca370d40d3c…`)\n- **Evaluation row:** `eval_357ba861-a9cd-4626-ba28-f2ec80903bdd`\n- **Relevancy row:** `rel_8b684f5d-ad6b-4eee-a52f-c6fdad038a78` against `ctx_anvil_v3` (`ctx_973c0bc6-ad79-4a72-9a85-f432dc941ec5`)\n- **Generated:** 2026-06-19T11:46:32+00:00\n- **Renderer:** `report_writer` v1.2.0\n\n</details>\n",
+      "other_context_scores": []
+    },
+    {
+      "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+      "context_name": "default",
+      "score_overall": 0.78,
+      "markdown": "*Dente et al.*\n\n> **Overall relevancy: `0.78`** — Strong technical fit\n> *Context: `ctx_default` (jdeworks)*\n>\n> **Relevancy `0.78` / adoption cost `0.75` → effort-adjusted `0.44`** *(α = `1.00`)*\n>\n> **Implementation notes:** Treat this as decision-support rather than a tool to integrate: when delegating FastAPI+SQLAlchemy+Postgres work to a coding agent, expect significant degradation under layered constraints and front-load the data-layer (query composition, ORM usage) in your prompts or post-generation checks. Consider porting the Architecture/Database/ORM static verifiers and the Postman/Newman behavioral pattern into your own CI for agent-generated code, but wait for the announced repo to materialize before committing time, since code is not yet released and several cited models use future-dated references.\n\n*Paper-general analysis (claims, methods, citations, trustworthiness) lives on the [paper page](/papers/0cde798b-995f-4a58-be72-d4db96d9dcf4?eval=357ba861-a9cd-4626-ba28-f2ec80903bdd) — this report covers the per-context view only.*\n\n<details>\n<summary><strong>Context: ctx_default</strong> (jdeworks)</summary>\n\n**Tech stack**\n\n- **databases:** postgres\n\n- **languages:** python, typescript\n\n- **frameworks:** fastapi, nextjs, react\n\n- **infrastructure:** docker\n\n**Constraints**\n\n- **budget:** low\n\n- **latency:** medium\n\n- **security:** medium\n\n- **team_size:** 1\n\n**Goals**\n\n- reduce time spent reading papers\n\n- find practical methods I can integrate into existing tooling\n\n- identify reproducibility risks before I invest in implementing something\n\n</details>\n\n## Table of contents\n\n1. [TL;DR](#tldr)\n2. [Relevancy detail](#relevancy-detail)\n3. [Adoption cost](#adoption-cost)\n4. [Provenance](#provenance)\n\n---\n\n## TL;DR <a id=\"tldr\"></a>\n\nHigh overall relevance because the paper directly stress-tests the exact FastAPI + PostgreSQL + SQLAlchemy + Docker configuration the user runs at jdeworks, and the constraint-decay finding plus data-layer root cause analysis squarely address the goal of identifying reproducibility and reliability risks before investing in agent-generated code. Dominant axis is technical_compatibility, tempered by the fact that this is a benchmark paper rather than a method to integrate and by the unreleased repo.\n\n| Axis | Score |\n|---|---|\n| Technical compatibility | 0.92 |\n| Strategic alignment | 0.78 |\n| Operational fit | 0.70 |\n| Risk | 0.35 |\n| **Overall** | 0.78 |\n\n## Relevancy detail <a id=\"relevancy-detail\"></a>\n\n### Technical compatibility — `0.92`\n\nThe paper's evaluation surface matches the user's stack almost one-to-one: FastAPI is one of the eight benchmarked frameworks, Python 3.12 and Node.js 20 cover both of the user's languages, PostgreSQL 16 is the prescribed database, and Docker is the execution substrate. The SQLAlchemy ORM verifier and Clean Architecture checks map directly onto how a FastAPI+Postgres backend at jdeworks would be structured.\n\n### Strategic alignment — `0.78`\n\nStrongly serves the goal of identifying reproducibility risks before investing: the paper hands the user concrete empirical evidence that agents drop ~30 A% points under L3 constraints and that FastAPI specifically underperforms vs. Flask, which informs whether to trust agent-generated FastAPI code. It partially serves 'find practical methods I can integrate' via the static verifier patterns (architecture, DB, ORM) and the Postman/Newman behavioral harness, though the paper itself is a benchmark study rather than a deployable library.\n\n### Operational fit — `0.70`\n\nFits the team_size=1 and budget=low constraints as a read-once decision aid: a solo developer relying on coding agents for FastAPI/Postgres backends gains actionable risk signal without having to run the ~5B-token evaluation themselves. The advice to prefer minimal explicit frameworks conflicts with the user's existing FastAPI commitment, but the verifier ideas are cheap to adopt in a low-budget CI pipeline.\n\n### Risk — `0.35`\n\nModerate adoption risk: reproducibility is flagged at 0.55 with no released code yet, several cited models (GPT-5.2, MiniMax-M2.5, Kimi-K2.5) carry future-dated references, and no seeds, decoding hyperparameters, or commit hashes are provided. However, the user is consuming findings, not reproducing the pipeline, so the practical downside is limited to over-indexing on a single benchmark's framework-sensitivity ranking.\n\n### Overall — `0.78`\n\nHigh overall relevance because the paper directly stress-tests the exact FastAPI + PostgreSQL + SQLAlchemy + Docker configuration the user runs at jdeworks, and the constraint-decay finding plus data-layer root cause analysis squarely address the goal of identifying reproducibility and reliability risks before investing in agent-generated code. Dominant axis is technical_compatibility, tempered by the fact that this is a benchmark paper rather than a method to integrate and by the unreleased repo.\n\n## Adoption cost <a id=\"adoption-cost\"></a>\n\n\n**Adoption cost: `0.75`** *(tier-1 baseline: `1.00`)* — effort-adjusted relevancy `0.44`.\n\n### Tier-1 breakdown\n\n| Slot | Required | Gaps | Weight | Slot contribution |\n|---|---|---|---|---|\n| services | 1 | 1 | 0.25 | 0.25 |\n| databases | 2 | 2 | 0.40 | 0.80 |\n| languages | 5 | 5 | 0.40 | 2.00 |\n| frameworks | 3 | 3 | 0.15 | 0.45 |\n| infrastructure | 2 | 2 | 0.50 | 1.00 |\n\n> *Slot contribution = `weight × gaps × (1 − coverage)` (unnormalized). The composite adoption cost is the weighted average of these contributions across all slots the paper required.*\n\n### Tier-2 refinements\n\n\n\n#### 1. `infrastructure` / `docker` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.35` (was `1.00` from tier-1)\n- **Uncertainty:** `high`\n\nThe paper's evaluation harness across eight web frameworks (Flask, FastAPI, Django, etc.) almost certainly relies on Docker to isolate per-framework runtimes and run the end-to-end behavioral tests reproducibly. The user has no recorded stack so we cannot confirm Docker is present, but the graded floor (any OCI-compatible runtime) and fallback (podman, containerd) are broadly interchangeable for this kind of test harness with only minor compose-file or socket-path tweaks. Real cost is installing a runtime and learning enough to launch the Conduit test images, not greenfield infrastructure work.\n\n#### 2. `infrastructure` / `git` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.15` (was `1.00` from tier-1)\n- **Uncertainty:** `high`\n\nGit is used here just to clone the Conduit reference repositories and the paper's task fixtures, which the floor explicitly allows any VCS to satisfy and even permits a manual tarball checkout as fallback. Even with no recorded stack, installing git or downloading a release archive is essentially trivial setup work, not a methodological barrier. The only reason this is non-zero is that we cannot verify the user has it on the target machine.\n\n#### 3. `languages` / `bash` — trigger `ecosystem_dependency`\n\n- **Refined cost:** `0.10` (was `1.00` from tier-1)\n- **Uncertainty:** `high`\n\nBash here is an ecosystem dependency for invoking the evaluation scripts that drive the static verifiers and behavioral test runners across the 8 frameworks. The graded floor accepts any POSIX shell and the fallback explicitly covers zsh or sh, so any Unix-like environment already qualifies and the scripts can usually be re-shebanged if needed. With no recorded stack we cannot confirm, but the absence of bash specifically is rarely a real adoption blocker.\n\n\n\n---\n\n## Sensitivity: this paper vs your other contexts\n\n| Context | Score |\n|---|---|\n| ctx_anvil_v3 | 0.72 |\n\n\n<a id=\"provenance\"></a>\n<details>\n<summary><strong>Provenance</strong></summary>\n\n| Artifact | Agent | Version | Tokens |\n|---|---|---|---|\n| claims | claim_extractor | 2.0.0 | — |\n| figures | figure_analysis | 1.0.0 | — |\n| methods | method_extractor | 2.1.0 | — |\n| novelty | novelty_scorer | 1.0.0 | — |\n| citations | citation_extractor | 2.0.0 | — |\n| tool_stack | tool_stack_extractor | 1.0.0 | — |\n| reproducibility | reproducibility_scorer | 1.0.0 | — |\n\n\n- **Paper source:** `/data/papers/_uploads/6ca370d40d3cc3a58cc3d51ad6cab5d2c7aaaab3e3d48920dbc30ed701025530/6ca370d40d3cc3a58cc3d51ad6cab5d2c7aaaab3e3d48920dbc30ed701025530.pdf` (sha256 `6ca370d40d3c…`)\n- **Evaluation row:** `eval_357ba861-a9cd-4626-ba28-f2ec80903bdd`\n- **Relevancy row:** `rel_dd621328-cbc6-4ed6-9864-bc2388fec866` against `ctx_default` (`ctx_d7cfc578-eb55-44c3-ada9-ba232c0af142`)\n- **Generated:** 2026-06-19T11:46:32+00:00\n- **Renderer:** `report_writer` v1.2.0\n\n</details>\n",
+      "other_context_scores": []
+    }
+  ]
+}

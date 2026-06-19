@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* Theme tokens mirror anvil's mono palette (frontend/app/globals.css) so the
+   demo reads as the real product. Dark is the default (matches anvil). */
+@theme {
+  --color-canvas: #09090b;
+  --color-canvas-alt: #18181b;
+  --color-line: #27272a;
+  --color-fg: #fafafa;
+  --color-fg-muted: #a1a1aa;
+  --color-accent: #a78bfa;
+  --color-accent-fg: #0b0a13;
+  --color-success-fg: #86efac;
+  --color-success-bg: #14331f;
+  --color-success-border: #1f4d2f;
+  --color-warn-fg: #fcd34d;
+  --color-warn-bg: #3a2c12;
+  --color-warn-border: #5c4218;
+  --color-error-fg: #fca5a5;
+  --color-error-bg: #3a1818;
+  --color-error-border: #5c2424;
+}
+
+:root.light {
+  --color-canvas: #ffffff;
+  --color-canvas-alt: #fafafa;
+  --color-line: #e4e4e7;
+  --color-fg: #18181b;
+  --color-fg-muted: #71717a;
+  --color-accent: #7c3aed;
+  --color-accent-fg: #ffffff;
+  --color-success-fg: #1a6b2a;
+  --color-success-bg: #e6f7e9;
+  --color-success-border: #a5d6af;
+  --color-warn-fg: #8a5a00;
+  --color-warn-bg: #fff7e0;
+  --color-warn-border: #f0d28a;
+  --color-error-fg: #8a1f1f;
+  --color-error-bg: #fff5f5;
+  --color-error-border: #f3c2c2;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-canvas);
+  color: var(--color-fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Every enabled button is clickable. */
+button:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

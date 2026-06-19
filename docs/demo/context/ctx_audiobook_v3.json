@@ -1,0 +1,34 @@
+{
+  "id": null,
+  "name": "ctx_audiobook_v3",
+  "display_name": "auto-audiobook",
+  "organization": "",
+  "tech_stack": {
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "frameworks": [
+      "eslint",
+      "express",
+      "prettier",
+      "react",
+      "tailwindcss",
+      "vite",
+      "vitest"
+    ],
+    "infrastructure": [
+      "make"
+    ],
+    "databases": []
+  },
+  "constraints": {
+    "budget": "medium",
+    "latency": "medium",
+    "security": "medium",
+    "team_size": 1
+  },
+  "goals": [],
+  "paper_count": 0,
+  "source_yaml": "#  anvil — auto-discovered user context draft.\n#  Generated 2026-05-21T11:16:03Z\n#  Sources: /repos/auto-audiobook\n#  Edit this file before running an evaluation against it.\n#  Comments on each line explain provenance:\n#    (auto-discovered)         — at least one signal in a scanned repo.\n#    (low confidence — please confirm) — partial signal, may be wrong.\n#    (default — please confirm) — nothing detected; falling back.\n#    (rewrite hints above into actual goals) — README excerpts above; user rewrites.\nid: ctx_audiobook_v3\norganization: '' # (default — please confirm)\ntech_stack:\n  languages:  # (auto-discovered)\n    - javascript\n    - typescript\n  frameworks: # (auto-discovered)\n    - eslint\n    - express\n    - prettier\n    - react\n    - tailwindcss\n    - vite\n    - vitest\n  infrastructure: # (auto-discovered)\n    - make\n  databases: [] # (default — please confirm)\n\n#  actual_stack — structured per-entry view. Parallel to tech_stack\n#  with version / extension / extras / qualifier from deterministic scan.\n#  Slots that read as empty or partial are listed under meta.gap_summary\n#  — the Phase 2b `anvil discover --enrich` agent will fill these.\nactual_stack:\n  languages:\n    - name: javascript\n      version: '>=18'\n    - name: typescript\n      version: '>=18'\n  frameworks:\n    - name: eslint\n      version: 8.4.0\n    - name: express\n      version: 5.2.1\n    - name: prettier\n      version: 3.8.1\n    - name: react\n      version: 0.17.0\n    - name: tailwindcss\n      version: 4.2.2\n    - name: vite\n      version: 3.2.4\n    - name: vitest\n      version: 3.2.4\n  infrastructure:\n    - name: make\n    - name: node-runtime\n      qualifier: '>=18'\n  databases: []\n  services: []\nconstraints:\n  budget: medium  # (default — please confirm) low|medium|high\n  latency: medium # (default — please confirm) low|medium|high\n  security: medium # (default — please confirm) low|medium|high\n  team_size: 1 # (default — please confirm)\n#  Extracted from README — rewrite into actual goals below:\n#    - h1: Narratu\n#    - intro: AI-powered audiobook creator that turns short stories into voiced audiobooks with distinct character voices — entirely in the browser.\ngoals: []  # (rewrite hints above into actual goals)\n\n#  Provenance — what fired where. Safe to keep or strip.\nmeta:\n  paths_scanned:\n    - /repos/auto-audiobook\n  language_versions: {}\n  directory_shape:\n    - docs\n    - scripts\n    - server\n  all_declared_deps:\n    - eslint\n    - express\n    - prettier\n    - react\n    - react-dom\n    - tailwindcss\n    - vite\n    - vitest\n  gap_summary:\n    infrastructure: hardware (GPU model, RAM, disk class) is not deterministically scannable — agent\n      could ask the user\n    services: no services detected from .env.example or client deps; agent could check \n      terraform/cdk/serverless configs\n  enrichment_provenance:\n    - field_path: languages[javascript].version\n      action: fill\n      agent_value: '>=18'\n      confidence: inferred\n      rationale: vite 3 + vitest 3 + express 5 ecosystem all require Node 18+, which is the \n        effective JavaScript runtime floor.\n    - field_path: languages[typescript].version\n      action: fill\n      agent_value: '>=18'\n      confidence: inferred\n      rationale: TypeScript compiles to JS executed on Node; vite 3 + vitest 3 + express 5 toolchain\n        mandates Node 18+ as the runtime floor.\n    - field_path: infrastructure[node-runtime]\n      action: add_entry\n      agent_value: '>=18'\n      confidence: inferred\n      rationale: express 5 is a Node server framework, implying a Node runtime; vite 3 / vitest 3 \n        pin that floor to Node 18+.\n  evidence_summary:\n    directory_shape:\n      docs:\n        - docs/\n      scripts:\n        - scripts/\n      server:\n        - server/\n    framework:\n      eslint:\n        - dep:eslint\n      express:\n        - dep:express\n      prettier:\n        - dep:prettier\n      react:\n        - dep:react-dom\n        - dep:react\n      tailwindcss:\n        - dep:tailwindcss\n      vite:\n        - dep:vite\n      vitest:\n        - dep:vitest\n    framework_version:\n      esbuild:\n        - lock:0.25.12 (package-lock.json)\n        - lock:0.25.12 (package-lock.json)\n      eslint:\n        - spec:^9.24.0\n        - lock:3.4.3 (package-lock.json)\n        - lock:9.39.4 (package-lock.json)\n        - lock:8.4.0 (package-lock.json)\n        - lock:3.4.3 (package-lock.json)\n        - lock:9.39.4 (package-lock.json)\n        - lock:8.4.0 (package-lock.json)\n      express:\n        - spec:^5.2.1\n        - lock:5.2.1 (package-lock.json)\n        - lock:5.2.1 (package-lock.json)\n      prettier:\n        - spec:^3.5.3\n        - lock:3.8.1 (package-lock.json)\n        - lock:3.8.1 (package-lock.json)\n      react:\n        - spec:^19.2.4\n        - spec:^19.2.4\n        - lock:19.2.4 (package-lock.json)\n        - lock:19.2.4 (package-lock.json)\n        - lock:17.0.2 (package-lock.json)\n        - lock:0.17.0 (package-lock.json)\n        - lock:19.2.4 (package-lock.json)\n        - lock:19.2.4 (package-lock.json)\n        - lock:17.0.2 (package-lock.json)\n        - lock:0.17.0 (package-lock.json)\n      rollup:\n        - lock:4.60.1 (package-lock.json)\n        - lock:4.60.1 (package-lock.json)\n      tailwindcss:\n        - spec:^4.2.2\n        - lock:4.2.2 (package-lock.json)\n        - lock:4.2.2 (package-lock.json)\n      vite:\n        - spec:^6.3.2\n        - lock:6.4.1 (package-lock.json)\n        - lock:3.2.4 (package-lock.json)\n        - lock:6.4.1 (package-lock.json)\n        - lock:3.2.4 (package-lock.json)\n      vitest:\n        - spec:^3.1.1\n        - lock:3.2.4 (package-lock.json)\n        - lock:3.2.4 (package-lock.json)\n    infrastructure:\n      make:\n        - Makefile (Makefile)\n    language:\n      javascript:\n        - dep_file:package.json (package.json)\n        - source_files:63\n      typescript:\n        - dep_file:tsconfig.json (tsconfig.json)\n        - source_files:86\n"
+}

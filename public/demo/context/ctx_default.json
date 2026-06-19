@@ -1,0 +1,36 @@
+{
+  "id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+  "name": "ctx_default",
+  "display_name": "anvil",
+  "organization": "jdeworks",
+  "tech_stack": {
+    "languages": [
+      "python",
+      "typescript"
+    ],
+    "frameworks": [
+      "fastapi",
+      "nextjs",
+      "react"
+    ],
+    "infrastructure": [
+      "docker"
+    ],
+    "databases": [
+      "postgres"
+    ]
+  },
+  "constraints": {
+    "budget": "low",
+    "latency": "medium",
+    "security": "medium",
+    "team_size": 1
+  },
+  "goals": [
+    "reduce time spent reading papers",
+    "find practical methods I can integrate into existing tooling",
+    "identify reproducibility risks before I invest in implementing something"
+  ],
+  "paper_count": 6,
+  "source_yaml": "# anvil — user context template.\n# Copy to user_context/default.yaml and edit. Or generate one with:\n#   anvil discover --path ~/code/some-repo --path ~/code/another-repo\n#\n# Loaded by the relevancy_scorer (WP-7) and the evaluation CLI (WP-9).\n\nid: ctx_default\norganization: jdeworks\n\ntech_stack:\n  languages: [python, typescript]            # (please confirm)\n  frameworks: [fastapi, nextjs, react]       # (please confirm)\n  infrastructure: [docker]                   # (please confirm)\n  databases: [postgres]                      # (please confirm)\n\nconstraints:\n  budget: low                                # low | medium | high\n  latency: medium                            # low | medium | high\n  security: medium                           # low | medium | high\n  team_size: 1\n\ngoals:\n  - reduce time spent reading papers\n  - find practical methods I can integrate into existing tooling\n  - identify reproducibility risks before I invest in implementing something\n"
+}

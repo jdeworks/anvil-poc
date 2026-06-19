@@ -1,0 +1,1010 @@
+{
+  "kind": "url",
+  "id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
+  "detail": {
+    "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+    "authors": [
+      "Dylan Bristot"
+    ],
+    "year": null,
+    "abstract": "April was the loudest month in years. GPT-5.5 broke 60 on the Intelligence Index. Opus 4.7 landed. DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50. Then May opened, and the top of the leaderboard went still. The interesting story moved sideways, into a new attention architecture, an 8B MoE trained on AMD, and a quieter default in ChatGPT.",
+    "page_count": 0,
+    "source_type": "html",
+    "source_url": null,
+    "detected_language": "en",
+    "tags": [
+      "inference-optimization",
+      "serving",
+      "pretraining"
+    ]
+  },
+  "content": {
+    "text": "# New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage\n\nApril was the loudest month in years. GPT-5.5 broke 60 on the Intelligence Index. Opus 4.7 landed. DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50. Then May opened, and the top of the leaderboard went still. The interesting story moved sideways, into a new attention architecture, an 8B MoE trained on AMD, and a quieter default in ChatGPT.\n\n## Mid-May 2026 at a glance\n\nThe Intelligence Index ceiling from April (GPT-5.5 xhigh, 60.24) has held into mid-May. No frontier-scale drop yet from Anthropic, Google, Meta, Mistral, or the Chinese labs. The action shifted to architecture, efficiency, and product defaults.\n\n## The setup: what April actually did\n\nTo understand why May feels quiet, you have to remember how loud April was. The Intelligence Index ceiling had held at 57.18 since Gemini 3.1 Pro in February. GPT-5.4 matched it. Nobody broke it. Then April happened.\n\nOn April 16, Anthropic shipped **Claude Opus 4.7**, which scored 57.28 on the Intelligence Index (Adaptive Reasoning, Max Effort) and 52.51 on the coding index, per the Artificial Analysis snapshot. Seven days later, on April 23, OpenAI released** GPT-5.5**, which posted **60.24 at xhigh effort** and 59.12 on coding. The 57 ceiling didn't just crack, it moved up three points.\n\nDeepSeek V4 Pro followed on April 24 at 51.51 with weights on Hugging Face. Kimi K2.6 hit 53.90 on April 20. MiMo V2.5 Pro from Xiaomi hit 53.83 on April 22. Five different labs put models above 50 in a single month. The frontier didn't just expand, it crowded.\n\nThat is the context for May. Nobody is racing to drop a model two weeks after that sprint. The labs that didn't ship in April (Anthropic past Opus 4.7, Google past Flash Lite, Meta past Muse Spark, Mistral, Qwen Max, MiniMax) are likely cooking. The labs that did ship are catching their breath. So what showed up in the first half of May is not the frontier. It's the layer underneath.\n\n## The full release list\n\nEverything notable that shipped between May 1 and May 13, 2026. Smaller and niche releases happen daily on Hugging Face, but these are the ones with real coverage, funding, or distribution behind them.\n\n| Date | Model | Developer | Type | License | Notes |\n|---|---|---|---|---|---|\n| May 5 | GPT-5.5 Instant | OpenAI | Text + Reasoning | Proprietary | ChatGPT default |\n| May 5 | SubQ 1M-Preview | Subquadratic | Text + Long Context | Proprietary (API) | ~1/5 of frontier |\n| May 6 | Grok 4.3 | xAI | Text + Reasoning | Proprietary | X / xAI API |\n| May 6 | ZAYA1-8B | Zyphra | Text + Reasoning (MoE) | Open (Apache 2.0) | Free (self-host) |\n| May 8 | Gemini 3.1 Flash Lite | Text + Vision | Proprietary (API) | Gateways |\n\nHighlighted rows are the two releases that defined the month so far. Data from developer announcements, llm-stats.com, LLM Gateway, and Artificial Analysis. Covers May 1 to May 13, 2026.\n\n## SubQ: the first commercial subquadratic LLM\n\nThe most interesting release in May 2026 isn't from a name you've seen on a leaderboard before. **SubQ** (the company is Subquadratic, the first model is SubQ 1M-Preview) launched on May 5 with $29M in seed funding and a single claim: their model is not a transformer.\n\nStandard transformer attention is O(n²) in context length. Double the context, quadruple the cost. That ceiling is why long-context models charge real money for long-context calls, and why most \"1M context\" claims come with quiet caveats about quality degradation past a certain length. SubQ uses sparse, subquadratic attention end to end. The first release ships with a native 12 million token context window. Subquadratic claims roughly 1/5 the cost of frontier models on long-context tasks and up to 52x faster attention at scale.\n\n### SubQ 1M-Preview, what we know\n\nTwo things to flag honestly. First, the headline numbers are vendor numbers. No third party has yet posted SubQ against MRCR, RULER, or the long-context tasks that matter for real work. Until that happens, treat 52x and 1/5 as marketing. Second, \"subquadratic attention\" as a research area is not new. Mamba, RWKV, Hyena, BASED, and a dozen other efforts have all shown promise and then plateaued when pushed against frontier transformers on standard benchmarks.\n\nWhat is new is the packaging. SubQ is the first time someone has put subquadratic attention behind an API, charged for it, and shipped a real coding product on top. That alone is worth tracking, because the unit economics of frontier inference are increasingly the bottleneck, not the intelligence. If SubQ holds up at 200K to 1M token jobs against GPT-5.5 or Opus 4.7, the architectural story stops being a research sideshow and becomes a deployment story.\n\n## GPT-5.5 Instant: the quiet but consequential default swap\n\nOn May 5, OpenAI made **GPT-5.5 Instant** the new default for ChatGPT across free and paid tiers, replacing GPT-5.3 Instant. In the API it shows up as`chat-latest`\n\n.\n\nThis is not a frontier release. GPT-5.5 (the full model) shipped April 23, posted 60.24 on the Intelligence Index at xhigh, and is the model that broke the 57 ceiling. Instant is the lightweight, low-latency sibling. The framing from OpenAI is specific: faster responses, fewer hallucinations in high-stakes domains (law, medicine, finance), better everyday usability. No claims about higher reasoning scores.\n\nThat framing matters. The default model in ChatGPT is the most-used LLM on earth by a wide margin. When OpenAI swaps the default, the median answer quality for hundreds of millions of people changes overnight. Picking \"fewer hallucinations on regulated topics\" as the headline improvement, rather than \"smarter,\" is a tell about what OpenAI thinks the next round of competition is actually about. It is not about a higher GPQA score. It is about a confident wrong answer to a legal question and what that costs the platform.\n\n## ZAYA1-8B: an 8B MoE trained on AMD\n\n**Zyphra** released **ZAYA1-8B** on May 6 to 7 under Apache 2.0. Eight billion total parameters, roughly 760M active per token via MoE routing. Two things make this release matter more than its size suggests.\n\nFirst, the training stack. ZAYA1 was trained end to end on AMD Instinct hardware. Not ported, not fine-tuned, trained from scratch on AMD. Every other notable open-weight release in 2026 has been either NVIDIA-trained (everyone) or Huawei Ascend-trained (DeepSeek V4). AMD has been the quiet third option for a year. ZAYA1 is the first reasoning-oriented open release that actually demonstrates the end-to-end path.\n\nSecond, the intelligence density. 760M active parameters per token is small. For comparison, GLM-5.1 activates 40B, Kimi K2.6 activates around 32B, and DeepSeek V4 Pro activates roughly 37B. Zyphra reports ZAYA1-8B competing with much larger open-weight models on reasoning, math, and coding benchmarks. If those numbers hold under independent runs, this is one of the strongest cost-per-token open models available, full stop.\n\n### ZAYA1-8B at a glance\n\nAvailable on Hugging Face and as a free serverless endpoint on Zyphra Cloud. The cleanest test in May for the thesis that intelligence density (capability per active parameter) is the metric that matters next.\n\n## Grok 4.3 and Gemini 3.1 Flash Lite: the maintenance releases\n\nTwo more entries on the May list, both better understood as maintenance than as news.\n\n**Grok 4.3** from xAI shows up on most LLM trackers as a May 6 release. The actual beta dropped on April 17, so the May date reflects wider rollout and API availability rather than a new base model. Grok 4.20 (the April 7 entry) is what posted 49.33 on the Intelligence Index in reasoning mode in the Artificial Analysis snapshot. Grok 4.3 fits the same family with iterative improvements. No published benchmark step change at this writing.\n\n**Gemini 3.1 Flash Lite** from Google landed on gateways around May 8. It is the lightweight efficiency variant of the Gemini 3.1 line, sitting below 3.1 Flash and well below 3.1 Pro on capability, optimized for speed and cost per call. It is the mirror image of GPT-5.5 Instant, the same product instinct from a different lab. The cheap, fast, good-enough tier of every major frontier family is where most actual production traffic lives. Both Google and OpenAI moved on that tier in the same week.\n\n## What is conspicuously missing\n\nThe May list is shorter than the April one for a reason. Several labs that have been publishing on a roughly monthly cadence are visibly silent through May 13:\n\n**Anthropic**shipped Opus 4.7 on April 16. The May 6 dev day delivered features (memory tools, multi-agent orchestration, the \"Dreaming\" mode for asynchronous reasoning) rather than a new base model. Mythos is still gated.**Meta**shipped Muse Spark on April 8 at 52.15 on the Intelligence Index. No follow-up yet.**DeepSeek**shipped V4 Pro and V4 Flash on April 24. A V4 update or distilled variant is the obvious next step, and has not appeared.**Alibaba (Qwen)**shipped six Qwen 3.6 variants in April including Max Preview at 51.81. The Qwen Max full release is widely expected, not yet here.**Mistral**has been quiet since Small 4 in March.**Z AI (Zhipu)**shipped GLM-5.1 on April 7. No GLM-5.2 yet.\n\nThis list is what makes May feel like a pause rather than a slowdown. The labs are cooking. The Q2 schedule on every public roadmap implies more frontier-scale releases before the end of June. The interesting question is whether any of them clear 60 on the Intelligence Index. GPT-5.5 xhigh sits there alone right now.\n\n## Three shifts defining May\n\n### Three shifts happening right now\n\n#### Architecture is back as a competitive lever.\n\nFor two years, the frontier was a scale game. Bigger model, more data, more compute. SubQ is the first credible product bet that the next 10x is not in parameter count but in attention mechanism. Whether SubQ is the winner or just the first shot, the era of \"every frontier model is a transformer\" is on notice. Watch for Mamba-Hybrid, RWKV-7, and BASED-style efforts to get a second wind.\n\n#### Active parameter count is the new size.\n\nZAYA1-8B at 760M active. Gemma 4 26B-A4B at 4B active. DeepSeek V4 Flash at modest active counts on a 284B-total body. The headline number on a model spec is shifting from total parameters to active per token, because that is what determines inference cost. Intelligence density (Intelligence Index per active billion) is the metric that maps onto real margins.\n\n#### The \"default\" tier is where the user experience war is fought.\n\nGPT-5.5 Instant became the ChatGPT default on May 5. Gemini 3.1 Flash Lite hit gateways on May 8. Neither is a frontier release. Both replace the model that hundreds of millions of people interact with daily. The headline benchmark race decides the press cycle. The default-tier race decides retention, latency, cost, and brand trust. Fewer hallucinations on legal questions matters more than a three-point GPQA bump.\n\n## Practical guidance for mid-May 2026\n\n| If you need... | Consider | Why |\n|---|---|---|\n| Best raw intelligence | GPT-5.5 (xhigh) | 60.24 on Intelligence Index. Still the only model over 60 in mid-May. |\n| Best long context (200K+) | SubQ 1M-Preview | 12M native context. Built for repo-wide code and multi-doc workloads. Verify on your data before committing. |\n| Best open small reasoning model | ZAYA1-8B | Apache 2.0, 760M active. Strongest cost-per-token open option in the small-MoE band. |\n| Best open coding model | GLM-5.1 (April 7) | 744B MoE, 40B active, MIT license. Coding index 43.37 in the snapshot. No May release displaces it. |\n| Best open frontier | Kimi K2.6 or DeepSeek V4 Pro | 53.90 and 51.51 on Intelligence Index respectively. Both open weights, both shipped in April. |\n| Default chatbot for end users | GPT-5.5 Instant | Now the ChatGPT default. Optimized for latency and fewer hallucinations in regulated domains. |\n| Cheap, fast, good-enough API tier | Gemini 3.1 Flash Lite | Google's mirror of GPT-5.5 Instant. Pick on price-per-million and provider preference. |\n\n## The bottom line\n\nMid-May 2026 is the first month in a year where the most interesting AI release was not the highest-scoring one. SubQ doesn't claim to beat GPT-5.5 on GPQA. It claims to run 12M-token contexts at one fifth the cost. ZAYA1-8B doesn't claim to top the Intelligence Index. It claims to run frontier-adjacent reasoning at 760M active parameters on AMD silicon.\n\nThose are different kinds of claims. They are about cost, latency, hardware independence, and architecture. The benchmark race has not stopped, it just took a breath after April. When it resumes (and it will, probably in late May or early June), expect at least one of the silent labs (Anthropic post-Mythos, Qwen Max, GLM-5.2, DeepSeek V4.1, Mistral Large 4) to take a real swing at 60-plus.\n\nUntil then, the story is sideways, not up. April made the ceiling. May is figuring out what the floor looks like. If you are deploying models in production right now, the floor matters more.\n\nData sourced from Artificial Analysis, LLM Stats, LLM Gateway, and developer announcements from OpenAI, Subquadratic, xAI, Zyphra, and Google. Covers May 1 to May 13, 2026. Intelligence Index and coding index values are from the WhatLLM.org snapshot of the Artificial Analysis dataset. See our interactive model explorer for live pricing, speed, and benchmark data across 280+ models, or the April 2026 roundup for what came right before this.\n\n## Frequently asked questions\n\n### What new AI models were released in May 2026?\n\nThrough mid-May 2026 the confirmed releases are: GPT-5.5 Instant (OpenAI, May 5) as the new ChatGPT default, SubQ 1M-Preview (Subquadratic, May 5) as the first commercial subquadratic LLM with a 12M token context, Grok 4.3 (xAI, May 6) in wider rollout following its April 17 beta, ZAYA1-8B (Zyphra, May 6 to 7) an Apache 2.0 MoE trained on AMD, and Gemini 3.1 Flash Lite (Google, May 8) as a lightweight Gemini 3.1 variant.\n\n### What is SubQ and why does it matter?\n\nSubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a standard transformer. The first release, SubQ 1M-Preview, ships with a native 12 million token context window, claims roughly one fifth the cost of frontier models, and up to 52x faster attention at scale. It matters because transformer attention is O(n-squared) in context length, and breaking that cost curve changes the unit economics of long context if the claims hold under independent benchmarks.\n\n### What is GPT-5.5 Instant?\n\nGPT-5.5 Instant is a lightweight, low-latency variant of GPT-5.5 that became the new default in ChatGPT (free and paid tiers) on May 5, 2026, replacing GPT-5.3 Instant. It is available in the API as chat-latest. OpenAI emphasizes faster responses and fewer hallucinations in high-stakes domains (law, medicine, finance). The full GPT-5.5 (released April 23) remains the model that broke 60 on the Intelligence Index.\n\n### What is ZAYA1-8B?\n\nZAYA1-8B is an open-source (Apache 2.0) MoE reasoning model from Zyphra. It has 8B total parameters with roughly 760M active per token, was trained end to end on AMD Instinct hardware, and is optimized for high intelligence density per active parameter. Available on Hugging Face and via a free serverless endpoint on Zyphra Cloud.\n\n### Did the Intelligence Index ceiling move in May?\n\nNo. The April ceiling (GPT-5.5 xhigh at 60.24) has held through mid-May. No new frontier-scale release has landed yet. The interesting May moves are architectural (SubQ), efficiency-focused (ZAYA1-8B), and product-level (GPT-5.5 Instant and Gemini 3.1 Flash Lite as new defaults).\n\n### Cite this analysis\n\nIf you are referencing this analysis:\n\nBristot, D. (2026, May 13). *New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage.* WhatLLM.org. https://whatllm.org/blog/new-ai-models-may-2026\n\nSources: Artificial Analysis, LLM Stats, LLM Gateway, OpenAI, Subquadratic, xAI, Zyphra, Google DeepMind announcements. May 2026."
+  },
+  "summary": {
+    "extractor_method": "trafilatura",
+    "summary_text": "This is an industry commentary documenting AI model releases from April-May 2026, not a traditional research paper. April saw frontier breakthroughs: GPT-5.5 reached 60.24 on the Intelligence Index, Opus 4.7 scored 57.28, and five labs released models above 50. May 2026 shifted toward architectural innovation rather than frontier capability races. Key May releases include SubQ 1M (first commercial subquadratic attention with 12M token context), GPT-5.5 Instant (new ChatGPT default emphasizing reliability), and ZAYA1-8B (8B MoE trained on AMD). SubQ's vendor-claimed performance (52x speedup, 1/5 cost) lacks independent verification. The piece frames the competitive narrative as moving from capability benchmarks to inference efficiency and reliability.",
+    "verdict": "inconclusive",
+    "confidence": 0.65,
+    "general_claim": "April 2026 saw major frontier AI model releases that broke previous performance ceilings, but May 2026 pivoted toward architectural innovations and inference efficiency as the primary competitive focus.",
+    "key_findings": [
+      "GPT-5.5 scored 60.24 on Intelligence Index in April 2026, breaking the previous 57.18 ceiling held since February",
+      "Five AI labs released models scoring above 50 in April (Anthropic, OpenAI, DeepSeek, Kimi, Xiaomi)",
+      "SubQ introduced first commercial subquadratic attention architecture with claimed 12 million token context window and 1/5 frontier inference cost",
+      "GPT-5.5 Instant became ChatGPT default on May 5, emphasizing fewer hallucinations on regulated topics rather than higher reasoning scores",
+      "ZAYA1-8B released as open-source 8B parameter mixture-of-experts model trained on AMD hardware",
+      "Industry focus shifted from frontier capability races to architectural efficiency between April and May 2026"
+    ],
+    "stats": {
+      "pages": 0,
+      "found_tags": 3,
+      "claim_count": 21,
+      "token_count": 2644,
+      "found_issues": 0,
+      "method_count": 26,
+      "citation_count": 0
+    }
+  },
+  "analysis": {
+    "status": "complete",
+    "confidence": null,
+    "claims": [
+      {
+        "text": "GPT-5.5 broke 60 on the Intelligence Index in April 2026.",
+        "section_ref": "Abstract",
+        "confidence": 0.45,
+        "provenance": "verbatim",
+        "validity_confidence": 0.6,
+        "validity_basis": "asserted benchmark score with no methodology or source shown",
+        "evidence_strength": 0.3,
+        "evidence_basis": "single score asserted, no benchmark methodology described",
+        "evidence_type": "empirical_result",
+        "scope": 0.25,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50 on the Intelligence Index.",
+        "section_ref": "Abstract",
+        "confidence": 0.35,
+        "provenance": "verbatim",
+        "validity_confidence": 0.55,
+        "validity_basis": "asserted scores for three models with no benchmark methodology shown",
+        "evidence_strength": 0.25,
+        "evidence_basis": "three scores asserted simultaneously, no methodology or source",
+        "evidence_type": "empirical_result",
+        "scope": 0.3,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Standard transformer attention is O(n-squared) in context length, meaning doubling the context quadruples the cost.",
+        "section_ref": "SubQ: the first commercial subquadratic LLM",
+        "confidence": 0.5,
+        "provenance": "verbatim",
+        "validity_confidence": 0.97,
+        "validity_basis": "well-established theoretical result in the ML literature",
+        "evidence_strength": 0.2,
+        "evidence_basis": "asserted as known prior fact, no derivation provided",
+        "evidence_type": "citation_backed",
+        "scope": 0.9,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Most '1M context' model claims come with quality degradation caveats past a certain effective length.",
+        "section_ref": "SubQ: the first commercial subquadratic LLM",
+        "confidence": 0.4,
+        "provenance": "paraphrased",
+        "validity_confidence": 0.6,
+        "validity_basis": "widely observed industry pattern but asserted here without citation or data",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted without supporting data or citation",
+        "evidence_type": "asserted",
+        "scope": 0.65,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a standard transformer.",
+        "section_ref": "SubQ: the first commercial subquadratic LLM",
+        "confidence": 0.95,
+        "provenance": "verbatim",
+        "validity_confidence": 0.55,
+        "validity_basis": "'first' novelty claims are hard to verify without exhaustive survey of all commercial releases",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted novelty with no systematic comparison to alternatives",
+        "evidence_type": "asserted",
+        "scope": 0.85,
+        "corroboration_verdict": "supported",
+        "corroboration_sources": [
+          "https://www.datacamp.com/blog/subq-ai-explained",
+          "https://thenewstack.io/subquadratic-12-million-context-window/",
+          "https://felloai.com/subq-llm-review/",
+          "https://www.codiste.com/subq-first-sub-quadratic-frontier-llm-long-context-ai",
+          "https://subq.ai/introducing-subq"
+        ]
+      },
+      {
+        "text": "SubQ uses sparse, subquadratic attention end to end.",
+        "section_ref": "SubQ: the first commercial subquadratic LLM",
+        "confidence": 0.8,
+        "provenance": "verbatim",
+        "validity_confidence": 0.65,
+        "validity_basis": "stated architectural description, not independently verified or proven in the text",
+        "evidence_strength": 0.2,
+        "evidence_basis": "asserted architectural claim with no derivation or ablation",
+        "evidence_type": "asserted",
+        "scope": 0.5,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "SubQ 1M-Preview ships with a native 12 million token context window.",
+        "section_ref": "SubQ 1M-Preview, what we know",
+        "confidence": 0.8,
+        "provenance": "verbatim",
+        "validity_confidence": 0.7,
+        "validity_basis": "stated product specification, plausible given the architecture but not benchmarked",
+        "evidence_strength": 0.25,
+        "evidence_basis": "asserted product specification with no quality-at-length benchmark shown",
+        "evidence_type": "asserted",
+        "scope": 0.25,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "SubQ claims roughly one fifth the cost of frontier models on long-context tasks.",
+        "section_ref": "SubQ 1M-Preview, what we know",
+        "confidence": 0.9,
+        "provenance": "verbatim",
+        "validity_confidence": 0.4,
+        "validity_basis": "unverified vendor cost claim with no pricing breakdown or independent audit",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted cost figure without supporting data, methodology, or independent verification",
+        "evidence_type": "asserted",
+        "scope": 0.45,
+        "corroboration_verdict": "not_found",
+        "corroboration_sources": [
+          "https://www.datacamp.com/blog/subq-ai-explained"
+        ]
+      },
+      {
+        "text": "SubQ claims up to 52x faster attention at scale compared to standard transformer attention.",
+        "section_ref": "SubQ 1M-Preview, what we know",
+        "confidence": 0.9,
+        "provenance": "verbatim",
+        "validity_confidence": 0.4,
+        "validity_basis": "'up to' framing is a loose upper bound and no benchmark details or hardware specs are provided",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted speed multiplier with no experimental methodology or hardware context",
+        "evidence_type": "asserted",
+        "scope": 0.4,
+        "corroboration_verdict": "mixed",
+        "corroboration_sources": [
+          "https://www.datacamp.com/blog/subq-ai-explained",
+          "https://felloai.com/subq-llm-review/",
+          "https://explainx.ai/blog/subq-ssa-sparse-attention-12m-context-2026"
+        ]
+      },
+      {
+        "text": "ZAYA1-8B claims frontier-adjacent reasoning capability at only 760 million active parameters, running on AMD silicon.",
+        "section_ref": "ZAYA1-8B: an 8B MoE trained on AMD",
+        "confidence": 0.75,
+        "provenance": "paraphrased",
+        "validity_confidence": 0.4,
+        "validity_basis": "vague 'frontier-adjacent' qualifier and no specific benchmark scores provided in the text",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted with no benchmark numbers or ablation in the provided text",
+        "evidence_type": "asserted",
+        "scope": 0.35,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "SubQ does not claim to beat GPT-5.5 on GPQA; its value proposition is cost and context length rather than raw benchmark scores.",
+        "section_ref": "Mid-May 2026 at a glance",
+        "confidence": 0.5,
+        "provenance": "verbatim",
+        "validity_confidence": 0.65,
+        "validity_basis": "stated product positioning claim consistent with the rest of the described product",
+        "evidence_strength": 0.25,
+        "evidence_basis": "asserted positioning framing, no GPQA numbers shown to confirm or deny",
+        "evidence_type": "asserted",
+        "scope": 0.2,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "May 2026 is the first month in a year where the most interesting AI release was not the highest-scoring model on benchmark leaderboards.",
+        "section_ref": "Mid-May 2026 at a glance",
+        "confidence": 0.65,
+        "provenance": "verbatim",
+        "validity_confidence": 0.5,
+        "validity_basis": "editorial judgment relying on a subjective definition of 'most interesting'",
+        "evidence_strength": 0.35,
+        "evidence_basis": "supported by the described release landscape but inherently an editorial characterization",
+        "evidence_type": "empirical_result",
+        "scope": 0.55,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "Breaking the quadratic context-length cost curve changes the unit economics of long-context AI, if SubQ's claims hold under independent benchmarks.",
+        "section_ref": "SubQ: the first commercial subquadratic LLM",
+        "confidence": 0.7,
+        "provenance": "verbatim",
+        "validity_confidence": 0.65,
+        "validity_basis": "logically sound conditional claim but explicitly qualified by the author as dependent on independent verification",
+        "evidence_strength": 0.15,
+        "evidence_basis": "speculative conditional explicitly flagged as unverified in the text",
+        "evidence_type": "speculative",
+        "scope": 0.75,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      },
+      {
+        "text": "GPT-5.5 Instant is a quiet but consequential change representing a new default model in ChatGPT.",
+        "section_ref": "GPT-5.5 Instant: the quiet but consequential default swap",
+        "confidence": 0.5,
+        "provenance": "verbatim",
+        "validity_confidence": 0.5,
+        "validity_basis": "editorial judgment about consequence with no usage impact data shown",
+        "evidence_strength": 0.15,
+        "evidence_basis": "asserted editorial judgment without supporting usage or performance data",
+        "evidence_type": "asserted",
+        "scope": 0.4,
+        "corroboration_verdict": null,
+        "corroboration_sources": []
+      }
+    ],
+    "methods": [
+      {
+        "name": "Subquadratic sparse attention architecture",
+        "description": "A fully subquadratic sparse attention mechanism that replaces standard O(n-squared) transformer self-attention, achieving sub-linear scaling in context length. This paper reports it as introduced by Subquadratic in the SubQ 1M-Preview model, enabling 12M-token contexts at roughly one fifth the cost of frontier models and up to 52x faster attention at scale."
+      },
+      {
+        "name": "Dreaming mode",
+        "description": "An asynchronous reasoning feature introduced by Anthropic at the May 6 2026 Claude dev day, described as enabling deferred or background reasoning. The paper notes it alongside memory tools and multi-agent orchestration as new Claude platform capabilities delivered without a new base model."
+      },
+      {
+        "name": "SubQ 1M-Preview",
+        "description": "The first commercially available LLM built on a fully subquadratic sparse attention architecture, released May 5 2026 by Subquadratic (API-only, proprietary). It offers a native 12 million token context window at roughly one fifth the cost of frontier models and is aimed at repo-wide code and multi-document workloads."
+      },
+      {
+        "name": "GPT-5.5",
+        "description": "OpenAI's frontier model released April 23 2026, scoring 60.24 on the Intelligence Index at xhigh effort and 59.12 on the coding index per Artificial Analysis. This paper uses it as the current top of the Intelligence Index leaderboard and the model that broke the previous 57.18 ceiling."
+      },
+      {
+        "name": "GPT-5.5 Instant",
+        "description": "A lightweight, low-latency variant of GPT-5.5 that became the new ChatGPT default (free and paid tiers) on May 5 2026, replacing GPT-5.3 Instant. Available in the API as chat-latest, it is optimized for faster responses and fewer hallucinations in high-stakes domains such as law, medicine, and finance."
+      },
+      {
+        "name": "Claude Opus 4.7",
+        "description": "Anthropic's frontier model released April 16 2026, scoring 57.28 on the Intelligence Index (Adaptive Reasoning, Max Effort) and 52.51 on the coding index per Artificial Analysis. This paper uses it as Anthropic's key April release and the benchmark comparison point for long-context tasks."
+      },
+      {
+        "name": "DeepSeek V4 Pro",
+        "description": "DeepSeek's model released April 24 2026 with weights on Hugging Face, scoring 51.51 on the Intelligence Index with roughly 37B active parameters. This paper recommends it as one of the best open frontier models and uses it for active-parameter architecture comparisons."
+      },
+      {
+        "name": "MiMo V2.5 Pro",
+        "description": "Xiaomi's model scoring 53.83 on the Intelligence Index, released April 22 2026. This paper references it as one of five models that crossed 50 on the Intelligence Index in a single month."
+      },
+      {
+        "name": "ZAYA1-8B",
+        "description": "Zyphra's 8B MoE model released May 6-7 2026 under Apache 2.0, notable for being trained end-to-end on AMD Instinct hardware with only 760M active parameters per token. This paper presents it as the strongest cost-per-token open model in the small-MoE band and the first reasoning-oriented open release demonstrating the full AMD training path."
+      },
+      {
+        "name": "Gemini 3.1 Flash Lite",
+        "description": "Google's lightweight efficiency variant of the Gemini 3.1 line, released on API gateways around May 8 2026. This paper positions it as the Google counterpart of GPT-5.5 Instant, optimized for speed and low cost per call, and notes that it and GPT-5.5 Instant both moved the default-tier market in the same week."
+      },
+      {
+        "name": "Muse Spark",
+        "description": "Meta's model released April 8 2026, scoring 52.15 on the Intelligence Index. Referenced briefly in this paper as a notable April release with no May follow-up present through mid-month."
+      },
+      {
+        "name": "Qwen 3.6 Max Preview",
+        "description": "Alibaba's Qwen 3.6 Max Preview variant scoring 51.81 on the Intelligence Index, released as part of six Qwen 3.6 variants in April 2026. This paper notes the full Qwen Max release as widely expected but not yet arrived through mid-May."
+      }
+    ],
+    "novelty": {
+      "score": 0.12,
+      "reasoning": "This is a technology news analysis article, not a research paper, and it makes no original technical contributions. Its central 'novelty' claim, that SubQ is the first commercially deployed subquadratic LLM, is explicitly undercut by the article itself, which names Mamba, RWKV, Hyena, and BASED as prior research efforts and states plainly that 'subquadratic attention as a research area is not new.' The framed contribution is purely one of commercial packaging, not a new method, architecture, or demonstrated capability. All benchmark figures cited are vendor-reported, with no independent validation, and the remaining content (GPT-5.5 Instant as default, ZAYA1-8B on AMD) is product reporting with no gap-closing claim against named prior art."
+    },
+    "reproducibility": {
+      "score": 0.06,
+      "reasoning": "This is a technology news and analysis article, not a research paper presenting original experiments. The central claims are benchmark scores (Intelligence Index, GPQA) sourced from the third-party Artificial Analysis leaderboard, with no methodology provided for reproducing those evaluations. The most novel architectural claim, SubQ's subquadratic sparse attention, is proprietary and API-only with no weights, architecture specification, or training details disclosed. The only open assets mentioned are ZAYA1-8B under Apache 2.0 and DeepSeek V4 Pro weights on Hugging Face, but neither is accompanied by training configs, hyperparameters, or evaluation harnesses within this article. This is effectively a pure product announcement roundup.",
+      "missing": [
+        "SubQ architecture specification: sparse attention pattern, block sizes, and routing mechanism",
+        "Intelligence Index evaluation methodology and scoring scripts from Artificial Analysis",
+        "ZAYA1-8B training configuration: AMD Instinct GPU type and count, batch size, learning rate schedule, training data sources",
+        "SubQ API access or model weights for independent benchmarking",
+        "Evaluation scripts or prompts used to derive the 52x speedup and one-fifth cost claims for SubQ",
+        "Random seeds and hardware details for any reported benchmark runs",
+        "ZAYA1-8B tokenizer version and context-length handling details"
+      ]
+    },
+    "trustworthiness": {
+      "score": 0.31000000000000005,
+      "base": 0.5,
+      "reasons": [
+        {
+          "label": "web/blog source (not a primary paper artifact)",
+          "delta": -0.08333333333333333,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "thin bibliography (1 extracted citations)",
+          "delta": -0.041666666666666664,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "most claims are asserted or speculative (10/14)",
+          "delta": -0.08333333333333333,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "essentially unreproducible (0.06)",
+          "delta": -0.041666666666666664,
+          "kind": "intrinsic",
+          "evidence": null,
+          "url": null
+        },
+        {
+          "label": "Author has verifiable industry standing as AI product marketer",
+          "delta": 0.03,
+          "kind": "reputation",
+          "evidence": "Dylan Bristot is Founding PMM at Nebius AI, has spoken at Web Summit and World Summit AI, and runs whatllm.org as a recurring AI model commentary publication. He is a recognizable industry figure but a product marketer, not a technical AI researcher.",
+          "url": "https://dylanbristot.com/"
+        },
+        {
+          "label": "independent sources supported the claim: 'SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a st'",
+          "delta": 0.05,
+          "kind": "corroboration",
+          "evidence": "Multiple independent tech outlets (DataCamp, The New Stack, FelloAI, Codiste) describe SubQ as the first commercially available fully subquadratic LLM, consistent with the company's own launch framing. No credible source disputes the 'first' characterization, though the claim is based on the company's self-description and no formal independent audit of the architecture has been published.",
+          "url": "https://www.datacamp.com/blog/subq-ai-explained"
+        },
+        {
+          "label": "independent sources mixed the claim: 'SubQ claims up to 52x faster attention at scale compared to standard transformer attention.'",
+          "delta": -0.02,
+          "kind": "corroboration",
+          "evidence": "The 52x figure (versus FlashAttention at 1M tokens) is widely repeated across independent tech outlets, confirming the number exists and is attributed to SubQ. However, DataCamp notes the benchmarks 'have not yet been independently reproduced by external researchers' and the tests were run at 1M tokens, not at the claimed headline scale. The figure is a vendor number, not independently validated.",
+          "url": "https://www.datacamp.com/blog/subq-ai-explained"
+        }
+      ],
+      "claim_corroborations": [
+        {
+          "claim_text": "SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a standard transformer.",
+          "verdict": "supported",
+          "sources": [
+            "https://www.datacamp.com/blog/subq-ai-explained",
+            "https://thenewstack.io/subquadratic-12-million-context-window/",
+            "https://felloai.com/subq-llm-review/",
+            "https://www.codiste.com/subq-first-sub-quadratic-frontier-llm-long-context-ai",
+            "https://subq.ai/introducing-subq"
+          ],
+          "note": "Multiple independent tech outlets (DataCamp, The New Stack, FelloAI, Codiste) describe SubQ as the first commercially available fully subquadratic LLM, consistent with the company's own launch framing. No credible source disputes the 'first' characterization, though the claim is based on the company's self-description and no formal independent audit of the architecture has been published."
+        },
+        {
+          "claim_text": "SubQ claims roughly one fifth the cost of frontier models on long-context tasks.",
+          "verdict": "not_found",
+          "sources": [
+            "https://www.datacamp.com/blog/subq-ai-explained"
+          ],
+          "note": "DataCamp explicitly states that SubQ has no publicly available per-token pricing, making independent validation of the one-fifth cost claim impossible. The figure is a vendor assertion with no verifiable pricing data to cross-check against."
+        },
+        {
+          "claim_text": "SubQ claims up to 52x faster attention at scale compared to standard transformer attention.",
+          "verdict": "mixed",
+          "sources": [
+            "https://www.datacamp.com/blog/subq-ai-explained",
+            "https://felloai.com/subq-llm-review/",
+            "https://explainx.ai/blog/subq-ssa-sparse-attention-12m-context-2026"
+          ],
+          "note": "The 52x figure (versus FlashAttention at 1M tokens) is widely repeated across independent tech outlets, confirming the number exists and is attributed to SubQ. However, DataCamp notes the benchmarks 'have not yet been independently reproduced by external researchers' and the tests were run at 1M tokens, not at the claimed headline scale. The figure is a vendor number, not independently validated."
+        }
+      ],
+      "web_status": "ok",
+      "summary": "The artifact is a self-published AI model round-up by Dylan Bristot on his own blog (whatllm.org). Bristot is a verifiable product marketing professional at Nebius AI, not a technical researcher, which limits the analytical authority of the piece. The SubQ claims he reports are corroborated as vendor-originating numbers that multiple independent tech outlets have repeated but not validated: cost claims cannot be checked due to absent public pricing, and speed benchmarks are flagged by DataCamp as narrow, unreproduced, and tested well below the headline context scale."
+    },
+    "tool_stack": {
+      "requirements": [],
+      "context_adjusted": null,
+      "not_applicable": {
+        "reason": "This source is a landscape/news commentary article, not a computational or empirical research paper. It surveys and compares commercial AI model releases (GPT-5.5, Claude Opus 4.7, SubQ, ZAYA1-8B, etc.) and discusses architectural trends at a high level. There is no original methodology, training procedure, dataset, or experiment to reimplement. Inferring a build stack would hallucinate tools with no grounding in actual research contributions.",
+        "suppressed": true,
+        "content_shape": "landscape/news-commentary"
+      }
+    },
+    "claim_total": 14,
+    "method_total": 17
+  },
+  "citations": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "section:new-ai-models-may-2026-the-frontier-took-a-breath-architecture-took-the-stage",
+        "type": "section",
+        "label": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+        "summary": "April was the loudest month in years. GPT-5.5 broke 60 on the Intelligence Index. Opus 4.7 landed. DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50. Then May opened, and the top of the leaderboard went still. The interesting story moved sideways, into a new attention arch…"
+      },
+      {
+        "id": "section:mid-may-2026-at-a-glance",
+        "type": "section",
+        "label": "Mid-May 2026 at a glance",
+        "summary": "The Intelligence Index ceiling from April (GPT-5.5 xhigh, 60.24) has held into mid-May. No frontier-scale drop yet from Anthropic, Google, Meta, Mistral, or the Chinese labs. The action shifted to architecture, efficiency, and product defaults.\n\n##"
+      },
+      {
+        "id": "section:the-setup-what-april-actually-did",
+        "type": "section",
+        "label": "The setup: what April actually did",
+        "summary": "To understand why May feels quiet, you have to remember how loud April was. The Intelligence Index ceiling had held at 57.18 since Gemini 3.1 Pro in February. GPT-5.4 matched it. Nobody broke it. Then April happened.\n\nOn April 16, Anthropic shipped **Claude Opus 4.7**, which scor…"
+      },
+      {
+        "id": "section:the-full-release-list",
+        "type": "section",
+        "label": "The full release list",
+        "summary": "Everything notable that shipped between May 1 and May 13, 2026. Smaller and niche releases happen daily on Hugging Face, but these are the ones with real coverage, funding, or distribution behind them.\n\n| Date | Model | Developer | Type | License | Notes |\n|---|---|---|---|---|--…"
+      },
+      {
+        "id": "section:subq-the-first-commercial-subquadratic-llm",
+        "type": "section",
+        "label": "SubQ: the first commercial subquadratic LLM",
+        "summary": "The most interesting release in May 2026 isn't from a name you've seen on a leaderboard before. **SubQ** (the company is Subquadratic, the first model is SubQ 1M-Preview) launched on May 5 with $29M in seed funding and a single claim: their model is not a transformer.\n\nStandard t…"
+      },
+      {
+        "id": "section:subq-1m-preview-what-we-know",
+        "type": "section",
+        "label": "SubQ 1M-Preview, what we know",
+        "summary": "Two things to flag honestly. First, the headline numbers are vendor numbers. No third party has yet posted SubQ against MRCR, RULER, or the long-context tasks that matter for real work. Until that happens, treat 52x and 1/5 as marketing. Second, \"subquadratic attention\" as a rese…"
+      },
+      {
+        "id": "section:gpt-5-5-instant-the-quiet-but-consequential-default-swap",
+        "type": "section",
+        "label": "GPT-5.5 Instant: the quiet but consequential default swap",
+        "summary": "On May 5, OpenAI made **GPT-5.5 Instant** the new default for ChatGPT across free and paid tiers, replacing GPT-5.3 Instant. In the API it shows up as`chat-latest`\n\n.\n\nThis is not a frontier release. GPT-5.5 (the full model) shipped April 23, posted 60.24 on the Intelligence Inde…"
+      },
+      {
+        "id": "section:zaya1-8b-an-8b-moe-trained-on-amd",
+        "type": "section",
+        "label": "ZAYA1-8B: an 8B MoE trained on AMD",
+        "summary": "**Zyphra** released **ZAYA1-8B** on May 6 to 7 under Apache 2.0. Eight billion total parameters, roughly 760M active per token via MoE routing. Two things make this release matter more than its size suggests.\n\nFirst, the training stack. ZAYA1 was trained end to end on AMD Instinc…"
+      },
+      {
+        "id": "section:zaya1-8b-at-a-glance",
+        "type": "section",
+        "label": "ZAYA1-8B at a glance",
+        "summary": "Available on Hugging Face and as a free serverless endpoint on Zyphra Cloud. The cleanest test in May for the thesis that intelligence density (capability per active parameter) is the metric that matters next.\n\n##"
+      },
+      {
+        "id": "section:grok-4-3-and-gemini-3-1-flash-lite-the-maintenance-releases",
+        "type": "section",
+        "label": "Grok 4.3 and Gemini 3.1 Flash Lite: the maintenance releases",
+        "summary": "Two more entries on the May list, both better understood as maintenance than as news.\n\n**Grok 4.3** from xAI shows up on most LLM trackers as a May 6 release. The actual beta dropped on April 17, so the May date reflects wider rollout and API availability rather than a new base m…"
+      },
+      {
+        "id": "section:what-is-conspicuously-missing",
+        "type": "section",
+        "label": "What is conspicuously missing",
+        "summary": "The May list is shorter than the April one for a reason. Several labs that have been publishing on a roughly monthly cadence are visibly silent through May 13:\n\n**Anthropic**shipped Opus 4.7 on April 16. The May 6 dev day delivered features (memory tools, multi-agent orchestratio…"
+      },
+      {
+        "id": "section:three-shifts-defining-may",
+        "type": "section",
+        "label": "Three shifts defining May",
+        "summary": "###"
+      },
+      {
+        "id": "section:three-shifts-happening-right-now",
+        "type": "section",
+        "label": "Three shifts happening right now",
+        "summary": "#### Architecture is back as a competitive lever.\n\nFor two years, the frontier was a scale game. Bigger model, more data, more compute. SubQ is the first credible product bet that the next 10x is not in parameter count but in attention mechanism. Whether SubQ is the winner or jus…"
+      },
+      {
+        "id": "section:practical-guidance-for-mid-may-2026",
+        "type": "section",
+        "label": "Practical guidance for mid-May 2026",
+        "summary": "| If you need... | Consider | Why |\n|---|---|---|\n| Best raw intelligence | GPT-5.5 (xhigh) | 60.24 on Intelligence Index. Still the only model over 60 in mid-May. |\n| Best long context (200K+) | SubQ 1M-Preview | 12M native context. Built for repo-wide code and multi-doc workloa…"
+      },
+      {
+        "id": "section:the-bottom-line",
+        "type": "section",
+        "label": "The bottom line",
+        "summary": "Mid-May 2026 is the first month in a year where the most interesting AI release was not the highest-scoring one. SubQ doesn't claim to beat GPT-5.5 on GPQA. It claims to run 12M-token contexts at one fifth the cost. ZAYA1-8B doesn't claim to top the Intelligence Index. It claims…"
+      },
+      {
+        "id": "section:frequently-asked-questions",
+        "type": "section",
+        "label": "Frequently asked questions",
+        "summary": "###"
+      },
+      {
+        "id": "section:what-new-ai-models-were-released-in-may-2026",
+        "type": "section",
+        "label": "What new AI models were released in May 2026?",
+        "summary": "Through mid-May 2026 the confirmed releases are: GPT-5.5 Instant (OpenAI, May 5) as the new ChatGPT default, SubQ 1M-Preview (Subquadratic, May 5) as the first commercial subquadratic LLM with a 12M token context, Grok 4.3 (xAI, May 6) in wider rollout following its April 17 beta…"
+      },
+      {
+        "id": "section:what-is-subq-and-why-does-it-matter",
+        "type": "section",
+        "label": "What is SubQ and why does it matter?",
+        "summary": "SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a standard transformer. The first release, SubQ 1M-Preview, ships with a native 12 million token context window, claims roughly one fifth the cost of frontier model…"
+      },
+      {
+        "id": "section:what-is-gpt-5-5-instant",
+        "type": "section",
+        "label": "What is GPT-5.5 Instant?",
+        "summary": "GPT-5.5 Instant is a lightweight, low-latency variant of GPT-5.5 that became the new default in ChatGPT (free and paid tiers) on May 5, 2026, replacing GPT-5.3 Instant. It is available in the API as chat-latest. OpenAI emphasizes faster responses and fewer hallucinations in high-…"
+      },
+      {
+        "id": "section:what-is-zaya1-8b",
+        "type": "section",
+        "label": "What is ZAYA1-8B?",
+        "summary": "ZAYA1-8B is an open-source (Apache 2.0) MoE reasoning model from Zyphra. It has 8B total parameters with roughly 760M active per token, was trained end to end on AMD Instinct hardware, and is optimized for high intelligence density per active parameter. Available on Hugging Face…"
+      },
+      {
+        "id": "section:did-the-intelligence-index-ceiling-move-in-may",
+        "type": "section",
+        "label": "Did the Intelligence Index ceiling move in May?",
+        "summary": "No. The April ceiling (GPT-5.5 xhigh at 60.24) has held through mid-May. No new frontier-scale release has landed yet. The interesting May moves are architectural (SubQ), efficiency-focused (ZAYA1-8B), and product-level (GPT-5.5 Instant and Gemini 3.1 Flash Lite as new defaults).…"
+      },
+      {
+        "id": "section:cite-this-analysis",
+        "type": "section",
+        "label": "Cite this analysis",
+        "summary": "If you are referencing this analysis:\n\nBristot, D. (2026, May 13). *New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage.* WhatLLM.org. https://whatllm.org/blog/new-ai-models-may-2026\n\nSources: Artificial Analysis, LLM Stats, LLM Gateway, OpenAI, Subqua…"
+      },
+      {
+        "id": "claim:9680ed6b",
+        "type": "claim",
+        "label": "GPT-5.5 broke 60 on the Intelligence Index in April 2026.",
+        "summary": "GPT-5.5 broke 60 on the Intelligence Index in April 2026."
+      },
+      {
+        "id": "claim:fb364fee",
+        "type": "claim",
+        "label": "DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50 on the Intelligence Index.",
+        "summary": "DeepSeek V4, Kimi K2.6, and MiMo V2.5 Pro all crossed 50 on the Intelligence Index."
+      },
+      {
+        "id": "claim:b460b82d",
+        "type": "claim",
+        "label": "Standard transformer attention is O(n-squared) in context length, meaning doubling the context quadruples the cost.",
+        "summary": "Standard transformer attention is O(n-squared) in context length, meaning doubling the context quadruples the cost."
+      },
+      {
+        "id": "claim:8ab8f030",
+        "type": "claim",
+        "label": "Most '1M context' model claims come with quality degradation caveats past a certain effective length.",
+        "summary": "Most '1M context' model claims come with quality degradation caveats past a certain effective length."
+      },
+      {
+        "id": "claim:20434c4c",
+        "type": "claim",
+        "label": "SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a s…",
+        "summary": "SubQ is the first commercially available LLM built on a fully subquadratic sparse attention architecture instead of a standard transformer."
+      },
+      {
+        "id": "claim:4714f3cc",
+        "type": "claim",
+        "label": "SubQ uses sparse, subquadratic attention end to end.",
+        "summary": "SubQ uses sparse, subquadratic attention end to end."
+      },
+      {
+        "id": "claim:e7759538",
+        "type": "claim",
+        "label": "SubQ 1M-Preview ships with a native 12 million token context window.",
+        "summary": "SubQ 1M-Preview ships with a native 12 million token context window."
+      },
+      {
+        "id": "claim:23633797",
+        "type": "claim",
+        "label": "SubQ claims roughly one fifth the cost of frontier models on long-context tasks.",
+        "summary": "SubQ claims roughly one fifth the cost of frontier models on long-context tasks."
+      },
+      {
+        "id": "claim:54733bb7",
+        "type": "claim",
+        "label": "SubQ claims up to 52x faster attention at scale compared to standard transformer attention.",
+        "summary": "SubQ claims up to 52x faster attention at scale compared to standard transformer attention."
+      },
+      {
+        "id": "claim:2d533db4",
+        "type": "claim",
+        "label": "ZAYA1-8B claims frontier-adjacent reasoning capability at only 760 million active parameters, running on AMD silicon.",
+        "summary": "ZAYA1-8B claims frontier-adjacent reasoning capability at only 760 million active parameters, running on AMD silicon."
+      },
+      {
+        "id": "claim:5d5d0c38",
+        "type": "claim",
+        "label": "SubQ does not claim to beat GPT-5.5 on GPQA; its value proposition is cost and context length rather than raw benchmark…",
+        "summary": "SubQ does not claim to beat GPT-5.5 on GPQA; its value proposition is cost and context length rather than raw benchmark scores."
+      },
+      {
+        "id": "claim:83417ccd",
+        "type": "claim",
+        "label": "May 2026 is the first month in a year where the most interesting AI release was not the highest-scoring model on benchm…",
+        "summary": "May 2026 is the first month in a year where the most interesting AI release was not the highest-scoring model on benchmark leaderboards."
+      },
+      {
+        "id": "claim:682348f3",
+        "type": "claim",
+        "label": "Breaking the quadratic context-length cost curve changes the unit economics of long-context AI, if SubQ's claims hold u…",
+        "summary": "Breaking the quadratic context-length cost curve changes the unit economics of long-context AI, if SubQ's claims hold under independent benchmarks."
+      },
+      {
+        "id": "claim:8ede9007",
+        "type": "claim",
+        "label": "GPT-5.5 Instant is a quiet but consequential change representing a new default model in ChatGPT.",
+        "summary": "GPT-5.5 Instant is a quiet but consequential change representing a new default model in ChatGPT."
+      },
+      {
+        "id": "method:subquadratic-sparse-attention-architecture",
+        "type": "method",
+        "label": "Subquadratic sparse attention architecture",
+        "summary": "A fully subquadratic sparse attention mechanism that replaces standard O(n-squared) transformer self-attention, achieving sub-linear scaling in context length. This paper reports it as introduced by Subquadratic in the SubQ 1M-Preview model, enabling 12M-token contexts at roughly…"
+      },
+      {
+        "id": "method:dreaming-mode",
+        "type": "method",
+        "label": "Dreaming mode",
+        "summary": "An asynchronous reasoning feature introduced by Anthropic at the May 6 2026 Claude dev day, described as enabling deferred or background reasoning. The paper notes it alongside memory tools and multi-agent orchestration as new Claude platform capabilities delivered without a new…"
+      },
+      {
+        "id": "method:subq-1m-preview",
+        "type": "method",
+        "label": "SubQ 1M-Preview",
+        "summary": "The first commercially available LLM built on a fully subquadratic sparse attention architecture, released May 5 2026 by Subquadratic (API-only, proprietary). It offers a native 12 million token context window at roughly one fifth the cost of frontier models and is aimed at repo-…"
+      },
+      {
+        "id": "method:gpt-5-5",
+        "type": "method",
+        "label": "GPT-5.5",
+        "summary": "OpenAI's frontier model released April 23 2026, scoring 60.24 on the Intelligence Index at xhigh effort and 59.12 on the coding index per Artificial Analysis. This paper uses it as the current top of the Intelligence Index leaderboard and the model that broke the previous 57.18 c…"
+      },
+      {
+        "id": "method:gpt-5-5-instant",
+        "type": "method",
+        "label": "GPT-5.5 Instant",
+        "summary": "A lightweight, low-latency variant of GPT-5.5 that became the new ChatGPT default (free and paid tiers) on May 5 2026, replacing GPT-5.3 Instant. Available in the API as chat-latest, it is optimized for faster responses and fewer hallucinations in high-stakes domains such as law,…"
+      },
+      {
+        "id": "method:claude-opus-4-7",
+        "type": "method",
+        "label": "Claude Opus 4.7",
+        "summary": "Anthropic's frontier model released April 16 2026, scoring 57.28 on the Intelligence Index (Adaptive Reasoning, Max Effort) and 52.51 on the coding index per Artificial Analysis. This paper uses it as Anthropic's key April release and the benchmark comparison point for long-conte…"
+      },
+      {
+        "id": "method:deepseek-v4-pro",
+        "type": "method",
+        "label": "DeepSeek V4 Pro",
+        "summary": "DeepSeek's model released April 24 2026 with weights on Hugging Face, scoring 51.51 on the Intelligence Index with roughly 37B active parameters. This paper recommends it as one of the best open frontier models and uses it for active-parameter architecture comparisons."
+      },
+      {
+        "id": "method:mimo-v2-5-pro",
+        "type": "method",
+        "label": "MiMo V2.5 Pro",
+        "summary": "Xiaomi's model scoring 53.83 on the Intelligence Index, released April 22 2026. This paper references it as one of five models that crossed 50 on the Intelligence Index in a single month."
+      },
+      {
+        "id": "method:zaya1-8b",
+        "type": "method",
+        "label": "ZAYA1-8B",
+        "summary": "Zyphra's 8B MoE model released May 6-7 2026 under Apache 2.0, notable for being trained end-to-end on AMD Instinct hardware with only 760M active parameters per token. This paper presents it as the strongest cost-per-token open model in the small-MoE band and the first reasoning-…"
+      },
+      {
+        "id": "method:gemini-3-1-flash-lite",
+        "type": "method",
+        "label": "Gemini 3.1 Flash Lite",
+        "summary": "Google's lightweight efficiency variant of the Gemini 3.1 line, released on API gateways around May 8 2026. This paper positions it as the Google counterpart of GPT-5.5 Instant, optimized for speed and low cost per call, and notes that it and GPT-5.5 Instant both moved the defaul…"
+      },
+      {
+        "id": "method:muse-spark",
+        "type": "method",
+        "label": "Muse Spark",
+        "summary": "Meta's model released April 8 2026, scoring 52.15 on the Intelligence Index. Referenced briefly in this paper as a notable April release with no May follow-up present through mid-month."
+      },
+      {
+        "id": "method:qwen-3-6-max-preview",
+        "type": "method",
+        "label": "Qwen 3.6 Max Preview",
+        "summary": "Alibaba's Qwen 3.6 Max Preview variant scoring 51.81 on the Intelligence Index, released as part of six Qwen 3.6 variants in April 2026. This paper notes the full Qwen Max release as widely expected but not yet arrived through mid-May."
+      },
+      {
+        "id": "dataset:gpqa",
+        "type": "dataset",
+        "label": "GPQA",
+        "summary": "A named reasoning and intelligence benchmark referenced twice in the analysis. The paper uses it as a standard evaluation yardstick, noting that SubQ does not claim to beat GPT-5.5 on GPQA and that a hypothetical three-point GPQA bump matters less than hallucination reduction in…"
+      },
+      {
+        "id": "method:mistral-small-4",
+        "type": "method",
+        "label": "Mistral Small 4",
+        "summary": "Mistral's most recent confirmed model release, shipped in March 2026. The paper references it to establish that Mistral has been quiet since that release and has no May 2026 follow-up."
+      },
+      {
+        "id": "method:gemini-3-1-flash",
+        "type": "method",
+        "label": "Gemini 3.1 Flash",
+        "summary": "Google's mid-tier Gemini 3.1 model, named explicitly in the paper when positioning Gemini 3.1 Flash Lite below it in capability and cost. Cited as a capability reference tier, not as a May 2026 release."
+      },
+      {
+        "id": "method:qwen-max",
+        "type": "method",
+        "label": "Qwen Max",
+        "summary": "Alibaba's anticipated full Qwen Max release, explicitly distinguished from the already-shipped Qwen 3.6 Max Preview. The paper states the full release is widely expected but not yet present through mid-May 2026, and names it among models likely to challenge the 60-plus Intelligen…"
+      },
+      {
+        "id": "method:deepseek-v4-1",
+        "type": "method",
+        "label": "DeepSeek V4.1",
+        "summary": "An anticipated incremental update to DeepSeek V4 Pro, named explicitly in the paper among models expected to challenge the 60-plus Intelligence Index threshold in late May or early June 2026. Not shipped through mid-May."
+      },
+      {
+        "id": "citation:d6b7e540",
+        "type": "citation",
+        "label": "Artificial Analysis",
+        "summary": "per the Artificial Analysis snapshot"
+      },
+      {
+        "id": "concept:intelligence-index",
+        "type": "concept",
+        "label": "Intelligence Index",
+        "summary": "Benchmark metric for measuring and comparing AI model performance on reasoning and coding tasks"
+      },
+      {
+        "id": "concept:mixture-of-experts",
+        "type": "concept",
+        "label": "Mixture of Experts",
+        "summary": "Neural network architecture that selectively routes and activates different parameter subsets based on input tokens"
+      },
+      {
+        "id": "concept:active-parameters-per-token",
+        "type": "concept",
+        "label": "Active parameters per token",
+        "summary": "Count of model parameters computationally engaged during inference, determining actual inference cost rather than total model size"
+      },
+      {
+        "id": "concept:intelligence-density",
+        "type": "concept",
+        "label": "Intelligence density",
+        "summary": "Model capability measured per unit of active parameters, emerging as the key efficiency metric for inference economics"
+      },
+      {
+        "id": "concept:long-context-capability",
+        "type": "concept",
+        "label": "Long-context capability",
+        "summary": "Technical ability to process and maintain coherence over very long input sequences, measured in millions of tokens"
+      },
+      {
+        "id": "concept:inference-cost",
+        "type": "concept",
+        "label": "Inference cost",
+        "summary": "Computational and economic cost of model inference, increasingly dominated by active parameter count rather than total model size"
+      },
+      {
+        "id": "concept:hallucination",
+        "type": "concept",
+        "label": "Hallucination",
+        "summary": "Problem of confident but factually incorrect model outputs, particularly critical in regulated domains like law and medicine"
+      },
+      {
+        "id": "concept:chatgpt",
+        "type": "concept",
+        "label": "ChatGPT",
+        "summary": null
+      },
+      {
+        "id": "concept:gemini-3-1",
+        "type": "concept",
+        "label": "Gemini 3.1",
+        "summary": null
+      },
+      {
+        "id": "concept:o-n-squared-attention-complexity",
+        "type": "concept",
+        "label": "O(n-squared) attention complexity",
+        "summary": "The quadratic computational cost of standard transformer attention models relative to context length."
+      },
+      {
+        "id": "concept:unit-economics",
+        "type": "concept",
+        "label": "Unit economics",
+        "summary": "The cost-benefit economic analysis framework for evaluating AI deployment decisions, particularly for long context workloads."
+      },
+      {
+        "id": "concept:intelligence-ceiling",
+        "type": "concept",
+        "label": "Intelligence ceiling",
+        "summary": "The highest benchmark performance plateau achieved by frontier models within a specific time period."
+      },
+      {
+        "id": "concept:hallucination-reduction",
+        "type": "concept",
+        "label": "Hallucination reduction",
+        "summary": "The mitigation of factually incorrect or irrelevant model outputs, especially critical in regulated domains like law, medicine, and finance."
+      },
+      {
+        "id": "concept:transformer-attention",
+        "type": "concept",
+        "label": "Transformer attention",
+        "summary": null
+      },
+      {
+        "id": "concept:gpt-5-5-xhigh",
+        "type": "concept",
+        "label": "GPT-5.5 xhigh",
+        "summary": null
+      }
+    ],
+    "edges": [
+      {
+        "source": "section:subq-the-first-commercial-subquadratic-llm",
+        "target": "claim:b460b82d",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-the-first-commercial-subquadratic-llm",
+        "target": "claim:8ab8f030",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-the-first-commercial-subquadratic-llm",
+        "target": "claim:20434c4c",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-the-first-commercial-subquadratic-llm",
+        "target": "claim:4714f3cc",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-1m-preview-what-we-know",
+        "target": "claim:e7759538",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-1m-preview-what-we-know",
+        "target": "claim:23633797",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-1m-preview-what-we-know",
+        "target": "claim:54733bb7",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:zaya1-8b-an-8b-moe-trained-on-amd",
+        "target": "claim:2d533db4",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:mid-may-2026-at-a-glance",
+        "target": "claim:5d5d0c38",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:mid-may-2026-at-a-glance",
+        "target": "claim:83417ccd",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:subq-the-first-commercial-subquadratic-llm",
+        "target": "claim:682348f3",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:gpt-5-5-instant-the-quiet-but-consequential-default-swap",
+        "target": "claim:8ede9007",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "section:the-setup-what-april-actually-did",
+        "target": "citation:d6b7e540",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "method:subq-1m-preview",
+        "target": "method:subquadratic-sparse-attention-architecture",
+        "relationship": "uses",
+        "weight": null
+      },
+      {
+        "source": "method:zaya1-8b",
+        "target": "concept:mixture-of-experts",
+        "relationship": "uses",
+        "weight": null
+      },
+      {
+        "source": "method:gpt-5-5",
+        "target": "concept:intelligence-index",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:claude-opus-4-7",
+        "target": "concept:intelligence-index",
+        "relationship": "evaluated-on",
+        "weight": null
+      },
+      {
+        "source": "method:gpt-5-5-instant",
+        "target": "concept:chatgpt",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "method:gemini-3-1-flash-lite",
+        "target": "concept:gemini-3-1",
+        "relationship": "contains",
+        "weight": null
+      },
+      {
+        "source": "concept:active-parameters-per-token",
+        "target": "concept:intelligence-density",
+        "relationship": "related",
+        "weight": null
+      },
+      {
+        "source": "concept:transformer-attention",
+        "target": "concept:o-n-squared-attention-complexity",
+        "relationship": "related",
+        "weight": null
+      },
+      {
+        "source": "concept:o-n-squared-attention-complexity",
+        "target": "concept:unit-economics",
+        "relationship": "related",
+        "weight": null
+      },
+      {
+        "source": "concept:gpt-5-5-xhigh",
+        "target": "concept:intelligence-ceiling",
+        "relationship": "related",
+        "weight": null
+      },
+      {
+        "source": "method:gpt-5-5-instant",
+        "target": "concept:hallucination-reduction",
+        "relationship": "related",
+        "weight": null
+      }
+    ]
+  },
+  "evaluations": [
+    {
+      "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5",
+      "context_name": "anvil",
+      "score_overall": 0.15,
+      "markdown": "*Bristot*\n\n> **Overall relevancy: `0.15`** — Weak strategic alignment\n> *Context: `ctx_anvil_v3`*\n>\n> **Relevancy `0.15` / adoption cost `0.67` → effort-adjusted `0.09`** *(α = `1.00`)*\n>\n> **Implementation notes:** If the user consumes LLM APIs from their FastAPI services, the only actionable takeaway is to keep an eye on GPT-5.5 Instant (chat-latest) as a potential drop-in for latency-sensitive endpoints and SubQ 1M-Preview if they ever need cheap long-context calls; otherwise treat this as background reading and do not pursue any architectural change based on the piece alone.\n\n*Paper-general analysis (claims, methods, citations, trustworthiness) lives on the [paper page](/papers/0b43cfae-82e0-454d-8a0c-d40f24e1d940?eval=4a60ee1b-dbc0-4ce1-a31e-8b3b60aef6ed) — this report covers the per-context view only.*\n\n<details>\n<summary><strong>Context: ctx_anvil_v3</strong></summary>\n\n**Tech stack**\n\n- **databases:** postgres\n\n- **languages:** python\n\n- **frameworks:** alembic, fastapi, mypy, pydantic, pytest, ruff, sqlalchemy, typer, uvicorn\n\n- **infrastructure:** docker, make\n\n**Constraints**\n\n- **budget:** medium\n\n- **latency:** medium\n\n- **security:** medium\n\n- **team_size:** 1\n\n</details>\n\n## Table of contents\n\n1. [TL;DR](#tldr)\n2. [Relevancy detail](#relevancy-detail)\n3. [Adoption cost](#adoption-cost)\n4. [Provenance](#provenance)\n\n---\n\n## TL;DR <a id=\"tldr\"></a>\n\nFor a solo developer on FastAPI + Postgres with no stated AI goals, this is an industry-trends digest rather than an actionable engineering paper, and the unverified vendor claims push the risk above the thin technical_compatibility benefit. It is worth a skim to stay current on GPT-5.5 Instant defaults, but it should not drive any change to the user's Python/SQLAlchemy/docker stack.\n\n| Axis | Score |\n|---|---|\n| Technical compatibility | 0.15 |\n| Strategic alignment | 0.10 |\n| Operational fit | 0.25 |\n| Risk | 0.55 |\n| **Overall** | 0.15 |\n\n## Relevancy detail <a id=\"relevancy-detail\"></a>\n\n### Technical compatibility — `0.15`\n\nThe user's stack is a Python service stack (FastAPI, SQLAlchemy, Pydantic, Postgres) with no listed ML/inference frameworks, vector stores, or GPU infrastructure. The paper discusses frontier LLM releases (GPT-5.5, SubQ 1M-Preview, ZAYA1-8B on AMD Instinct) at the model-vendor level, so the only touchpoint is consuming an API from FastAPI; nothing in the article maps to alembic, sqlalchemy, or postgres workflows.\n\n### Strategic alignment — `0.10`\n\nNo explicit goals are stated by the user, and the article advances none of the typical concerns a Python/Postgres backend dev would have (schema migrations, API ergonomics, test coverage). The closest indirect alignment is the GPT-5.5 Instant 'fewer hallucinations in regulated domains' angle, which could matter if the user later builds LLM features behind FastAPI, but the piece itself proposes no methods to adopt.\n\n### Operational fit — `0.25`\n\nWith team_size=1 and medium budget/latency/security, the user cannot realistically train an 8B MoE on AMD Instinct or validate SubQ's 52x attention speedup claim. The only operationally feasible item is swapping a hosted model name (e.g., chat-latest) in an API client, which is consistent with a solo-developer constraint but adds no engineering leverage beyond what a vendor changelog would.\n\n### Risk — `0.55`\n\nReproducibility is very low (0.08) and the article itself flags that SubQ's '1/5 cost' and '52x faster' numbers are vendor claims without independent benchmarks, so acting on them risks vendor lock-in and surprise cost/latency regressions. Novelty is also low (0.20) and explicitly editorial, so the main risk is treating marketing-adjacent framing as engineering guidance; the risk is moderate rather than catastrophic because nothing in the article requires the user to change anything.\n\n### Overall — `0.15`\n\nFor a solo developer on FastAPI + Postgres with no stated AI goals, this is an industry-trends digest rather than an actionable engineering paper, and the unverified vendor claims push the risk above the thin technical_compatibility benefit. It is worth a skim to stay current on GPT-5.5 Instant defaults, but it should not drive any change to the user's Python/SQLAlchemy/docker stack.\n\n## Adoption cost <a id=\"adoption-cost\"></a>\n\n\n**Adoption cost: `0.67`** *(tier-1 baseline: `0.86`)* — effort-adjusted relevancy `0.09`.\n\n### Tier-1 breakdown\n\n| Slot | Required | Gaps | Weight | Slot contribution |\n|---|---|---|---|---|\n| services | 10 | 8 | 0.25 | 2.00 |\n| infrastructure | 2 | 2 | 0.50 | 1.00 |\n\n> *Slot contribution = `weight × gaps × (1 − coverage)` (unnormalized). The composite adoption cost is the weighted average of these contributions across all slots the paper required.*\n\n### Tier-2 refinements\n\n\n\n#### 1. `infrastructure` / `amd instinct gpu` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.45` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nThe user's stack shows only docker (python:3.12-slim) and make, no accelerator at all, so user_meets=none. However, the floor is permissive (any CUDA, ROCm, or AMD Instinct accelerator capable of running an 8B-class MoE), and that class of GPU is readily rentable by the hour from most cloud providers. The real cost is provisioning a rented accelerator and adding a GPU-enabled container variant alongside the existing python:3.12-slim image, not procuring AMD Instinct silicon specifically. Reproducing the paper's exact AMD-on-AMD training run would be much higher cost, but inference-only adoption is moderate.\n\n#### 2. `infrastructure` / `huawei ascend` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.60` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nDeepSeek V4 was trained on Huawei Ascend, which the user has zero exposure to (no accelerator entries in infrastructure at all). The floor permits any accelerator for inference and the fallback is a CUDA cluster, both rentable, so capability-wise this is reachable, but V4-class inference typically needs multi-GPU memory which is materially more expensive and operationally heavier than the 8B MoE case in gap 1. Training reproduction on Ascend is effectively out of reach for this stack (no Chinese-cloud services listed, anthropic is the only service entry), so the user would be limited to inference against released weights. Cost reflects the substantial GPU cluster ramp-up, not Ascend hardware specifically.\n\n#### 3. `services` / `alibaba cloud` — trigger `substitutable_service`\n\n- **Refined cost:** `0.25` (was `1.00` from tier-1)\n- **Uncertainty:** `low`\n\nThe user already has an anthropic service binding, demonstrating they can wire an external LLM provider into a fastapi or typer entrypoint, so adding an Alibaba Cloud API client is mostly credential plumbing and a new SDK dependency in the pydantic 2.9 / sqlalchemy 2.0 service layer. The fallback path (pulling Qwen weights from HuggingFace if open-released) is cheaper still but requires the GPU work from gaps 1 and 2 to actually serve, so a hosted Alibaba Cloud API call is likely the path of least resistance. Main risks are region/billing setup and the model surface differing from the Anthropic Messages API the user is presumably already calling.\n\n\n\n---\n\n## Sensitivity: this paper vs your other contexts\n\n| Context | Score |\n|---|---|\n| ctx_default | 0.25 |\n\n\n<a id=\"provenance\"></a>\n<details>\n<summary><strong>Provenance</strong></summary>\n\n| Artifact | Agent | Version | Tokens |\n|---|---|---|---|\n| claims | claim_extractor | 2.0.0 | — |\n| figures | figure_analysis | 1.0.0 | — |\n| methods | method_extractor | 2.1.0 | — |\n| novelty | novelty_scorer | 1.0.0 | — |\n| citations | citation_extractor | 2.0.0 | — |\n| tool_stack | tool_stack_extractor | 1.0.0 | — |\n| reproducibility | reproducibility_scorer | 1.0.0 | — |\n\n\n- **Paper source:** `/data/papers/_uploads/21dd711e981477fd9b116d453d882707c50c09fc021ea2bf270243f2a2e725fc/21dd711e981477fd9b116d453d882707c50c09fc021ea2bf270243f2a2e725fc.html` (sha256 `52e32af40894…`)\n- **Evaluation row:** `eval_4a60ee1b-dbc0-4ce1-a31e-8b3b60aef6ed`\n- **Relevancy row:** `rel_1c2f8b34-25f3-4098-95a0-d5c9ad40f658` against `ctx_anvil_v3` (`ctx_973c0bc6-ad79-4a72-9a85-f432dc941ec5`)\n- **Generated:** 2026-06-19T11:46:32+00:00\n- **Renderer:** `report_writer` v1.2.0\n\n</details>\n",
+      "other_context_scores": []
+    },
+    {
+      "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142",
+      "context_name": "default",
+      "score_overall": 0.25,
+      "markdown": "*Bristot*\n\n> **Overall relevancy: `0.25`** — Weak technical fit\n> *Context: `ctx_default` (jdeworks)*\n>\n> **Relevancy `0.25` / adoption cost `0.83` → effort-adjusted `0.14`** *(α = `1.00`)*\n>\n> **Implementation notes:** Skim it once to keep a mental map of which frontier and open-weight models exist as of May 2026, then file the SubQ 1M-Preview and GPT-5.5 Instant names for later evaluation if/when independent benchmarks (Artificial Analysis, lm-eval-harness runs) appear. Do not change your FastAPI LLM client based on this article alone; if long-context cost matters, write a tiny eval script on your own Postgres-backed workload before swapping providers.\n\n*Paper-general analysis (claims, methods, citations, trustworthiness) lives on the [paper page](/papers/0b43cfae-82e0-454d-8a0c-d40f24e1d940?eval=4a60ee1b-dbc0-4ce1-a31e-8b3b60aef6ed) — this report covers the per-context view only.*\n\n<details>\n<summary><strong>Context: ctx_default</strong> (jdeworks)</summary>\n\n**Tech stack**\n\n- **databases:** postgres\n\n- **languages:** python, typescript\n\n- **frameworks:** fastapi, nextjs, react\n\n- **infrastructure:** docker\n\n**Constraints**\n\n- **budget:** low\n\n- **latency:** medium\n\n- **security:** medium\n\n- **team_size:** 1\n\n**Goals**\n\n- reduce time spent reading papers\n\n- find practical methods I can integrate into existing tooling\n\n- identify reproducibility risks before I invest in implementing something\n\n</details>\n\n## Table of contents\n\n1. [TL;DR](#tldr)\n2. [Relevancy detail](#relevancy-detail)\n3. [Adoption cost](#adoption-cost)\n4. [Provenance](#provenance)\n\n---\n\n## TL;DR <a id=\"tldr\"></a>\n\nAs a Python/FastAPI solo developer on a low budget, this roundup is useful background reading but not a source of integrable methods, and its unverified vendor claims directly conflict with your 'identify reproducibility risks before I invest' goal. The dominant axis is risk: high, because the most interesting content (SubQ's economics, ZAYA1-8B's AMD training) is unsubstantiated. Treat it as a 10-minute market scan, not a technical input.\n\n| Axis | Score |\n|---|---|\n| Technical compatibility | 0.25 |\n| Strategic alignment | 0.35 |\n| Operational fit | 0.30 |\n| Risk | 0.75 |\n| **Overall** | 0.25 |\n\n## Relevancy detail <a id=\"relevancy-detail\"></a>\n\n### Technical compatibility — `0.25`\n\nThe article surveys hosted LLM releases (GPT-5.5 Instant, SubQ 1M-Preview, ZAYA1-8B, Gemini 3.1 Flash Lite) which would be consumed via HTTP APIs from your Python/FastAPI backend or Next.js/React frontend, so integration is generic at best. Nothing in the piece touches Postgres, Docker packaging, or TypeScript SDK specifics, and ZAYA1-8B's AMD Instinct training path is irrelevant to a solo Docker-based deployment. Compatibility is shallow: you could swap an API key, but the paper offers no code or library guidance.\n\n### Strategic alignment — `0.35`\n\nIt partially serves your 'reduce time spent reading papers' goal by condensing a month of model releases into one digest, which is genuinely useful triage. However, it does little for 'find practical methods I can integrate into existing tooling' since there are no algorithms, prompts, or libraries, and it actively works against 'identify reproducibility risks' because the claims (52x faster attention, 1/5 cost, 12M context) are reported third-hand without benchmarks. Net alignment is modest, leaning toward awareness rather than action.\n\n### Operational fit — `0.30`\n\nFor a solo developer with low budget and medium latency tolerance, the tease that SubQ runs at 'roughly 1/5 the cost' on long context and the GPT-5.5 Instant default swap (lower latency, fewer hallucinations) are directionally interesting. But adopting SubQ today would mean trusting unverified vendor numbers with no independent benchmarks, and ZAYA1-8B's AMD training story is moot without GPU access. The piece does not give you a cost calculator, latency profile, or self-host recipe a team_size of 1 could lean on.\n\n### Risk — `0.75`\n\nReproducibility scored 0.08 and novelty 0.20: this is editorial synthesis, not validated engineering. The headline SubQ claims (52x, 1/5 cost, 12M context) lack independent benchmarks, prompts, or a cost methodology, exactly the kind of 'quiet caveats' the article itself warns about. Acting on any specific model recommendation here without your own evals would be high risk against your stated goal of catching reproducibility issues before investing.\n\n### Overall — `0.25`\n\nAs a Python/FastAPI solo developer on a low budget, this roundup is useful background reading but not a source of integrable methods, and its unverified vendor claims directly conflict with your 'identify reproducibility risks before I invest' goal. The dominant axis is risk: high, because the most interesting content (SubQ's economics, ZAYA1-8B's AMD training) is unsubstantiated. Treat it as a 10-minute market scan, not a technical input.\n\n## Adoption cost <a id=\"adoption-cost\"></a>\n\n\n**Adoption cost: `0.83`** *(tier-1 baseline: `1.00`)* — effort-adjusted relevancy `0.14`.\n\n### Tier-1 breakdown\n\n| Slot | Required | Gaps | Weight | Slot contribution |\n|---|---|---|---|---|\n| services | 10 | 10 | 0.25 | 2.50 |\n| infrastructure | 2 | 2 | 0.50 | 1.00 |\n\n> *Slot contribution = `weight × gaps × (1 − coverage)` (unnormalized). The composite adoption cost is the weighted average of these contributions across all slots the paper required.*\n\n### Tier-2 refinements\n\n\n\n#### 1. `infrastructure` / `amd instinct gpu` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.55` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nThe user has no recorded infrastructure stack, so there is no existing accelerator to lean on. However, an 8B-class MoE is well within the floor of any modern accelerator (a single rented H100/A100 or even a consumer-grade CUDA card handles inference), and AMD Instinct is rentable on clouds like Azure ND MI300X or TensorWave. The paper's training-on-AMD detail is a curiosity, not a hard adopter requirement, so the real cost is provisioning any GPU and validating ROCm vs CUDA kernels for the released weights.\n\n#### 2. `infrastructure` / `huawei ascend` — trigger `infrastructure_qualifier_gap`\n\n- **Refined cost:** `0.60` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nHuawei Ascend was the original training fabric for DeepSeek V4, and Ascend hardware is effectively inaccessible outside mainland China cloud tenancies, so training reproduction is not portable for most readers. For inference, however, the fallback (a CUDA GPU cluster) is the realistic path and DeepSeek typically ships open weights that run on standard NVIDIA stacks. With no recorded stack the user must stand up cluster-class GPU capacity for a frontier MoE, which is non-trivial but a known commodity rental.\n\n#### 3. `services` / `alibaba cloud` — trigger `ecosystem_dependency`\n\n- **Refined cost:** `0.30` (was `1.00` from tier-1)\n- **Uncertainty:** `medium`\n\nAlibaba Cloud API access mainly matters if the user wants the hosted Qwen endpoint with regional billing and KYC, which is a real friction point from outside China. The fallback (Qwen weights via HuggingFace) is well-established and the Qwen team has consistently released open checkpoints, so the user can sidestep the cloud account entirely by self-hosting or using an HF Inference Endpoint. Cost is mostly the one-time pull-and-serve effort plus any tokenizer or license review.\n\n\n\n---\n\n## Sensitivity: this paper vs your other contexts\n\n| Context | Score |\n|---|---|\n| ctx_anvil_v3 | 0.15 |\n\n\n<a id=\"provenance\"></a>\n<details>\n<summary><strong>Provenance</strong></summary>\n\n| Artifact | Agent | Version | Tokens |\n|---|---|---|---|\n| claims | claim_extractor | 2.0.0 | — |\n| figures | figure_analysis | 1.0.0 | — |\n| methods | method_extractor | 2.1.0 | — |\n| novelty | novelty_scorer | 1.0.0 | — |\n| citations | citation_extractor | 2.0.0 | — |\n| tool_stack | tool_stack_extractor | 1.0.0 | — |\n| reproducibility | reproducibility_scorer | 1.0.0 | — |\n\n\n- **Paper source:** `/data/papers/_uploads/21dd711e981477fd9b116d453d882707c50c09fc021ea2bf270243f2a2e725fc/21dd711e981477fd9b116d453d882707c50c09fc021ea2bf270243f2a2e725fc.html` (sha256 `52e32af40894…`)\n- **Evaluation row:** `eval_4a60ee1b-dbc0-4ce1-a31e-8b3b60aef6ed`\n- **Relevancy row:** `rel_62ecf4cc-1fdd-4807-93c2-2752176b974d` against `ctx_default` (`ctx_d7cfc578-eb55-44c3-ada9-ba232c0af142`)\n- **Generated:** 2026-06-19T11:46:32+00:00\n- **Renderer:** `report_writer` v1.2.0\n\n</details>\n",
+      "other_context_scores": []
+    }
+  ]
+}

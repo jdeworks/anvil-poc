@@ -1,0 +1,65 @@
+{
+  "counts": {
+    "papers": 316,
+    "evaluations": 124,
+    "contexts": 3,
+    "experiments": 0,
+    "candidates": 109
+  },
+  "highlights": [
+    {
+      "ro_id": "04167a43-fb3e-44f9-9c7d-e9c200911752",
+      "title": "Coevolved Agent Training: virtuous cycle of co-improving planner and scorer, runaway divergence risks, and collusion failure modes",
+      "general_claim": "A coevolved training loop pairing a planner agent and a scorer agent via DPO on synthetic preference data can produce a virtuous cycle of mutual capability improvement, but risks runaway divergence and inter-agent collusion."
+    },
+    {
+      "ro_id": "0669ce66-29fa-455f-ab6a-ba2f6f3d70e7",
+      "title": "Domain-Specific Engineering versus General-Purpose Scaling",
+      "general_claim": "Scaling general-purpose reinforcement learning models outperforms domain-specific hand-engineered systems on competitive programming benchmarks."
+    },
+    {
+      "ro_id": "0786a480-b2e8-4bec-9f24-176353598a9e",
+      "title": "System-level patterns for production readiness: integration architecture, pattern chaining, and maturity mapping",
+      "general_claim": "System-level architectural patterns for agentic AI (authentication, event-driven reactivity, registries, and compliance monitoring) should be adopted progressively according to a GenAI maturity model rather than all at once, to match system complexity and risk profile."
+    },
+    {
+      "ro_id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
+      "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
+      "general_claim": "April 2026 saw major frontier AI model releases that broke previous performance ceilings, but May 2026 pivoted toward architectural innovations and inference efficiency as the primary competitive focus."
+    },
+    {
+      "ro_id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+      "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+      "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes."
+    }
+  ],
+  "top_picks": [
+    {
+      "ro_id": "695ef971-0c58-4c6a-af69-7f49627fcf83",
+      "title": "The Price Reversal Phenomenon: When Cheaper Reasoning Models Cost More",
+      "score_overall": 0.82,
+      "summary_text": "This paper investigates whether listed API prices of reasoning models accurately reflect actual inference costs. Evaluating 8 frontier models on 12 diverse tasks, the authors found a \"pricing reversal phenomenon\" where 32% of cheaper-listed models cost substantially more in practice. Specific example: Gemini 3 Flash is 80% cheaper by listed price yet 38% more expensive in actual total cost. Using Shapley value attribution, they traced this to vast differences in token efficiency, with models varying by up to 900% in thinking token usage and 10x in interaction turns. Repeated runs of identical queries show 9.7x thinking token variation, establishing fundamental limits on per-query cost prediction. The paper calls for cost-aware model selection and per-request cost transparency rather than relying on nominal API prices.",
+      "general_claim": "Listed API prices for reasoning models are unreliable proxies for actual inference costs because models with lower unit prices can require substantially more total tokens due to differences in efficiency.",
+      "context_name": "ctx_anvil_v3",
+      "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5"
+    },
+    {
+      "ro_id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+      "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+      "score_overall": 0.78,
+      "summary_text": "This paper presents a systematic empirical study of LLM agent performance on backend code generation under varying degrees of structural constraints. The researchers evaluated agents on 80 greenfield and 20 feature-implementation tasks across 8 web frameworks using an OpenAPI-based evaluation framework with end-to-end behavioral tests and static verifiers. Key findings identify a \"constraint decay\" phenomenon where agent performance declines substantially as structural requirements accumulate, with capable configurations losing 30 points on average in assertion pass rates. Framework analysis reveals significant disparities: agents perform better on lightweight, explicit frameworks like Flask than on convention-heavy environments like FastAPI and Django. Error analysis identifies data-layer defects, including incorrect query composition and ORM runtime violations, as the primary failure mode. The work highlights that joint satisfaction of functional and structural requirements remains a significant open challenge for coding agents.",
+      "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes.",
+      "context_name": "ctx_default",
+      "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142"
+    },
+    {
+      "ro_id": "0cde798b-995f-4a58-be72-d4db96d9dcf4",
+      "title": "Constraint Decay: The Fragility of LLM Agents in Backend Code Generation",
+      "score_overall": 0.72,
+      "summary_text": "This paper presents a systematic empirical study of LLM agent performance on backend code generation under varying degrees of structural constraints. The researchers evaluated agents on 80 greenfield and 20 feature-implementation tasks across 8 web frameworks using an OpenAPI-based evaluation framework with end-to-end behavioral tests and static verifiers. Key findings identify a \"constraint decay\" phenomenon where agent performance declines substantially as structural requirements accumulate, with capable configurations losing 30 points on average in assertion pass rates. Framework analysis reveals significant disparities: agents perform better on lightweight, explicit frameworks like Flask than on convention-heavy environments like FastAPI and Django. Error analysis identifies data-layer defects, including incorrect query composition and ORM runtime violations, as the primary failure mode. The work highlights that joint satisfaction of functional and structural requirements remains a significant open challenge for coding agents.",
+      "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes.",
+      "context_name": "ctx_anvil_v3",
+      "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5"
+    }
+  ]
+}

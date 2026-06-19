@@ -1,0 +1,22 @@
+[
+  {
+    "file": "sources.png",
+    "caption": "Unified data sources: papers, books and web in one corpus",
+    "group": "Built today"
+  },
+  {
+    "file": "paper-detail.png",
+    "caption": "Full source analysis: claims, trust, novelty, citations",
+    "group": "Built today"
+  },
+  {
+    "file": "evaluations.png",
+    "caption": "Evaluations: every source scored against a context",
+    "group": "Built today"
+  },
+  {
+    "file": "context-yaml.png",
+    "caption": "A context auto-extracted from a real codebase, with its full definition",
+    "group": "Built today"
+  }
+]
