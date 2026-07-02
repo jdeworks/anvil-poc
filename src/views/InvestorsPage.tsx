@@ -132,7 +132,7 @@ export function InvestorsPage() {
       </Section>
 
       <Section title="Why it defends itself">
-        <ul className="space-y-2 text-sm text-fg-muted">
+        <ul className="max-w-prose space-y-2 text-sm text-fg-muted">
           <li className="rounded-lg border border-line p-3">
             <span className="font-medium text-fg">Relevance is the hard part.</span>{" "}
             Anyone can summarise a paper. Judging whether it matters for a specific
