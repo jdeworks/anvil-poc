@@ -70,9 +70,7 @@ export function SourcesPage() {
               <tr
                 key={r.id}
                 onClick={() => (r.hero ? openSource(r.id) : setTeaser(r))}
-                className={`cursor-pointer border-t border-line transition-colors hover:bg-canvas-alt ${
-                  r.hero ? "" : "opacity-75"
-                }`}
+                className="cursor-pointer border-t border-line transition-colors hover:bg-canvas-alt"
               >
                 <td className="max-w-[28rem] px-4 py-2.5 align-top">
                   <div className="flex items-center gap-2">
