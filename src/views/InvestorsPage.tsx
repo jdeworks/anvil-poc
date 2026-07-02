@@ -106,7 +106,7 @@ export function InvestorsPage() {
       </Section>
 
       <Section title="The problem">
-        <p className="text-sm leading-relaxed text-fg-muted">
+        <p className="max-w-prose text-sm leading-relaxed text-fg-muted">
           Researchers, analysts and engineers drown in plausible looking sources.
           Existing tools either summarise and hide the reasoning, or rank by
           popularity. Neither tells you whether a specific claim holds up, or
@@ -148,7 +148,7 @@ export function InvestorsPage() {
       </Section>
 
       <Section title="Where we fit">
-        <p className="mb-3 text-sm leading-relaxed text-fg-muted">
+        <p className="mb-3 max-w-prose text-sm leading-relaxed text-fg-muted">
           Discovery and evidence aggregation are mature, crowded layers. Tools
           like Semantic Scholar, Elicit, Consensus and scite find papers and show
           how the literature cites or agrees with a claim, and they do it well. We
