@@ -157,11 +157,12 @@ export function SurveyPage() {
         <Question label="Which describes you best?">
           <Pills options={ROLE} selected={data.role} onSelect={(v) => update("role", v)} />
         </Question>
-        <Question label="E-Mail or Phone" optional>
+        <Question label="E-Mail or Phone" optional id="survey-contact">
           <p className="mb-2 text-xs text-fg-muted">
             VC or generally interested? Leave contact info so we can reach out.
           </p>
           <input
+            id="survey-contact"
             type="text"
             value={data.contact}
             onChange={(e) => update("contact", e.target.value)}
@@ -169,8 +170,9 @@ export function SurveyPage() {
             className="w-full rounded-lg border border-line bg-canvas p-3 text-sm outline-none focus:ring-2 focus:ring-accent/50"
           />
         </Question>
-        <Question label="Anything else you'd like to share?" optional>
+        <Question label="Anything else you'd like to share?" optional id="survey-feedback">
           <textarea
+            id="survey-feedback"
             value={data.feedback}
             onChange={(e) => update("feedback", e.target.value)}
             placeholder="Ideas, concerns, feature requests…"
@@ -194,14 +196,16 @@ function Question({
   label,
   optional,
   children,
+  id,
 }: {
   label: string;
   optional?: boolean;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium">
+      <label className="mb-2 block text-sm font-medium" htmlFor={id}>
         {label}
         {optional && (
           <span className="ml-1 font-normal text-fg-muted">(optional)</span>

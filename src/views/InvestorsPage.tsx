@@ -99,7 +99,7 @@ export function InvestorsPage() {
             </div>
           ))}
         </div>
-        <p className="mt-3 text-xs text-fg-muted">
+        <p className="mt-3 max-w-prose text-xs text-fg-muted">
           Explosive growth, raw volume, and a fixed human day. The gap between
           what is published and what anyone can actually use keeps widening.
         </p>

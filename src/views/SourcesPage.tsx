@@ -57,7 +57,7 @@ export function SourcesPage() {
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-line">
-        <table className="w-full text-sm">
+        <table className="min-w-[480px] w-full text-sm">
           <thead className="bg-canvas-alt text-left text-xs uppercase tracking-wider text-fg-muted">
             <tr>
               <th className="px-4 py-2 font-semibold">Title</th>

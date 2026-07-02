@@ -116,7 +116,7 @@ export function ContextsPage() {
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
       <header className="mb-6">
         <h1 className="text-2xl font-semibold tracking-tight">Contexts</h1>
-        <p className="mt-1 text-sm text-fg-muted">
+        <p className="mt-1 max-w-prose text-sm text-fg-muted">
           A context describes a team (stack, constraints, goals) so anvil scores
           relevance for them, not in the abstract. Both below were auto-extracted
           from real codebases: anvil's own, and the auto-audiobook project.

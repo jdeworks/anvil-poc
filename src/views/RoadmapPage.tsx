@@ -69,7 +69,7 @@ export function RoadmapPage() {
           lot more. The core is roughly 90 percent of a working tool, so the work
           left is mostly breadth and automation rather than new capability.
         </p>
-        <p className="mt-3 rounded-lg border border-line bg-canvas-alt px-3 py-2 text-xs text-fg-muted">
+        <p className="mt-3 max-w-prose rounded-lg border border-line bg-canvas-alt px-3 py-2 text-xs text-fg-muted">
           Note: this is a proof-of-concept view. Counts and layouts here do not
           reflect the real volume already in the system, and the final product UI
           will differ.
