@@ -482,7 +482,7 @@
       ]
     },
     "trustworthiness": {
-      "score": 0.94,
+      "score": 0.84,
       "base": 0.5,
       "reasons": [
         {
@@ -514,20 +514,6 @@
           "url": "https://www.eurecom.edu/en/people/papotti-paolo"
         },
         {
-          "label": "independent sources supported the claim: 'The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend,'",
-          "delta": 0.05,
-          "kind": "corroboration",
-          "evidence": "The paper HTML confirms all four constraint dimensions exactly as claimed: web framework, architectural pattern, database backend (PostgreSQL or SQLite), and ORM integration (SQLAlchemy or Sequelize). This is a methodological design claim for which the paper text is the authoritative and only applicable source.",
-          "url": "https://arxiv.org/html/2605.06445v1"
-        },
-        {
-          "label": "independent sources supported the claim: 'The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct d'",
-          "delta": 0.05,
-          "kind": "corroboration",
-          "evidence": "The paper text contains the verbatim statement: 'A solution is considered layered if at least 3 of the 4 canonical layers are present as distinct directories,' confirming the claimed 3-of-4 threshold precisely. No external corroboration is applicable for an internal verifier design choice.",
-          "url": "https://arxiv.org/html/2605.06445v1"
-        },
-        {
           "label": "Mixed-pragmatic: practitioners validate the phenomenon qualitatively, minority skeptical of generalizability",
           "delta": 0.02,
           "kind": "corroboration",
@@ -544,22 +530,6 @@
             "https://arxiv.org/abs/2605.06445"
           ],
           "note": "No independent replication study reports the specific 30pp or 40% relative drop. HN practitioners broadly corroborate that constraint accumulation degrades agent performance from personal experience, but none report the same numeric result. The figure is internally consistent across the paper abstract and HTML full text, but the paper is a new preprint (May 2026) with no external study yet reproducing it."
-        },
-        {
-          "claim_text": "The study isolates four non-functional constraint dimensions: framework choice, architectural pattern, database backend, and ORM integration.",
-          "verdict": "supported",
-          "sources": [
-            "https://arxiv.org/html/2605.06445v1"
-          ],
-          "note": "The paper HTML confirms all four constraint dimensions exactly as claimed: web framework, architectural pattern, database backend (PostgreSQL or SQLite), and ORM integration (SQLAlchemy or Sequelize). This is a methodological design claim for which the paper text is the authoritative and only applicable source."
-        },
-        {
-          "claim_text": "The architecture verifier considers a solution layered if at least 3 of the 4 canonical layers are present as distinct directories, not all 4.",
-          "verdict": "supported",
-          "sources": [
-            "https://arxiv.org/html/2605.06445v1"
-          ],
-          "note": "The paper text contains the verbatim statement: 'A solution is considered layered if at least 3 of the 4 canonical layers are present as distinct directories,' confirming the claimed 3-of-4 threshold precisely. No external corroboration is applicable for an internal verifier design choice."
         }
       ],
       "web_status": "ok",

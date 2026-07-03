@@ -240,6 +240,44 @@ def shape_summary(s: dict) -> dict | None:
     }
 
 
+def drop_self_corroboration(analysis: dict | None, detail: dict) -> dict | None:
+    """A corroboration entry whose only evidence URL is the source's own page
+    isn't independent support — drop such trust reasons (rebalancing the score
+    so base + deltas stays exact) and claim corroborations."""
+    if not analysis:
+        return analysis
+    t = analysis.get("trustworthiness")
+    if not isinstance(t, dict):
+        return analysis
+    own = []
+    src = detail.get("source_url") or ""
+    if src:
+        own.append(src.rstrip("/"))
+        m = re.search(r"arxiv\.org/(?:abs|html|pdf)/([0-9.]+)", src)
+        if m:
+            own.append(m.group(1))
+
+    def is_self(url: str | None) -> bool:
+        return bool(url) and any(o in url for o in own)
+
+    if own and t.get("reasons"):
+        kept, removed_delta = [], 0.0
+        for r in t["reasons"]:
+            if r.get("kind") == "corroboration" and is_self(r.get("url")):
+                removed_delta += r.get("delta") or 0
+            else:
+                kept.append(r)
+        if removed_delta and isinstance(t.get("score"), (int, float)):
+            t["score"] = round(t["score"] - removed_delta, 4)
+        t["reasons"] = kept
+    if own and t.get("claim_corroborations"):
+        t["claim_corroborations"] = [
+            c for c in t["claim_corroborations"]
+            if not (c.get("sources") and all(is_self(s) for s in c["sources"]))
+        ]
+    return analysis
+
+
 def redact_yaml(yaml_text: str | None) -> str | None:
     """The auto-extracted context YAML can embed a verbatim Dockerfile excerpt
     that documents where credentials live in the image. Not fit for the public
@@ -336,7 +374,9 @@ def bundle_paper(kind: str, ro_id: str) -> dict | None:
     if not detail:
         return None
     summary = shape_summary(get(f"/api/papers/{ro_id}/summary") or {})
-    analysis = shape_analysis(get(f"/api/papers/{ro_id}/analysis") or {})
+    analysis = drop_self_corroboration(
+        shape_analysis(get(f"/api/papers/{ro_id}/analysis") or {}), detail,
+    )
     citations = shape_citations(get(f"/api/papers/{ro_id}/citations") or {})
     graph = shape_graph(get(f"/api/papers/{ro_id}/graph") or {})
     prev_md = existing_markdown(ro_id)
