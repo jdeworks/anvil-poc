@@ -1,5 +1,7 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { useViewStore } from "../stores/view-store";
 import { loadSource } from "../lib/demo";
 import {
@@ -395,13 +397,62 @@ const MD = {
   strong: ({ children }: { children?: ReactNode }) => (
     <strong className="font-semibold text-fg">{children}</strong>
   ),
-  code: ({ children }: { children?: ReactNode }) => (
-    <code className="rounded bg-canvas px-1 py-0.5 font-mono text-xs">{children}</code>
+  em: ({ children }: { children?: ReactNode }) => (
+    <em className="italic text-fg-muted">{children}</em>
   ),
-  a: ({ href, children }: { href?: string; children?: ReactNode }) => (
-    <a href={href} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+  code: ({ children }: { children?: ReactNode }) => (
+    <code className="rounded bg-canvas px-1 py-0.5 font-mono text-xs text-fg">{children}</code>
+  ),
+  a: ({ id, href, children }: { id?: string; href?: string; children?: ReactNode }) => {
+    // Heading anchors (`<a id="...">` with no href) are layout markers, not links.
+    if (!href) return <span id={id} />;
+    return (
+      <a href={href} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+        {children}
+      </a>
+    );
+  },
+  hr: () => <hr className="my-4 border-line" />,
+  blockquote: ({ children }: { children?: ReactNode }) => (
+    <blockquote className="mb-2 border-l-2 border-accent bg-canvas px-3 py-2 text-sm text-fg-muted [&>p]:mb-0">
       {children}
-    </a>
+    </blockquote>
+  ),
+  table: ({ children }: { children?: ReactNode }) => (
+    <div className="mb-3 overflow-x-auto rounded-lg border border-line">
+      <table className="w-full text-left text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }: { children?: ReactNode }) => (
+    <thead className="bg-canvas text-xs uppercase tracking-wider text-fg-muted">
+      {children}
+    </thead>
+  ),
+  tbody: ({ children }: { children?: ReactNode }) => (
+    <tbody className="divide-y divide-line">{children}</tbody>
+  ),
+  tr: ({ children }: { children?: ReactNode }) => (
+    <tr className="border-t border-line first:border-t-0">{children}</tr>
+  ),
+  th: ({ children, style }: { children?: ReactNode; style?: CSSProperties }) => (
+    <th className="px-3 py-2 font-medium" style={style}>
+      {children}
+    </th>
+  ),
+  td: ({ children, style }: { children?: ReactNode; style?: CSSProperties }) => (
+    <td className="px-3 py-2 text-fg-muted" style={style}>
+      {children}
+    </td>
+  ),
+  details: ({ children }: { children?: ReactNode }) => (
+    <details className="mb-3 rounded-lg border border-line bg-canvas px-3 py-2 [&_details]:mt-2">
+      {children}
+    </details>
+  ),
+  summary: ({ children }: { children?: ReactNode }) => (
+    <summary className="cursor-pointer text-sm text-fg-muted marker:text-fg-muted">
+      {children}
+    </summary>
   ),
 };
 
@@ -472,7 +523,13 @@ function ContextsTab({
             Evaluation report · {current.context_name}
           </div>
           {/* Rendered as real page content (flows naturally, no inner scroll). */}
-          <ReactMarkdown components={MD}>{current.markdown}</ReactMarkdown>
+          <ReactMarkdown
+            components={MD}
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
+          >
+            {current.markdown}
+          </ReactMarkdown>
           <details className="mt-5 rounded-lg border border-line">
             <summary className="cursor-pointer px-3 py-2 text-xs text-fg-muted">
               Raw markdown
