@@ -200,6 +200,16 @@ def shape_summary(s: dict) -> dict | None:
     }
 
 
+def friendly_markdown(md: str | None) -> str | None:
+    """Evaluation reports embed internal context names (Context: ctx_anvil_v3,
+    sensitivity table rows, provenance lines) — map them to display names."""
+    if not md:
+        return md
+    for name, disp in DISPLAY_NAME.items():
+        md = md.replace(name, disp)
+    return md
+
+
 def shape_citations(c: dict) -> list:
     keys = ("kind", "raw_text", "resolved_title", "resolved_year", "doi", "canonical_url")
     return [
@@ -281,7 +291,7 @@ def bundle_paper(kind: str, ro_id: str) -> dict | None:
             "context_id": ctx_id,
             "context_name": DISPLAY_NAME.get(ev.get("context_name"), ev.get("context_name")),
             "score_overall": ev.get("score_overall"),
-            "markdown": rep.get("markdown") or prev_md.get(ctx_id),
+            "markdown": friendly_markdown(rep.get("markdown") or prev_md.get(ctx_id)),
             "other_context_scores": ocs,
         })
 
