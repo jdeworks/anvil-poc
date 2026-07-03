@@ -713,9 +713,14 @@ function SourceTab({
     );
   }
 
-  // Paper / web: the extracted text anvil analysed.
+  // Paper / web: excerpts of the extracted text anvil analysed.
   return (
     <div>
+      {content.license_note && (
+        <div className="mb-3 rounded-lg border border-warn-border bg-warn-bg px-4 py-3 text-sm text-warn-fg">
+          {content.license_note}
+        </div>
+      )}
       <p className="mb-3 text-xs text-fg-muted">
         The text anvil extracted from this source and analysed.
       </p>

@@ -50,14 +50,40 @@ PROJECT_URL = {
     "ctx_audiobook_v3": "https://jdeworks.github.io/narratu-poc/",
 }
 
-# Known-junk corpus rows (test artifacts, unreadable ingests) kept out of the
-# public catalog regardless of what the API returns.
+# Known-junk ingest rows kept out of the public catalog regardless of what
+# the API returns.
 EXCLUDE_IDS = {
-    "2eef31a5-f5a8-41a2-aa7a-d25f348442bd",  # "AI Agents: The Definitive Guide (for fdafg fdsaf)"
-    "046cddae-afb9-43f8-b7f9-d3b7e4a23d9c",  # raw "arXiv:2502.06807v2 …" title
-    "59ac4f83-b788-48e8-a919-017e218cbc84",  # truncated "for Building AI Agents"
-    "7a95b2d8-ad9b-463c-8a25-3185274fbc85",  # "Blog" by "Hi"
+    "2eef31a5-f5a8-41a2-aa7a-d25f348442bd",
+    "046cddae-afb9-43f8-b7f9-d3b7e4a23d9c",
+    "59ac4f83-b788-48e8-a919-017e218cbc84",
+    "7a95b2d8-ad9b-463c-8a25-3185274fbc85",
+    "6b40f9cf-e0c4-41e8-8cbc-cbb35666543d",
 }
+
+# Site-chrome suffixes scraped into web titles; stripped for the catalog.
+TITLE_SUFFIXES = (
+    " | Substack", " | Weaviate", " | Mistral AI", " - Microsoft Research",
+    " | Amazon Web Services", " - Graph Database & Analytics",
+    " - Articles - Braintrust", " - ZenML Blog", " | Towards Data Science",
+    " | OpenAI API", " | Vadim's blog",
+)
+
+
+def clean_title(t: str | None) -> str | None:
+    for s in TITLE_SUFFIXES:
+        if t and t.endswith(s):
+            return t[: -len(s)]
+    return t
+
+
+def clean_authors(authors: list | None) -> list:
+    """Drop scrape placeholders and split semicolon-joined author strings."""
+    out: list[str] = []
+    for a in authors or []:
+        if not a or a.strip() in ("Author page", "Hi"):
+            continue
+        out.extend(x.strip() for x in a.split(";") if x.strip())
+    return out
 
 CATALOG_LIMIT = 50
 CLAIM_LIMIT = 24
@@ -65,9 +91,11 @@ METHOD_LIMIT = 12
 CITATION_LIMIT = 20
 GRAPH_NODE_LIMIT = 140
 ABSTRACT_CHARS = 700
-SECTION_LIMIT = 25
+# Public bake keeps short excerpts only (third-party text stays with its
+# copyright owners); --include-raw lifts this for sources you own rights to.
+SECTION_LIMIT = 4
 SECTION_CHARS = 1400
-RAW_TEXT_CHARS = 18000
+RAW_TEXT_CHARS = 2500
 CHAPTER_CHARS = 1500
 CONTEXT_YAML_CHARS = 14000
 
@@ -159,15 +187,27 @@ def shape_content_from_detail(d: dict, kind: str = "paper") -> dict | None:
     or a leading slice of raw_text. These are excerpts, not the full document.
 
     Web articles are usually one long section, so for `url` we use the flowing
-    raw_text (larger cap) to avoid the text looking cut off mid-article."""
+    raw_text to avoid the text looking cut off mid-article."""
+    sec_limit = 25 if INCLUDE_RAW else SECTION_LIMIT
+    raw_chars = 18000 if INCLUDE_RAW else RAW_TEXT_CHARS
+    note = None if INCLUDE_RAW else (
+        "The full text isn't reproduced in this public demo — these are short "
+        "excerpts. Read the original via the link above."
+    )
+
+    def with_note(content: dict) -> dict:
+        if note:
+            content["license_note"] = note
+        return content
+
     if kind == "url":
         raw = d.get("raw_text")
         if raw:
-            return {"text": trim(raw, RAW_TEXT_CHARS)}
+            return with_note({"text": trim(raw, raw_chars)})
     sections = d.get("sections") or []
     if sections:
         out = []
-        for s in sections[:SECTION_LIMIT]:
+        for s in sections[:sec_limit]:
             content = trim(s.get("content"), SECTION_CHARS)
             if not content and not s.get("heading"):
                 continue
@@ -177,10 +217,10 @@ def shape_content_from_detail(d: dict, kind: str = "paper") -> dict | None:
                 "content": content,
             })
         if out:
-            return {"sections": out}
+            return with_note({"sections": out})
     raw = d.get("raw_text")
     if raw:
-        return {"text": trim(raw, RAW_TEXT_CHARS)}
+        return with_note({"text": trim(raw, raw_chars)})
     return None
 
 
@@ -198,6 +238,29 @@ def shape_summary(s: dict) -> dict | None:
         "key_findings": m.get("key_findings") or [],
         "stats": m.get("stats") or {},
     }
+
+
+def redact_yaml(yaml_text: str | None) -> str | None:
+    """The auto-extracted context YAML can embed a verbatim Dockerfile excerpt
+    that documents where credentials live in the image. Not fit for the public
+    demo — replace the excerpt (and the credential-location rationale) while
+    keeping the rest of the context detail."""
+    if not yaml_text:
+        return yaml_text
+    yaml_text = re.sub(
+        r'- "FROM .*?\(backend/Dockerfile\)"',
+        '- "(backend/Dockerfile — excerpt redacted for the public demo)"',
+        yaml_text,
+        flags=re.S,
+    )
+    yaml_text = re.sub(
+        r"rationale: Dockerfile installs the claude-code apt package from "
+        r"downloads\.claude\.ai and bakes \n\s*in OAuth credentials under "
+        r"/root/\.claude, indicating",
+        "rationale: Dockerfile installs the Claude Code subscription CLI, indicating",
+        yaml_text,
+    )
+    return yaml_text
 
 
 def friendly_markdown(md: str | None) -> str | None:
@@ -422,6 +485,8 @@ def build_catalog(
 
     def add(row: dict) -> None:
         if row["id"] and row["id"] not in by_id and row["id"] not in EXCLUDE_IDS:
+            row["title"] = clean_title(row.get("title"))
+            row["authors"] = clean_authors(row.get("authors"))
             by_id[row["id"]] = row
 
     # Heroes first so they always appear (the corpus list may not include them).
@@ -552,6 +617,8 @@ def main() -> int:
     for tp in top_picks:
         if tp.get("ro_id"):
             claim_by_ro[tp["ro_id"]] = tp.get("general_claim") or tp.get("summary_text")
+        if tp.get("context_name") in DISPLAY_NAME:
+            tp["context_name"] = DISPLAY_NAME[tp["context_name"]]
     for h in stats.get("highlights", []):
         claim_by_ro.setdefault(h.get("ro_id"), h.get("general_claim"))
     stats["top_picks"] = top_picks
@@ -592,7 +659,7 @@ def main() -> int:
             "constraints": c.get("constraints"),
             "goals": c.get("goals"),
             "paper_count": c.get("paper_count"),
-            "source_yaml": trim(c.get("source_yaml"), CONTEXT_YAML_CHARS),
+            "source_yaml": trim(redact_yaml(c.get("source_yaml")), CONTEXT_YAML_CHARS),
         })
 
     # hero bundles

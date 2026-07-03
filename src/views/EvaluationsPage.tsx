@@ -65,6 +65,11 @@ export function EvaluationsPage() {
                   }`}
                 >
                   <td className="max-w-[28rem] px-4 py-2.5">
+                    {isHero && (
+                      <span className="mr-1.5 text-accent" role="img" aria-label="Highlighted source">
+                        ★
+                      </span>
+                    )}
                     <span className={isHero ? "font-medium text-accent" : "font-medium"}>
                       {r.title ?? r.research_object_id.slice(0, 8)}
                     </span>

@@ -19,7 +19,7 @@ captured *output* (safe to serve raw) plus the viewer.
 - **Data sources table**: the catalog roster. The three heroes open; every other
   row shows "Not part of the POC preview".
 - **Evaluations**, and **Contexts** featuring two genuinely auto-extracted
-  contexts (anvil and auto-audiobook) with their full YAML.
+  contexts (anvil and the narratu POC) with their full YAML.
 - **Why anvil**, **How it works**, and an **investor** page with cited, linked
   industry numbers.
 - **Road ahead**: what is built and where it is headed, with product screenshots
@@ -59,14 +59,11 @@ No CI. Build locally and commit the output; Pages serves it from the branch:
 3. One-time: repo **Settings, Pages, Source = "Deploy from a branch", Branch =
    `dev`, Folder = `/docs`**. We use `dev`, not `main`.
 
-Live at https://jdeworks.github.io/anvil-poc/.
-
-> This repo is public, so keep the history clean: it should stay a single commit
-> so no draft versions are visible. To publish an update, amend and force-push:
-> ```bash
-> git add -A && git commit --amend --no-edit && git push --force origin dev
-> ```
+Live at https://jdeworks.github.io/anvil-poc/. To publish an update: build,
+commit `docs/` together with the source change, and push `dev`.
 
 ## License
 
-[BSL 1.1](./LICENSE.md). Licensor jdeworks. Converts to Apache 2.0 on the Change Date.
+[BSL 1.1](./LICENSE.md). Licensor jdeworks. Converts to Apache 2.0 on the Change
+Date. Third-party source excerpts in the demo data remain under their original
+owners' copyright.

@@ -40,7 +40,7 @@
       "score_overall": 0.82,
       "summary_text": "This paper investigates whether listed API prices of reasoning models accurately reflect actual inference costs. Evaluating 8 frontier models on 12 diverse tasks, the authors found a \"pricing reversal phenomenon\" where 32% of cheaper-listed models cost substantially more in practice. Specific example: Gemini 3 Flash is 80% cheaper by listed price yet 38% more expensive in actual total cost. Using Shapley value attribution, they traced this to vast differences in token efficiency, with models varying by up to 900% in thinking token usage and 10x in interaction turns. Repeated runs of identical queries show 9.7x thinking token variation, establishing fundamental limits on per-query cost prediction. The paper calls for cost-aware model selection and per-request cost transparency rather than relying on nominal API prices.",
       "general_claim": "Listed API prices for reasoning models are unreliable proxies for actual inference costs because models with lower unit prices can require substantially more total tokens due to differences in efficiency.",
-      "context_name": "ctx_anvil_v3",
+      "context_name": "anvil",
       "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5"
     },
     {
@@ -49,7 +49,7 @@
       "score_overall": 0.78,
       "summary_text": "This paper presents a systematic empirical study of LLM agent performance on backend code generation under varying degrees of structural constraints. The researchers evaluated agents on 80 greenfield and 20 feature-implementation tasks across 8 web frameworks using an OpenAPI-based evaluation framework with end-to-end behavioral tests and static verifiers. Key findings identify a \"constraint decay\" phenomenon where agent performance declines substantially as structural requirements accumulate, with capable configurations losing 30 points on average in assertion pass rates. Framework analysis reveals significant disparities: agents perform better on lightweight, explicit frameworks like Flask than on convention-heavy environments like FastAPI and Django. Error analysis identifies data-layer defects, including incorrect query composition and ORM runtime violations, as the primary failure mode. The work highlights that joint satisfaction of functional and structural requirements remains a significant open challenge for coding agents.",
       "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes.",
-      "context_name": "ctx_default",
+      "context_name": "default",
       "context_id": "d7cfc578-eb55-44c3-ada9-ba232c0af142"
     },
     {
@@ -58,7 +58,7 @@
       "score_overall": 0.72,
       "summary_text": "This paper presents a systematic empirical study of LLM agent performance on backend code generation under varying degrees of structural constraints. The researchers evaluated agents on 80 greenfield and 20 feature-implementation tasks across 8 web frameworks using an OpenAPI-based evaluation framework with end-to-end behavioral tests and static verifiers. Key findings identify a \"constraint decay\" phenomenon where agent performance declines substantially as structural requirements accumulate, with capable configurations losing 30 points on average in assertion pass rates. Framework analysis reveals significant disparities: agents perform better on lightweight, explicit frameworks like Flask than on convention-heavy environments like FastAPI and Django. Error analysis identifies data-layer defects, including incorrect query composition and ORM runtime violations, as the primary failure mode. The work highlights that joint satisfaction of functional and structural requirements remains a significant open challenge for coding agents.",
       "general_claim": "LLM agents' performance on backend code generation degrades significantly as structural constraints accumulate, with framework-specific sensitivities and data-layer defects being key failure modes.",
-      "context_name": "ctx_anvil_v3",
+      "context_name": "anvil",
       "context_id": "973c0bc6-ad79-4a72-9a85-f432dc941ec5"
     }
   ]

@@ -4,7 +4,9 @@
 
 <u>Licensor</u>: jdeworks
 
-<u>Licensed Work</u>: anvil including the software components, or any portion of them, and any modification.
+<u>Licensed Work</u>: anvil and this anvil-poc demo (the viewer application, build scripts, and the Licensor's derived analysis data), or any portion of them, and any modification.
+
+<u>Third-party content</u>: Excerpts of third-party sources (papers, books, articles) baked into the demo data remain under their original owners' copyright, are included for demonstration only, and are not licensed under this License.
 
 <u>Change Date</u>: April 2, 2030
 

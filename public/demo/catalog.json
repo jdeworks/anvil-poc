@@ -17,7 +17,9 @@
       "id": "0b43cfae-82e0-454d-8a0c-d40f24e1d940",
       "kind": "url",
       "title": "New AI Models May 2026: The Frontier Took a Breath, Architecture Took the Stage",
-      "authors": [],
+      "authors": [
+        "Dylan Bristot"
+      ],
       "year": null,
       "facet": "html",
       "source_type": "html",
@@ -232,7 +234,7 @@
     {
       "id": "2bcfd1e0-7b11-4ae9-b58e-3a5b9829ba44",
       "kind": "url",
-      "title": "AI and Productivity Research Initiative - Microsoft Research",
+      "title": "AI and Productivity Research Initiative",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -246,9 +248,7 @@
       "id": "95b74692-e028-4334-85cd-7ebaa95ed577",
       "kind": "url",
       "title": "AI in the workplace in 2025: What it has really achieved",
-      "authors": [
-        "Author page"
-      ],
+      "authors": [],
       "year": null,
       "facet": "url",
       "source_type": "html",
@@ -260,7 +260,7 @@
     {
       "id": "c051800a-66a0-45a9-8283-194f49b1a3d4",
       "kind": "url",
-      "title": "Agents SDK | OpenAI API",
+      "title": "Agents SDK",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -273,9 +273,10 @@
     {
       "id": "c867d3b4-e60d-4ab3-bfd6-7f4004a81630",
       "kind": "url",
-      "title": "An Overview on RAG Evaluation | Weaviate",
+      "title": "An Overview on RAG Evaluation",
       "authors": [
-        "Erika Shorten; Connor Shorten"
+        "Erika Shorten",
+        "Connor Shorten"
       ],
       "year": null,
       "facet": "url",
@@ -286,24 +287,9 @@
       "hero": false
     },
     {
-      "id": "6b40f9cf-e0c4-41e8-8cbc-cbb35666543d",
-      "kind": "url",
-      "title": "Andrej Karpathy",
-      "authors": [
-        "Tianlin Shi; Andrej Karpathy; Linxi Fan; Jonathan Hernandez; Percy Liang"
-      ],
-      "year": null,
-      "facet": "url",
-      "source_type": "html",
-      "score_overall": null,
-      "tldr": null,
-      "added_at": "2026-06-14T04:23:39.711977Z",
-      "hero": false
-    },
-    {
       "id": "927c319e-ee5e-45f8-a322-c48991020d5c",
       "kind": "url",
-      "title": "Announcing general availability of Amazon Bedrock Knowledge Bases GraphRAG with Amazon Neptune Analytics | Amazon Web Services",
+      "title": "Announcing general availability of Amazon Bedrock Knowledge Bases GraphRAG with Amazon Neptune Analytics",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -331,7 +317,7 @@
     {
       "id": "d1404cd1-934b-4afe-bfa0-043e07d3887a",
       "kind": "url",
-      "title": "Best RAG Evaluation Tools in 2026, Compared - Articles - Braintrust",
+      "title": "Best RAG Evaluation Tools in 2026, Compared",
       "authors": [
         "Braintrust Team"
       ],
@@ -361,7 +347,7 @@
     {
       "id": "552556c6-49c2-4b58-81db-f540c4f78e22",
       "kind": "url",
-      "title": "Build GraphRAG applications using Amazon Bedrock Knowledge Bases | Amazon Web Services",
+      "title": "Build GraphRAG applications using Amazon Bedrock Knowledge Bases",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -404,7 +390,7 @@
     {
       "id": "41a359ba-7dc3-4e76-9872-d3e164621ab8",
       "kind": "url",
-      "title": "Building a multimodal RAG based application using Amazon Bedrock Data Automation and Amazon Bedrock Knowledge Bases | Amazon Web Services",
+      "title": "Building a multimodal RAG based application using Amazon Bedrock Data Automation and Amazon Bedrock Knowledge Bases",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -646,7 +632,7 @@
     {
       "id": "a956e1c4-b1ce-4df9-ad3d-8c2342c5e4d8",
       "kind": "url",
-      "title": "GraphRAG and agentic architecture: Practical experimentation with Neo4j and NeoConverse - Graph Database & Analytics",
+      "title": "GraphRAG and agentic architecture: Practical experimentation with Neo4j and NeoConverse",
       "authors": [
         "Karen Jones"
       ],
@@ -661,7 +647,7 @@
     {
       "id": "138efd69-ad0d-4d67-882f-bf3973b43095",
       "kind": "url",
-      "title": "Hamel’s Substack | Substack",
+      "title": "Hamel’s Substack",
       "authors": [
         "Hamel Husain"
       ],
@@ -676,7 +662,7 @@
     {
       "id": "fe43490a-fb0d-40a3-a3e3-9daad0f8d6bd",
       "kind": "url",
-      "title": "How to evaluate LLMs and AI agents in production: The Braintrust way - Articles - Braintrust",
+      "title": "How to evaluate LLMs and AI agents in production: The Braintrust way",
       "authors": [
         "Braintrust Team"
       ],
@@ -704,7 +690,7 @@
     {
       "id": "a6c13ea2-eef0-4951-9180-f2d1bbaa58ce",
       "kind": "url",
-      "title": "Introducing Mistral 3 | Mistral AI",
+      "title": "Introducing Mistral 3",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -717,7 +703,7 @@
     {
       "id": "c59158db-38d4-410c-b2d3-3e7b2614e998",
       "kind": "url",
-      "title": "Introduction to LLM RAG - Retrieval Augmented Generation Explained | Weaviate",
+      "title": "Introduction to LLM RAG - Retrieval Augmented Generation Explained",
       "authors": [
         "Mary Newhauser"
       ],
@@ -732,7 +718,7 @@
     {
       "id": "485ebee7-c67e-4b68-ae07-a239f028a5f3",
       "kind": "url",
-      "title": "Is RAG Dead? The Rise of Context Engineering and Semantic Layers for Agentic AI | Towards Data Science",
+      "title": "Is RAG Dead? The Rise of Context Engineering and Semantic Layers for Agentic AI",
       "authors": [
         "Steve Hedden"
       ],
@@ -747,7 +733,7 @@
     {
       "id": "a8aacdb0-cb0e-4ab7-a229-e57cc5cac46c",
       "kind": "url",
-      "title": "LLM as Judge: What AI Engineers Get Wrong About Automated Evaluation | Vadim's blog",
+      "title": "LLM as Judge: What AI Engineers Get Wrong About Automated Evaluation",
       "authors": [
         "Vadim Nicolai"
       ],
@@ -764,7 +750,8 @@
       "kind": "url",
       "title": "LLM as a Judge: A Comprehensive Guide to AI Evaluation",
       "authors": [
-        "Sohrab Hosseini; Anthony Diaz"
+        "Sohrab Hosseini",
+        "Anthony Diaz"
       ],
       "year": null,
       "facet": "url",
@@ -777,7 +764,7 @@
     {
       "id": "158793b5-ad3f-4902-9372-a9e31a333b2d",
       "kind": "url",
-      "title": "LLMOps in Production: 457 Case Studies of What Actually Works - ZenML Blog",
+      "title": "LLMOps in Production: 457 Case Studies of What Actually Works",
       "authors": [
         "Alex Strick van Linschoten"
       ],
@@ -792,7 +779,7 @@
     {
       "id": "b9ff3660-b039-4c45-879b-396c40ec9a8b",
       "kind": "url",
-      "title": "Large Enough | Mistral AI",
+      "title": "Large Enough",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -805,7 +792,7 @@
     {
       "id": "7b6a9294-f674-4505-934c-b8904814f6ca",
       "kind": "url",
-      "title": "Latent Space: The AI Engineer Podcast | Substack",
+      "title": "Latent Space: The AI Engineer Podcast",
       "authors": [
         "Latent Space"
       ],
@@ -833,7 +820,7 @@
     {
       "id": "10be4b27-bde3-43ab-864c-cd34148354fd",
       "kind": "url",
-      "title": "Medium is the new large. | Mistral AI",
+      "title": "Medium is the new large.",
       "authors": [],
       "year": null,
       "facet": "url",
@@ -859,7 +846,7 @@
     {
       "id": "67ddbd89-a89b-48fe-9126-b57b80e84306",
       "kind": "url",
-      "title": "Multimodal Retrieval-Augmented Generation (RAG) | Weaviate",
+      "title": "Multimodal Retrieval-Augmented Generation (RAG)",
       "authors": [
         "Zain Hasan"
       ],
@@ -915,7 +902,7 @@
     {
       "id": "2a793508-282a-4827-9347-cda81d1c83c7",
       "kind": "url",
-      "title": "Six Lessons Learned Building RAG Systems in Production | Towards Data Science",
+      "title": "Six Lessons Learned Building RAG Systems in Production",
       "authors": [
         "Sabrine Bendimerad"
       ],
@@ -930,9 +917,12 @@
     {
       "id": "77c51d2d-6f12-49d0-9c59-4c0d1f8d6959",
       "kind": "url",
-      "title": "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot - Microsoft Research",
+      "title": "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot",
       "authors": [
-        "Sida Peng; Eirini Kalliamvakou; Peter Cihon; Mert Demirer"
+        "Sida Peng",
+        "Eirini Kalliamvakou",
+        "Peter Cihon",
+        "Mert Demirer"
       ],
       "year": null,
       "facet": "url",
@@ -992,9 +982,10 @@
     {
       "id": "37ae9168-4024-4b2a-8722-da68084aeb50",
       "kind": "url",
-      "title": "What Is Agentic RAG? From LLM RAG to AI Agents | Weaviate",
+      "title": "What Is Agentic RAG? From LLM RAG to AI Agents",
       "authors": [
-        "Erika Shorten; Leonie Monigatti"
+        "Erika Shorten",
+        "Leonie Monigatti"
       ],
       "year": null,
       "facet": "url",
@@ -1007,7 +998,7 @@
     {
       "id": "2d08c3c2-fa90-4f98-8800-f5cc60feaaaa",
       "kind": "url",
-      "title": "Why AI teams are moving from prompt engineering to context engineering - Graph Database & Analytics",
+      "title": "Why AI teams are moving from prompt engineering to context engineering",
       "authors": [
         "Alyssa Di Pasqualucci"
       ],

@@ -22,6 +22,15 @@ export function SourcesPage() {
     loadCatalog().then(setCatalog).catch((e) => setError(String(e)));
   }, []);
 
+  useEffect(() => {
+    if (!teaser) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setTeaser(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [teaser]);
+
   if (error) return <div className="p-6"><ErrorNote>{error}</ErrorNote></div>;
   if (!catalog) return <Loading />;
 
@@ -74,7 +83,11 @@ export function SourcesPage() {
               >
                 <td className="max-w-[28rem] px-4 py-2.5 align-top">
                   <div className="flex items-center gap-2">
-                    {r.hero && <span className="text-accent">★</span>}
+                    {r.hero && (
+                      <span className="text-accent" role="img" aria-label="Highlighted source">
+                        ★
+                      </span>
+                    )}
                     <span className="font-medium">{r.title}</span>
                   </div>
                   {r.tldr && (
@@ -90,7 +103,9 @@ export function SourcesPage() {
                   {r.hero ? (
                     <span className="text-xs font-medium text-accent">Explore →</span>
                   ) : (
-                    <span className="text-xs text-fg-muted">🔒</span>
+                    <span className="text-xs text-fg-muted" role="img" aria-label="Locked in this demo">
+                      🔒
+                    </span>
                   )}
                 </td>
               </tr>

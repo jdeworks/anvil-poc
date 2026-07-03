@@ -17,7 +17,7 @@ const STATS: { value: string; label: string; source: string; url: string }[] = [
     value: "~3 million",
     label: "scholarly articles published every year across all fields, and rising",
     source: "STM Report",
-    url: "https://www.stm-assoc.org/about-the-industry/",
+    url: "https://www.stm-assoc.org/",
   },
   {
     value: "~20%",
