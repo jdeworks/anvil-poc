@@ -14,10 +14,10 @@ const STATS: { value: string; label: string; source: string; url: string }[] = [
     url: "https://blog.arxiv.org/2024/11/04/arxiv-sets-new-record-for-monthly-submissions-again/",
   },
   {
-    value: "~3 million",
-    label: "scholarly articles published every year across all fields, and rising",
-    source: "STM Report",
-    url: "https://www.stm-assoc.org/",
+    value: "3.3 million",
+    label: "peer-reviewed articles published worldwide in 2022 alone, and rising",
+    source: "NSF Science & Engineering Indicators",
+    url: "https://ncses.nsf.gov/pubs/nsb202333/",
   },
   {
     value: "~20%",
