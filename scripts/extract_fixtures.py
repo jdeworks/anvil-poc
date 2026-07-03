@@ -42,8 +42,21 @@ HEROES = [
 CONTEXTS = ["ctx_anvil_v3", "ctx_audiobook_v3"]
 DISPLAY_NAME = {
     "ctx_anvil_v3": "anvil",
-    "ctx_audiobook_v3": "auto-audiobook",
+    "ctx_audiobook_v3": "narratu poc",
     "ctx_default": "default",  # used only as an eval comparison label
+}
+# Public project page per context, baked into the context JSON when set.
+PROJECT_URL = {
+    "ctx_audiobook_v3": "https://jdeworks.github.io/narratu-poc/",
+}
+
+# Known-junk corpus rows (test artifacts, unreadable ingests) kept out of the
+# public catalog regardless of what the API returns.
+EXCLUDE_IDS = {
+    "2eef31a5-f5a8-41a2-aa7a-d25f348442bd",  # "AI Agents: The Definitive Guide (for fdafg fdsaf)"
+    "046cddae-afb9-43f8-b7f9-d3b7e4a23d9c",  # raw "arXiv:2502.06807v2 …" title
+    "59ac4f83-b788-48e8-a919-017e218cbc84",  # truncated "for Building AI Agents"
+    "7a95b2d8-ad9b-463c-8a25-3185274fbc85",  # "Blog" by "Hi"
 }
 
 CATALOG_LIMIT = 50
@@ -308,10 +321,18 @@ def bundle_book(work_id: str) -> dict | None:
             for c in clusters[:40]
         ],
     }
-    # Representative chapter: first complete cluster → its analysis/summary/graph.
+    # Representative chapter: first complete CONTENT cluster → its
+    # analysis/summary/graph. Front matter (foreword, contributor bios, ToC)
+    # produces analysis about the book's packaging, not its content — baking
+    # that as the book's trust signals is misleading, so skip it.
+    front_matter = re.compile(
+        r"introduction, metadata|foreword|table of contents|copyright|contributors",
+        re.I,
+    )
     rep_id = next(
         (c.get("research_object_id") for c in clusters
-         if c.get("eval_status") == "complete" and c.get("research_object_id")),
+         if c.get("eval_status") == "complete" and c.get("research_object_id")
+         and not front_matter.search(c.get("title") or "")),
         clusters[0].get("research_object_id") if clusters else None,
     )
     summary = analysis = graph = None
@@ -390,7 +411,7 @@ def build_catalog(
     hero_ids = {h["id"] for h in hero_refs}
 
     def add(row: dict) -> None:
-        if row["id"] and row["id"] not in by_id:
+        if row["id"] and row["id"] not in by_id and row["id"] not in EXCLUDE_IDS:
             by_id[row["id"]] = row
 
     # Heroes first so they always appear (the corpus list may not include them).
@@ -469,6 +490,8 @@ def build_catalog(
         if len(t) < 3:
             return False
         if re.fullmatch(r"[0-9a-fA-F]{24,}", t):  # hash-like
+            return False
+        if re.match(r"arXiv:\d{4}\.\d+", t):  # raw arXiv id as title
             return False
         return True
 
@@ -553,6 +576,7 @@ def main() -> int:
             "id": c.get("id"),
             "name": name,
             "display_name": disp,
+            "project_url": PROJECT_URL.get(name),
             "organization": c.get("organization"),
             "tech_stack": c.get("tech_stack"),
             "constraints": c.get("constraints"),

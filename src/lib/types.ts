@@ -249,6 +249,7 @@ export interface ContextDetail {
   id: string;
   name: string;
   display_name?: string;
+  project_url?: string | null;
   organization?: string | null;
   tech_stack?: {
     languages?: string[];

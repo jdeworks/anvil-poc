@@ -99,14 +99,14 @@ export function InvestorsPage() {
             </div>
           ))}
         </div>
-        <p className="mt-3 max-w-prose text-xs text-fg-muted">
+        <p className="mt-3 text-xs text-fg-muted">
           Explosive growth, raw volume, and a fixed human day. The gap between
           what is published and what anyone can actually use keeps widening.
         </p>
       </Section>
 
       <Section title="The problem">
-        <p className="max-w-prose text-sm leading-relaxed text-fg-muted">
+        <p className="text-sm leading-relaxed text-fg-muted">
           Researchers, analysts and engineers drown in plausible looking sources.
           Existing tools either summarise and hide the reasoning, or rank by
           popularity. Neither tells you whether a specific claim holds up, or
@@ -132,7 +132,7 @@ export function InvestorsPage() {
       </Section>
 
       <Section title="Why it defends itself">
-        <ul className="max-w-prose space-y-2 text-sm text-fg-muted">
+        <ul className="space-y-2 text-sm text-fg-muted">
           <li className="rounded-lg border border-line p-3">
             <span className="font-medium text-fg">Relevance is the hard part.</span>{" "}
             Anyone can summarise a paper. Judging whether it matters for a specific
@@ -148,7 +148,7 @@ export function InvestorsPage() {
       </Section>
 
       <Section title="Where we fit">
-        <p className="mb-3 max-w-prose text-sm leading-relaxed text-fg-muted">
+        <p className="mb-3 text-sm leading-relaxed text-fg-muted">
           Discovery and evidence aggregation are mature, crowded layers. Tools
           like Semantic Scholar, Elicit, Consensus and scite find papers and show
           how the literature cites or agrees with a claim, and they do it well. We

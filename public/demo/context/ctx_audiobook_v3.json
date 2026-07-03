@@ -1,7 +1,8 @@
 {
   "id": null,
   "name": "ctx_audiobook_v3",
-  "display_name": "auto-audiobook",
+  "display_name": "narratu poc",
+  "project_url": "https://jdeworks.github.io/narratu-poc/",
   "organization": "",
   "tech_stack": {
     "languages": [

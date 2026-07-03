@@ -100,7 +100,7 @@
       "kind": "paper",
       "title": "Attention Is All You Need",
       "authors": [],
-      "year": 2024,
+      "year": 2017,
       "facet": "pdf",
       "source_type": "pdf",
       "score_overall": 0.4,
@@ -212,21 +212,6 @@
       "score_overall": null,
       "tldr": null,
       "added_at": "2026-06-14T15:45:05.738872Z",
-      "hero": false
-    },
-    {
-      "id": "2eef31a5-f5a8-41a2-aa7a-d25f348442bd",
-      "kind": "book",
-      "title": "AI Agents: The Definitive Guide (for fdafg fdsaf)",
-      "authors": [
-        "Nicole Koenigstein"
-      ],
-      "year": 2025,
-      "facet": "book",
-      "source_type": "epub",
-      "score_overall": null,
-      "tldr": null,
-      "added_at": null,
       "hero": false
     },
     {
@@ -374,21 +359,6 @@
       "hero": false
     },
     {
-      "id": "7a95b2d8-ad9b-463c-8a25-3185274fbc85",
-      "kind": "url",
-      "title": "Blog",
-      "authors": [
-        "Hi"
-      ],
-      "year": null,
-      "facet": "url",
-      "source_type": "html",
-      "score_overall": null,
-      "tldr": null,
-      "added_at": "2026-06-14T04:25:07.187107Z",
-      "hero": false
-    },
-    {
       "id": "552556c6-49c2-4b58-81db-f540c4f78e22",
       "kind": "url",
       "title": "Build GraphRAG applications using Amazon Bedrock Knowledge Bases | Amazon Web Services",
@@ -446,7 +416,7 @@
     },
     {
       "id": "ed4f2362-6d78-4af0-81d6-e58fd227ebc1",
-      "kind": "book",
+      "kind": "paper",
       "title": "DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning",
       "authors": [
         "DeepSeek-AI",
@@ -651,7 +621,7 @@
         "Zhen Zhang"
       ],
       "year": null,
-      "facet": "book",
+      "facet": "pdf",
       "source_type": "pdf",
       "score_overall": null,
       "tldr": null,
@@ -1047,32 +1017,6 @@
       "score_overall": null,
       "tldr": null,
       "added_at": "2026-06-14T04:20:39.517574Z",
-      "hero": false
-    },
-    {
-      "id": "046cddae-afb9-43f8-b7f9-d3b7e4a23d9c",
-      "kind": "book",
-      "title": "arXiv:2502.06807v2  [cs.LG]  18 Feb 2025",
-      "authors": [],
-      "year": 2025,
-      "facet": "book",
-      "source_type": "pdf",
-      "score_overall": null,
-      "tldr": null,
-      "added_at": null,
-      "hero": false
-    },
-    {
-      "id": "59ac4f83-b788-48e8-a919-017e218cbc84",
-      "kind": "book",
-      "title": "for Building AI Agents",
-      "authors": [],
-      "year": null,
-      "facet": "book",
-      "source_type": "pdf",
-      "score_overall": null,
-      "tldr": null,
-      "added_at": null,
       "hero": false
     },
     {

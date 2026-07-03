@@ -160,6 +160,14 @@ function Overview({ bundle }: { bundle: SourceBundle }) {
         </Card>
       )}
 
+      {bundle.kind === "book" && !analysis && (
+        <p className="rounded-lg border border-line bg-canvas-alt px-4 py-3 text-sm text-fg-muted">
+          anvil analyses books chapter by chapter. The full per-chapter claim
+          and trust analysis isn't baked into this static preview — the chapter
+          map below shows each chapter's verdict.
+        </p>
+      )}
+
       {analysis && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Card>
@@ -217,6 +225,21 @@ function Overview({ bundle }: { bundle: SourceBundle }) {
                 {detail.clusters.map((c, i) => (
                   <tr key={i} className="border-t border-line first:border-t-0">
                     <td className="px-4 py-2">{c.title}</td>
+                    <td className="px-4 py-2 text-right">
+                      {c.summary_verdict && (
+                        <Pill
+                          tone={
+                            c.summary_verdict === "plausible"
+                              ? "success"
+                              : c.summary_verdict === "questionable"
+                                ? "warn"
+                                : "neutral"
+                          }
+                        >
+                          {c.summary_verdict}
+                        </Pill>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

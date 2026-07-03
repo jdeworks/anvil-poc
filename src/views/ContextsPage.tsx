@@ -42,6 +42,16 @@ export function ContextsPage() {
           every source against them so relevance stays concrete.
           {detail.name === "ctx_anvil_v3" && " This one is anvil itself."}
         </p>
+        {detail.project_url && (
+          <a
+            href={detail.project_url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-block text-sm text-accent hover:underline"
+          >
+            View the project ↗
+          </a>
+        )}
         {detail.organization && (
           <p className="mt-1 text-sm text-fg-muted">
             Organization: {detail.organization}
@@ -119,7 +129,7 @@ export function ContextsPage() {
         <p className="mt-1 max-w-prose text-sm text-fg-muted">
           A context describes a team (stack, constraints, goals) so anvil scores
           relevance for them, not in the abstract. Both below were auto-extracted
-          from real codebases: anvil's own, and the auto-audiobook project.
+          from real codebases: anvil's own, and the narratu POC project.
         </p>
       </header>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

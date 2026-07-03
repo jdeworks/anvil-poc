@@ -4,7 +4,8 @@
   "detail": {
     "title": "Agentic Architectural Patterns for Building Multi-Agent Systems",
     "authors": [
-      "Dr. Ali Arsanjani, Juan Pablo Bustos, Thomas Kurian"
+      "Dr. Ali Arsanjani",
+      "Juan Pablo Bustos"
     ],
     "year": 2026,
     "source_type": "epub",
@@ -335,154 +336,10 @@
       "citation_count": 0
     }
   },
-  "analysis": {
-    "status": "complete",
-    "confidence": null,
-    "claims": [
-      {
-        "text": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
-        "section_ref": "contributors",
-        "confidence": 0.35,
-        "provenance": "verbatim",
-        "validity_confidence": 0.3,
-        "validity_basis": "specific quantitative claim asserted with no supporting data, methodology, or context provided",
-        "evidence_strength": 0.05,
-        "evidence_basis": "asserted number with no experiment, benchmark, or citation to back it",
-        "evidence_type": "asserted",
-        "scope": 0.25,
-        "corroboration_verdict": "not_found",
-        "corroboration_sources": [
-          "https://www.aidigital.com/blog/ai-driven-personalization",
-          "https://www.bloomreach.com/en/blog/how-ai-technology-will-transform-customer-engagement",
-          "https://www.autobound.ai/blog/top-12-personalization-engines-for-marketing-2026"
-        ]
-      },
-      {
-        "text": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
-        "section_ref": "contributors",
-        "confidence": 0.35,
-        "provenance": "verbatim",
-        "validity_confidence": 0.25,
-        "validity_basis": "extraordinary precision figure asserted with no methodology, dataset, or reproducibility information",
-        "evidence_strength": 0.05,
-        "evidence_basis": "asserted, no experiment or citation provided",
-        "evidence_type": "asserted",
-        "scope": 0.25,
-        "corroboration_verdict": "not_found",
-        "corroboration_sources": [
-          "https://ryanrosario.phd/",
-          "https://reaganai.com/message-feature/"
-        ]
-      }
-    ],
-    "methods": [
-      {
-        "name": "Agentic Architectural Patterns",
-        "description": "The overarching framework introduced by this book, providing repeatable design and architectural patterns for building durable, production-grade multi-agent systems in enterprise environments."
-      },
-      {
-        "name": "A2A Protocol",
-        "description": "An agent-to-agent protocol introduced by Dr. Ali Arsanjani at Google Cloud to ensure autonomous AI systems remain transparent, auditable, and grounded in ethical governance."
-      }
-    ],
-    "novelty": {
-      "score": 0.1,
-      "reasoning": "This submission is not a research paper but rather the front matter of a practitioner book (Packt, 2026) on agentic architectural patterns. No explicit gap-naming against named prior work appears anywhere in the provided text: the foreword uses generic marketing framing ('bridges the gap between theoretical capability and practical implementation') without citing specific prior methods or literature. The extracted claims are biographical metrics from a contributor profile (63% engagement increase, 99.97% accuracy), not research contributions with verifiable experimental comparisons. No prior-art references are named, no baselines are identified, and no methodological advance is articulated relative to any existing approach."
-    },
-    "reproducibility": {
-      "score": 0.05,
-      "reasoning": "This document is a book introduction and contributor foreword, not a research paper with reproducible experiments. The two extracted claims (63% engagement increase, 99.97% workflow accuracy) appear in contributor bio copy at confidence 0.35 and reference undisclosed commercial systems with no experimental setup, dataset, or evaluation harness described. The 'methods' listed are high-level architectural framework names from a book, not implementable procedures. There is no code, no math, no hyperparameters, and no public data reference anywhere in the document.",
-      "missing": [
-        "Source datasets or benchmarks used to derive the 63% engagement and 99.97% accuracy figures",
-        "Experimental setup and evaluation protocol for the stated accuracy/engagement claims",
-        "Hyperparameters or configuration details for the workflow engine and personalization system",
-        "Public code repository or reference implementation for the A2A Protocol or Agentic Architectural Patterns",
-        "Hardware and software environment details",
-        "Baseline comparisons or ablation results that would allow partial reproduction"
-      ]
-    },
-    "trustworthiness": {
-      "score": 0.3,
-      "base": 0.5,
-      "reasons": [
-        {
-          "label": "thin bibliography (0 extracted citations)",
-          "delta": -0.05,
-          "kind": "intrinsic",
-          "evidence": null,
-          "url": null
-        },
-        {
-          "label": "most claims are asserted or speculative (2/2)",
-          "delta": -0.1,
-          "kind": "intrinsic",
-          "evidence": null,
-          "url": null
-        },
-        {
-          "label": "essentially unreproducible (0.05)",
-          "delta": -0.05,
-          "kind": "intrinsic",
-          "evidence": null,
-          "url": null
-        }
-      ],
-      "claim_corroborations": [
-        {
-          "claim_text": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
-          "verdict": "not_found",
-          "sources": [
-            "https://www.aidigital.com/blog/ai-driven-personalization",
-            "https://www.bloomreach.com/en/blog/how-ai-technology-will-transform-customer-engagement",
-            "https://www.autobound.ai/blog/top-12-personalization-engines-for-marketing-2026"
-          ],
-          "note": "Three targeted web searches found zero independent sources attributing a 63% engagement increase to any AI system by Reagan Rosario. General industry sources discuss AI personalization benefits but cite entirely different figures and different authors."
-        },
-        {
-          "claim_text": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
-          "verdict": "not_found",
-          "sources": [
-            "https://ryanrosario.phd/",
-            "https://reaganai.com/message-feature/"
-          ],
-          "note": "No independent source found referencing Reagan Rosario, a workflow engine, or a 99.97% accuracy figure tied to self-learning decision models. The name Reagan Rosario returns no verifiable professional or academic profile in any search."
-        }
-      ],
-      "web_status": "ok",
-      "summary": "This epub has unknown authorship, no publisher, no year, no source URL, and zero citations. Three web searches found no verifiable professional presence for 'Reagan Rosario' in AI or adjacent fields, and no independent source corroborates either specific quantitative claim (63% engagement uplift or 99.97% workflow accuracy). Both claims read as self-promotional assertions with no traceable evidentiary basis, making the artifact highly untrustworthy as a factual source."
-    },
-    "tool_stack": {
-      "requirements": [],
-      "context_adjusted": null,
-      "not_applicable": {
-        "lens": "not_applicable",
-        "reason": "Source classified as non-computational (landscape/survey/pure-theory): no coherent required stack to build, so the tool-stack is suppressed rather than inferring tools the paper does not actually use.",
-        "suppressed": true,
-        "content_shape": "landscape",
-        "implementable": false,
-        "detector_version": "1.0.0",
-        "min_required_names": 2,
-        "distinct_required_names": 0
-      }
-    },
-    "claim_total": 2,
-    "method_total": 2
-  },
+  "analysis": null,
   "citations": [],
   "graph": {
     "nodes": [
-      {
-        "id": "claim:ac98dc3a",
-        "type": "claim",
-        "label": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization.",
-        "summary": "AI systems attributed to Reagan Rosario have driven engagement increases of up to 63% through personalization."
-      },
-      {
-        "id": "claim:d20dbac7",
-        "type": "claim",
-        "label": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models.",
-        "summary": "Workflow engines built by Reagan Rosario achieve 99.97% accuracy via self-learning decision models."
-      },
       {
         "id": "method:agentic-architectural-patterns",
         "type": "method",
