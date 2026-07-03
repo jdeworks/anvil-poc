@@ -6,6 +6,7 @@ import { useViewStore } from "../stores/view-store";
 import { loadSource } from "../lib/demo";
 import {
   scoreOf,
+  type BookCluster,
   type SourceBundle,
   type SourceContent,
   type Trustworthiness,
@@ -164,8 +165,12 @@ function Overview({ bundle }: { bundle: SourceBundle }) {
         <p className="rounded-lg border border-line bg-canvas-alt px-4 py-3 text-sm text-fg-muted">
           anvil analyses books chapter by chapter. The full per-chapter claim
           and trust analysis isn't baked into this static preview — the chapter
-          map below shows each chapter's verdict.
+          map below shows each chapter's verdict, novelty and reproducibility.
         </p>
+      )}
+
+      {bundle.kind === "book" && detail.clusters && detail.clusters.length > 0 && (
+        <BookGlance clusters={detail.clusters} />
       )}
 
       {analysis && (
@@ -218,26 +223,38 @@ function Overview({ bundle }: { bundle: SourceBundle }) {
 
       {/* book chapters */}
       {detail.clusters && detail.clusters.length > 0 && (
-        <Section title={`Chapters (${detail.cluster_count ?? detail.clusters.length})`}>
-          <div className="overflow-hidden rounded-lg border border-line">
-            <table className="w-full text-sm">
+        <Section
+          title={
+            detail.cluster_count && detail.cluster_count > detail.clusters.length
+              ? `Chapters (${detail.clusters.length} of ${detail.cluster_count})`
+              : `Chapters (${detail.clusters.length})`
+          }
+        >
+          <div className="overflow-x-auto rounded-lg border border-line">
+            <table className="w-full min-w-[560px] text-sm">
+              <thead className="bg-canvas-alt text-left text-xs uppercase tracking-wider text-fg-muted">
+                <tr>
+                  <th className="px-4 py-2 font-medium">Chapter</th>
+                  <th className="px-4 py-2 font-medium">Novelty</th>
+                  <th className="px-4 py-2 font-medium">Repro</th>
+                  <th className="px-4 py-2 text-right font-medium">Verdict</th>
+                </tr>
+              </thead>
               <tbody>
                 {detail.clusters.map((c, i) => (
-                  <tr key={i} className="border-t border-line first:border-t-0">
+                  <tr key={i} className="border-t border-line">
                     <td className="px-4 py-2">{c.title}</td>
+                    <td className="px-4 py-2">
+                      <ChapterScore value={c.novelty} />
+                    </td>
+                    <td className="px-4 py-2">
+                      <ChapterScore value={c.reproducibility} />
+                    </td>
                     <td className="px-4 py-2 text-right">
-                      {c.summary_verdict && (
-                        <Pill
-                          tone={
-                            c.summary_verdict === "plausible"
-                              ? "success"
-                              : c.summary_verdict === "questionable"
-                                ? "warn"
-                                : "neutral"
-                          }
-                        >
-                          {c.summary_verdict}
-                        </Pill>
+                      {c.summary_verdict ? (
+                        <VerdictPill verdict={c.summary_verdict} />
+                      ) : (
+                        <span className="text-xs text-fg-muted">–</span>
                       )}
                     </td>
                   </tr>
@@ -247,6 +264,105 @@ function Overview({ bundle }: { bundle: SourceBundle }) {
           </div>
         </Section>
       )}
+    </div>
+  );
+}
+
+function VerdictPill({ verdict }: { verdict: string }) {
+  return (
+    <Pill
+      tone={
+        verdict === "plausible"
+          ? "success"
+          : verdict === "questionable"
+            ? "warn"
+            : "neutral"
+      }
+    >
+      {verdict}
+    </Pill>
+  );
+}
+
+/** Compact 0–1 score cell for the chapter map: tiny bar + value ×100. */
+function ChapterScore({ value }: { value?: number | null }) {
+  if (typeof value !== "number") {
+    return <span className="text-xs text-fg-muted">–</span>;
+  }
+  const pct = Math.round(value * 100);
+  return (
+    <span className="flex items-center gap-2">
+      <span className="h-1.5 w-14 shrink-0 overflow-hidden rounded-full bg-canvas">
+        <span
+          className="block h-full rounded-full bg-accent"
+          style={{ width: `${pct}%` }}
+        />
+      </span>
+      <span className="w-6 text-right text-xs tabular-nums text-fg-muted">
+        {pct}
+      </span>
+    </span>
+  );
+}
+
+/** Book-level rollup of the per-chapter analysis already baked in the fixture. */
+function BookGlance({ clusters }: { clusters: BookCluster[] }) {
+  const verdictOrder = ["plausible", "inconclusive", "questionable"] as const;
+  const counts: Record<string, number> = {};
+  for (const c of clusters) {
+    const v = c.summary_verdict ?? "pending";
+    counts[v] = (counts[v] ?? 0) + 1;
+  }
+  const avg = (vals: (number | null | undefined)[]) => {
+    const nums = vals.filter((v): v is number => typeof v === "number");
+    return nums.length
+      ? nums.reduce((a, b) => a + b, 0) / nums.length
+      : null;
+  };
+  const avgNovelty = avg(clusters.map((c) => c.novelty));
+  const avgRepro = avg(clusters.map((c) => c.reproducibility));
+
+  return (
+    <div>
+      <div className="mb-2 text-xs uppercase tracking-wider text-fg-muted">
+        Chapter analysis at a glance
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Card>
+          <div className="mb-2 text-xs text-fg-muted">Chapter verdicts</div>
+          <div className="flex flex-wrap items-center gap-2">
+            {verdictOrder.map((v) =>
+              counts[v] ? (
+                <span key={v} className="flex items-center gap-1 text-xs">
+                  <VerdictPill verdict={v} />
+                  <span className="tabular-nums text-fg-muted">
+                    ×{counts[v]}
+                  </span>
+                </span>
+              ) : null,
+            )}
+            {counts.pending ? (
+              <span className="text-xs text-fg-muted">
+                +{counts.pending} pending
+              </span>
+            ) : null}
+          </div>
+        </Card>
+        <Card>
+          <Meter
+            label="Avg chapter novelty"
+            value={avgNovelty}
+            word={noveltyWord(avgNovelty)}
+          />
+        </Card>
+        <Card>
+          <Meter
+            label="Avg chapter reproducibility"
+            value={avgRepro}
+            word={qualityWord(avgRepro)}
+          />
+        </Card>
+      </div>
     </div>
   );
 }
