@@ -1,0 +1,30 @@
+{
+  "siteName": "Anvil",
+  "baseUrl": "https://jdeworks.github.io/anvil-poc/",
+  "publishDir": "docs",
+  "sitemap": "sitemap.xml",
+  "pages": [
+    {
+      "file": "index.html",
+      "route": "",
+      "title": "Anvil – Research and Source Trust Analysis (Live Demo)",
+      "description": "Know which sources to trust. Anvil extracts claims, checks them against outside evidence, and scores relevance to your team. Live proof-of-concept demo.",
+      "image": "og.png",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Anvil Demo",
+        "url": "https://jdeworks.github.io/anvil-poc/",
+        "description": "Know which sources to trust. Anvil extracts claims, checks them against outside evidence, and scores relevance to your team. Live proof-of-concept demo.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any operating system with a modern web browser",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    }
+  ]
+}
